@@ -290,13 +290,15 @@ export default function GuardianDashboard({
   }
 
   return (
-    <div id="guardian_active_dashboard" className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden text-slate-850">
+    <div id="guardian_active_dashboard" className="space-y-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden text-slate-850">
       
       {/* Background Alerts Flash */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-500 to-blue-600 animate-pulse z-20" />
 
-      {/* --- POINT 2: DEDICATED INCIDENT STATUS OVERVIEW PANEL --- */}
-      <div className="lg:col-span-12 bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col xl:flex-row gap-6 shadow-md text-slate-100 mb-2">
+      {/* ═════════════════════════════════════════════════════════════════
+          STAGE 1: INCIDENT OVERVIEW & TRIGGER SOURCE (SECTION A)
+          ═════════════════════════════════════════════════════════════════ */}
+      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col xl:flex-row gap-6 shadow-md text-slate-100">
         
         {/* Left Side: Incident Identity & Stages */}
         <div className="flex-1 space-y-4 border-r border-slate-800/80 pr-0 xl:pr-6">
@@ -307,6 +309,9 @@ export default function GuardianDashboard({
               </div>
               <div className="text-left">
                 <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-mono bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded font-bold uppercase">
+                    STAGE 1: TRIGGER DETECTED
+                  </span>
                   <h3 className="font-extrabold text-slate-50 text-base tracking-wide font-mono uppercase">Incident Overview</h3>
                   <span className="text-[10px] font-mono bg-red-950 border border-red-900 text-red-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                     ID: {incident.id}

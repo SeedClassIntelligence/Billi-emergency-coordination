@@ -448,8 +448,9 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* HERO PROTECTION STATUS SUMMARY BAR */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm text-left space-y-5">
+        {/* HERO PROTECTION STATUS SUMMARY BAR (Only on Operational Tabs) */}
+        {currentTab !== "landing" && currentTab !== "simulator" && (
+          <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm text-left space-y-5">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg shadow-xs">
@@ -520,6 +521,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        )}
 
         {/* ACTIVE PERSONA DASHBOARD VIEW */}
         <section className="space-y-6">
