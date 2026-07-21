@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Profile": {
+      "title": "Profile",
+      "description": "Child profile safety plan details",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "integer" },
+        "photo": { "type": "string" },
+        "phone": { "type": "string" },
+        "medicalInfo": { "type": "string" },
+        "emergencyInstructions": { "type": "string" }
+      }
+    },
+    "Incident": {
+      "title": "Incident",
+      "description": "Active or historical emergency incident data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "status": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userAge": { "type": "integer" },
+        "userPhoto": { "type": "string" },
+        "medicalInfo": { "type": "string" },
+        "emergencyInstructions": { "type": "string" },
+        "activationTime": { "type": "string" },
+        "activationMethod": { "type": "string" },
+        "deviceBattery": { "type": "integer" },
+        "deviceSignal": { "type": "string" },
+        "deviceLocked": { "type": "boolean" },
+        "aiSummary": { "type": "string" },
+        "aiRiskClassification": { "type": "string" },
+        "aiSuggestedCategory": { "type": "string" },
+        "duressCodeEntered": { "type": "boolean" },
+        "closedBy": { "type": "string" },
+        "closedAt": { "type": "string" },
+        "closureNotes": { "type": "string" },
+        "closureReason": { "type": "string" },
+        "triggerDevice": { "type": "string" },
+        "triggerMethodName": { "type": "string" }
+      }
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Audit log for tracking operations and incidents",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string" },
+        "actor": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "system/profile": {
+      "schema": "Profile",
+      "description": "Document holding the master student and guardian profile"
+    },
+    "system/incident": {
+      "schema": "Incident",
+      "description": "Document holding the active emergency incident, if any"
+    },
+    "auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Collection of system-wide audit records"
+    },
+    "incidentHistory/{incidentId}": {
+      "schema": "Incident",
+      "description": "Collection of historical safety incident documents"
+    }
+  }
+}
