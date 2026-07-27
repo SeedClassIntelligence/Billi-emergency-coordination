@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Safety Protocols rules
+    match /safety_protocols/{protocolId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == resource.data.owner_uid;
+    }
+
+    // Incidents Collection - Dynamic Emergency Packet
+    match /incidents/{incidentId} {
+      // Authenticated users in trusted network can read active incidents
+      allow read: if request.auth != null;
+      
+      // Creation allowed by authorized user or background orchestrator
+      allow create: if request.auth != null;
+      
+      // Updates allowed by system orchestrator or authorized guardians
+      allow update: if request.auth != null;
+      
+      // Timeline Subcollection
+      match /timeline/{eventId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+name: billi_mobile
+description: "Billi Safety Orchestration Platform - Mobile Prototype App"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  firebase_core: ^2.27.0
+  cloud_firestore: ^4.15.5
+  google_maps_flutter: ^2.5.3
+  sensors_plus: ^5.0.0
+  flutter_blue_plus: ^1.31.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
