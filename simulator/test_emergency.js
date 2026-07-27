@@ -4,16 +4,20 @@
  * Injects sensor events into Firestore and verifies Gemini autonomous dispatcher actions.
  */
 
-const admin = require('firebase-admin');
+const { getApps, initializeApp } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 
-// Initialize Firebase Admin SDK (Local emulator or GCP environment)
-if (!admin.apps.length) {
-  admin.initializeApp({
-    projectId: process.env.GCP_PROJECT || 'billi-safety-platform'
+// Initialize Firebase Admin SDK using Application Default Credentials.
+if (getApps().length === 0) {
+  initializeApp({
+    projectId:
+      process.env.GCP_PROJECT ||
+      process.env.GOOGLE_CLOUD_PROJECT ||
+      'billi-503602'
   });
 }
 
-const db = admin.firestore();
+const db = getFirestore();
 
 async function runSimulation() {
   const incidentId = 'demo_incident_48293';
