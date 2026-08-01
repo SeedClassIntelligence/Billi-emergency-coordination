@@ -1,0 +1,28 @@
+[
+  {
+    "packetId": "pkt_fs_98001",
+    "incidentNumber": 98001,
+    "status": "ACTIVE",
+    "startTime": "2026-08-01T17:10:00.040Z",
+    "activationSource": "MANUAL_SOS",
+    "identityLayerRef": "emma-001",
+    "protocolRef": "proto_emma-001",
+    "sensorSnapshot": {
+      "speed_mph": 35,
+      "mic_noise_db": 84
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 36.1699,
+        "longitude": -115.1398
+      }
+    },
+    "aiContext": {
+      "summary": "Distress audio detected.",
+      "priority": "HIGH"
+    },
+    "correlationId": "corr_fs_1785604200039",
+    "idempotencyKey": "idemp_fs_98001",
+    "updatedAt": "2026-08-01T17:10:00.042Z"
+  }
+]

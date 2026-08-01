@@ -1,0 +1,18 @@
+{
+  "drift_score": 7,
+  "protected_symbols": [],
+  "recovery_path": "",
+  "file_state_velocity": {
+    "added": [],
+    "removed": [],
+    "modified": [
+      "services\\emergency-packet\\.data\\packets.json",
+      "services\\incident-timeline\\.data\\timelines.json",
+      "services\\orchestration-engine\\.data\\workflows.json",
+      "verification\\services\\communication-engine\\.data\\deliveries.json",
+      "verification\\services\\emergency-packet\\.data\\packets.json",
+      "verification\\services\\incident-timeline\\.data\\timelines.json",
+      "verification\\services\\orchestration-engine\\.data\\workflows.json"
+    ]
+  }
+}

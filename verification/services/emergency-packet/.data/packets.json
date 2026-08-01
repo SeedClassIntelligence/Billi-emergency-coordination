@@ -1,0 +1,27 @@
+[
+  {
+    "packetId": "pkt_1785539241328",
+    "incidentNumber": 94312,
+    "status": "ACTIVE",
+    "startTime": "2026-08-01T17:10:05.506Z",
+    "activationSource": "MANUAL_SOS",
+    "identityLayerRef": "emma-001",
+    "protocolRef": "proto_emma-001",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 36.1699,
+        "longitude": -115.1398
+      }
+    },
+    "aiContext": {
+      "summary": "Distress audio detected; moving at 42.5mph.",
+      "priority": "HIGH"
+    },
+    "correlationId": "corr_wf_1785604205503",
+    "updatedAt": "2026-08-01T17:10:05.506Z"
+  }
+]

@@ -1,0 +1,39 @@
+[
+  {
+    "deliveryId": "del_1785539241500",
+    "incidentId": "inc_94312",
+    "recipient": "Primary_Guardian",
+    "selectedTransport": "CELLULAR_DATA",
+    "deliveryState": "DELIVERED",
+    "attemptsCount": 1,
+    "maxAttempts": 3,
+    "correlationId": "corr_wf_1785604205503",
+    "updatedAt": "2026-08-01T17:10:05.521Z",
+    "attempts": [
+      {
+        "attemptNumber": 1,
+        "attemptId": "att_1_1",
+        "state": "CREATED",
+        "timestamp": "2026-08-01T17:10:05.521Z"
+      },
+      {
+        "attemptNumber": 1,
+        "attemptId": "att_1_1",
+        "state": "QUEUED",
+        "timestamp": "2026-08-01T17:10:05.521Z"
+      },
+      {
+        "attemptNumber": 1,
+        "attemptId": "att_1_1",
+        "state": "ATTEMPTED",
+        "timestamp": "2026-08-01T17:10:05.521Z"
+      },
+      {
+        "attemptNumber": 1,
+        "attemptId": "att_1_1",
+        "state": "DELIVERED",
+        "timestamp": "2026-08-01T17:10:05.521Z"
+      }
+    ]
+  }
+]

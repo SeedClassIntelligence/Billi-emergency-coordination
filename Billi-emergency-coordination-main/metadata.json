@@ -1,0 +1,6 @@
+{
+  "name": "Billi Emergency Coordination",
+  "description": "A high-fidelity full-stack emergency coordination system featuring silent activation, multi-persona real-time sync, live location & evidence simulation, and Gemini-powered threat summarization, translation, and audio-visual incident classification.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

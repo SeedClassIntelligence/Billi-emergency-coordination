@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BilliDynamicEmergencyPacket",
+  "description": "Firestore Data Schema for Living Dynamic Emergency Packet (/incidents/{incidentId})",
+  "type": "object",
+  "properties": {
+    "incident_metadata": {
+      "type": "object",
+      "properties": {
+        "incident_number": { "type": "integer" },
+        "status": { "type": "string", "enum": ["ACTIVE", "RESOLVED", "INTERRUPTED"] },
+        "start_time": { "type": "string", "format": "date-time" },
+        "activation_source": { "type": "string" },
+        "safety_protocol_id": { "type": "string" }
+      },
+      "required": ["incident_number", "status", "start_time", "activation_source"]
+    },
+    "identity_layer": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "age": { "type": "integer" },
+        "photo_url": { "type": "string" },
+        "height_cm": { "type": "integer" },
+        "emergency_contacts": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "age"]
+    },
+    "medical_layer": {
+      "type": "object",
+      "properties": {
+        "notes": { "type": "string" },
+        "allergies": { "type": "array", "items": { "type": "string" } },
+        "medications": { "type": "array", "items": { "type": "string" } },
+        "blood_type": { "type": "string" }
+      }
+    },
+    "sensor_layer": {
+      "type": "object",
+      "properties": {
+        "speed_mph": { "type": "number" },
+        "mic_noise_db": { "type": "number" },
+        "detected_keyword": { "type": "string" },
+        "movement_description": { "type": "string" },
+        "accelerometer_g_force": { "type": "number" }
+      }
+    },
+    "context_layer": {
+      "type": "object",
+      "properties": {
+        "gps_latitude": { "type": "number" },
+        "gps_longitude": { "type": "number" },
+        "gps_signal": { "type": "integer" },
+        "cellular_signal": { "type": "string" },
+        "ble_peers_count": { "type": "integer" },
+        "battery_percentage": { "type": "integer" }
+      }
+    },
+    "ai_context": {
+      "type": "object",
+      "properties": {
+        "current_summary": { "type": "string" },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+        "autonomous_plan": { "type": "object" }
+      }
+    }
+  },
+  "required": ["incident_metadata", "identity_layer", "sensor_layer", "context_layer"]
+}

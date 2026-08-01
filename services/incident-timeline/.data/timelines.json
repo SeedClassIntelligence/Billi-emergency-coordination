@@ -1,0 +1,24 @@
+{
+  "inc_firestore_98001": [
+    {
+      "eventId": "evt_fs_1",
+      "incidentId": "inc_firestore_98001",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation",
+      "timestamp": "2026-08-01T17:10:00.042Z",
+      "correlationId": "corr_fs_1785604200039",
+      "sequence": 1
+    },
+    {
+      "eventId": "evt_fs_2",
+      "incidentId": "inc_firestore_98001",
+      "eventType": "SAFETY_PROTOCOL_LOADED",
+      "source": "SAFETY_PROTOCOL",
+      "summary": "Protocol loaded",
+      "timestamp": "2026-08-01T17:10:00.042Z",
+      "correlationId": "corr_fs_1785604200039",
+      "sequence": 2
+    }
+  ]
+}

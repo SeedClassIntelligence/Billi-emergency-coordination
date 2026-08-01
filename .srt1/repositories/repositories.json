@@ -1,0 +1,28 @@
+{
+  "active_repo_id": "repo_86a480ccf754",
+  "repositories": [
+    {
+      "active": true,
+      "created_at": "2026-07-28T17:26:47.523039",
+      "file_count": 120,
+      "filecell_count": 120,
+      "freshness_state": "fresh",
+      "last_indexed_at": "2026-08-01T10:10:15.067492",
+      "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+      "name": "Billi-emergency-coordination-main",
+      "path": "C:\\Users\\SEEDN\\Downloads\\Billi-emergency-coordination-main",
+      "repo_id": "repo_86a480ccf754",
+      "runtime_port": 7486,
+      "status": "ready",
+      "trust_state": {
+        "lineage": "missing",
+        "signature": "unsigned",
+        "verification": "unverified"
+      },
+      "updated_at": "2026-08-01T10:10:15.067528",
+      "workcell_count": 120
+    }
+  ],
+  "updated_at": "2026-08-01T10:10:15.067532",
+  "version": 1
+}

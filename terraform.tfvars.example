@@ -1,0 +1,6 @@
+# Example Terraform Variables File
+# Copy this file to terraform.tfvars and populate with actual values
+
+project_id       = "your-gcp-project-id"
+region           = "us-central1"
+alloydb_password = "SuperSecretSecurePassword2026!"
