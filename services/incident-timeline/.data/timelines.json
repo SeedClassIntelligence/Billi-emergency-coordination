@@ -20,5 +20,790 @@
       "correlationId": "corr_fs_1785604200039",
       "sequence": 2
     }
+  ],
+  "inc_69751": [
+    {
+      "eventId": "evt_1785693565457_ixja",
+      "incidentId": "inc_69751",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SPOKEN_SAFE_WORD",
+      "timestamp": "2026-08-02T17:59:25.457Z",
+      "correlationId": "corr_1785693565457",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_68159": [
+    {
+      "eventId": "evt_1785693592951_9k64",
+      "incidentId": "inc_68159",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via DURESS_PIN",
+      "timestamp": "2026-08-02T17:59:52.951Z",
+      "correlationId": "corr_1785693592951",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_29063": [
+    {
+      "eventId": "evt_1785693673037_jn3e",
+      "incidentId": "inc_29063",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via DURESS_PIN",
+      "timestamp": "2026-08-02T18:01:13.037Z",
+      "correlationId": "corr_1785693673037",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_15027": [
+    {
+      "eventId": "evt_1785693789816_hbr2",
+      "incidentId": "inc_15027",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via ACOUSTIC_DISTRESS",
+      "timestamp": "2026-08-02T18:03:09.816Z",
+      "correlationId": "corr_1785693789816",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_90188": [
+    {
+      "eventId": "evt_1785704196109_vgvq",
+      "incidentId": "inc_90188",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-02T20:56:36.109Z",
+      "correlationId": "corr_1785704196109",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_89628": [
+    {
+      "eventId": "evt_1785704338709_yz0t",
+      "incidentId": "inc_89628",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-02T20:58:58.709Z",
+      "correlationId": "corr_1785704338709",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785704352437_7fps",
+      "incidentId": "inc_89628",
+      "eventType": "GUARDIAN_ACKNOWLEDGED",
+      "source": "Evelyn Johnson",
+      "summary": "Acknowledged via connected E2E test — responding.",
+      "timestamp": "2026-08-02T20:59:12.437Z",
+      "correlationId": "corr_1785704352436",
+      "sequence": 2,
+      "payload": null
+    }
+  ],
+  "inc_33265": [
+    {
+      "eventId": "evt_1785705818154_49eu",
+      "incidentId": "inc_33265",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via FALL",
+      "timestamp": "2026-08-02T21:23:38.154Z",
+      "correlationId": "corr_1785705818154",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_40840": [
+    {
+      "eventId": "evt_1785705878670_igj0",
+      "incidentId": "inc_40840",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via FALL",
+      "timestamp": "2026-08-02T21:24:38.670Z",
+      "correlationId": "corr_1785705878670",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_58063": [
+    {
+      "eventId": "evt_1785705878713_60wf",
+      "incidentId": "inc_58063",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via FALL",
+      "timestamp": "2026-08-02T21:24:38.713Z",
+      "correlationId": "corr_1785705878713",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_14236": [
+    {
+      "eventId": "evt_1785705906024_qzwv",
+      "incidentId": "inc_14236",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T21:25:06.024Z",
+      "correlationId": "corr_1785705906024",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_22316": [
+    {
+      "eventId": "evt_1785705906073_75gt",
+      "incidentId": "inc_22316",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T21:25:06.073Z",
+      "correlationId": "corr_1785705906073",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_46687": [
+    {
+      "eventId": "evt_1785705919658_vz14",
+      "incidentId": "inc_46687",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via TAG",
+      "timestamp": "2026-08-02T21:25:19.658Z",
+      "correlationId": "corr_1785705919658",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_94584": [
+    {
+      "eventId": "evt_1785705919693_7qpp",
+      "incidentId": "inc_94584",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via TAG",
+      "timestamp": "2026-08-02T21:25:19.693Z",
+      "correlationId": "corr_1785705919693",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_27748": [
+    {
+      "eventId": "evt_1785706965319_man4",
+      "incidentId": "inc_27748",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-02T21:42:45.319Z",
+      "correlationId": "corr_1785706965319",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785707032004_lg4f",
+      "incidentId": "inc_27748",
+      "eventType": "GUARDIAN_ACKNOWLEDGED",
+      "source": "Evelyn Johnson",
+      "summary": "Acknowledged the incident — responding now. ETA 3 minutes (SIMULATED route).",
+      "timestamp": "2026-08-02T21:43:52.004Z",
+      "correlationId": "corr_1785707032004",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785707032012_kn9o",
+      "incidentId": "inc_27748",
+      "eventType": "RESPONDER_STATUS",
+      "source": "Evelyn Johnson",
+      "summary": "Responding — ETA 3 min",
+      "timestamp": "2026-08-02T21:43:52.012Z",
+      "correlationId": "corr_1785707032012",
+      "sequence": 3,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785707072417_q1mf",
+      "incidentId": "inc_27748",
+      "eventType": "RESPONDER_STATUS",
+      "source": "Officer Davis",
+      "summary": "Acknowledged — reviewing tactical picture",
+      "timestamp": "2026-08-02T21:44:32.417Z",
+      "correlationId": "corr_1785707072417",
+      "sequence": 4,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785707072423_dfsw",
+      "incidentId": "inc_27748",
+      "eventType": "RESPONDER_STATUS",
+      "source": "Officer Davis",
+      "summary": "En route — ETA 4 min",
+      "timestamp": "2026-08-02T21:44:32.423Z",
+      "correlationId": "corr_1785707072423",
+      "sequence": 5,
+      "payload": null
+    }
+  ],
+  "inc_96815": [
+    {
+      "eventId": "evt_1785707988027_o2mx",
+      "incidentId": "inc_96815",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T21:59:48.027Z",
+      "correlationId": "corr_1785707988026",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_72656": [
+    {
+      "eventId": "evt_1785707988109_53ai",
+      "incidentId": "inc_72656",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T21:59:48.109Z",
+      "correlationId": "corr_1785707988109",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785708275238_8x43",
+      "incidentId": "inc_72656",
+      "eventType": "INCIDENT_STABILIZED",
+      "source": "Anna Reyes",
+      "summary": "Situation stabilized — protected person in guardian contact.",
+      "timestamp": "2026-08-02T22:04:35.238Z",
+      "correlationId": "corr_1785708275238",
+      "sequence": 2,
+      "payload": null
+    }
+  ],
+  "inc_92145": [
+    {
+      "eventId": "evt_1785709909772_xi4v",
+      "incidentId": "inc_92145",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T22:31:49.772Z",
+      "correlationId": "corr_1785709909772",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_84254": [
+    {
+      "eventId": "evt_1785709909840_mnux",
+      "incidentId": "inc_84254",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T22:31:49.840Z",
+      "correlationId": "corr_1785709909840",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_23541": [
+    {
+      "eventId": "evt_1785710253591_d9xb",
+      "incidentId": "inc_23541",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T22:37:33.591Z",
+      "correlationId": "corr_1785710253591",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_99875": [
+    {
+      "eventId": "evt_1785710253616_yghv",
+      "incidentId": "inc_99875",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via CRASH",
+      "timestamp": "2026-08-02T22:37:33.616Z",
+      "correlationId": "corr_1785710253616",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_88799": [
+    {
+      "eventId": "evt_1785714453679_sr9h",
+      "incidentId": "inc_88799",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via FALL",
+      "timestamp": "2026-08-02T23:47:33.679Z",
+      "correlationId": "corr_1785714453679",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_80803": [
+    {
+      "eventId": "evt_1785716862816_rl9v",
+      "incidentId": "inc_80803",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:27:42.816Z",
+      "correlationId": "corr_1785716862815",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_77148": [
+    {
+      "eventId": "evt_1785716862831_2nk6",
+      "incidentId": "inc_77148",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:27:42.831Z",
+      "correlationId": "corr_1785716862831",
+      "sequence": 1,
+      "payload": null
+    }
+  ],
+  "inc_95826": [
+    {
+      "eventId": "evt_1785717478897_16fu",
+      "incidentId": "inc_95826",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:37:58.897Z",
+      "correlationId": "corr_1785717478897",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717478910_dn29",
+      "incidentId": "inc_95826",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Signal lost. 2 BLE peer relay nodes detected nearby. Recommending mesh transport switch.",
+      "timestamp": "2026-08-03T00:37:58.910Z",
+      "correlationId": "corr_1785717478910",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717479053_92n0",
+      "incidentId": "inc_95826",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "2 action(s) recommended by AI · 1 approved and executed · 1 not approved (SWITCH_TO_MESH) per Safety Protocol.",
+      "timestamp": "2026-08-03T00:37:59.053Z",
+      "correlationId": "corr_1785717479053",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_22140": [
+    {
+      "eventId": "evt_1785717558267_bnmb",
+      "incidentId": "inc_22140",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:39:18.267Z",
+      "correlationId": "corr_1785717558267",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717558279_2drq",
+      "incidentId": "inc_22140",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Signal lost. 2 BLE peer relay nodes detected nearby. Recommending mesh transport switch.",
+      "timestamp": "2026-08-03T00:39:18.279Z",
+      "correlationId": "corr_1785717558279",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717558294_xizn",
+      "incidentId": "inc_22140",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "2 action(s) recommended by AI · 2 approved and executed.",
+      "timestamp": "2026-08-03T00:39:18.294Z",
+      "correlationId": "corr_1785717558294",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_18228": [
+    {
+      "eventId": "evt_1785717617526_lrg8",
+      "incidentId": "inc_18228",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:40:17.526Z",
+      "correlationId": "corr_1785717617526",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717617546_nh36",
+      "incidentId": "inc_18228",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Emergency activated. Sensors within normal range. Monitoring for changes.",
+      "timestamp": "2026-08-03T00:40:17.546Z",
+      "correlationId": "corr_1785717617546",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717617562_z1i8",
+      "incidentId": "inc_18228",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "1 action(s) recommended by AI · 1 approved and executed.",
+      "timestamp": "2026-08-03T00:40:17.562Z",
+      "correlationId": "corr_1785717617562",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_15124": [
+    {
+      "eventId": "evt_1785717617551_8t3b",
+      "incidentId": "inc_15124",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:40:17.551Z",
+      "correlationId": "corr_1785717617551",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717617567_dbx4",
+      "incidentId": "inc_15124",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Emergency activated. Sensors within normal range. Monitoring for changes.",
+      "timestamp": "2026-08-03T00:40:17.567Z",
+      "correlationId": "corr_1785717617567",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717617580_2wtc",
+      "incidentId": "inc_15124",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "1 action(s) recommended by AI · 1 approved and executed.",
+      "timestamp": "2026-08-03T00:40:17.580Z",
+      "correlationId": "corr_1785717617580",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_82723": [
+    {
+      "eventId": "evt_1785717827597_872t",
+      "incidentId": "inc_82723",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:43:47.597Z",
+      "correlationId": "corr_1785717827597",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717827628_hj2s",
+      "incidentId": "inc_82723",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Emergency activated. Sensors within normal range. Monitoring for changes.",
+      "timestamp": "2026-08-03T00:43:47.628Z",
+      "correlationId": "corr_1785717827628",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717827642_curl",
+      "incidentId": "inc_82723",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "1 action(s) recommended by AI · 1 approved and executed.",
+      "timestamp": "2026-08-03T00:43:47.642Z",
+      "correlationId": "corr_1785717827642",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_47066": [
+    {
+      "eventId": "evt_1785717827650_f0wi",
+      "incidentId": "inc_47066",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T00:43:47.650Z",
+      "correlationId": "corr_1785717827650",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717827659_czuq",
+      "incidentId": "inc_47066",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Emergency activated. Sensors within normal range. Monitoring for changes.",
+      "timestamp": "2026-08-03T00:43:47.659Z",
+      "correlationId": "corr_1785717827659",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785717827670_nn1f",
+      "incidentId": "inc_47066",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "1 action(s) recommended by AI · 1 approved and executed.",
+      "timestamp": "2026-08-03T00:43:47.670Z",
+      "correlationId": "corr_1785717827670",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_66074": [
+    {
+      "eventId": "evt_1785720396941_fzqm",
+      "incidentId": "inc_66074",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T01:26:36.941Z",
+      "correlationId": "corr_1785720396941",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720403634_id6n",
+      "incidentId": "inc_66074",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Gemini (live)",
+      "summary": "Maya Johnson triggered an emergency alert using the authorized spoken safe word Blue Folder.",
+      "timestamp": "2026-08-03T01:26:43.634Z",
+      "correlationId": "corr_1785720403634",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720403667_ad4q",
+      "incidentId": "inc_66074",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "4 action(s) recommended by AI · 4 approved and executed.",
+      "timestamp": "2026-08-03T01:26:43.667Z",
+      "correlationId": "corr_1785720403667",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_12830": [
+    {
+      "eventId": "evt_1785720396963_al4y",
+      "incidentId": "inc_12830",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T01:26:36.963Z",
+      "correlationId": "corr_1785720396963",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720404372_oww4",
+      "incidentId": "inc_12830",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Context Engine (deterministic)",
+      "summary": "Emergency activated. Sensors within normal range. Monitoring for changes.",
+      "timestamp": "2026-08-03T01:26:44.372Z",
+      "correlationId": "corr_1785720404372",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720404385_420s",
+      "incidentId": "inc_12830",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "1 action(s) recommended by AI · 1 approved and executed.",
+      "timestamp": "2026-08-03T01:26:44.385Z",
+      "correlationId": "corr_1785720404385",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_94427": [
+    {
+      "eventId": "evt_1785720471655_2olv",
+      "incidentId": "inc_94427",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T01:27:51.655Z",
+      "correlationId": "corr_1785720471655",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720482755_r1mo",
+      "incidentId": "inc_94427",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Gemini (live)",
+      "summary": "Elevated noise levels of 88 dB detected during high-speed movement at 42.5 mph.",
+      "timestamp": "2026-08-03T01:28:02.755Z",
+      "correlationId": "corr_1785720482755",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720482773_wgpc",
+      "incidentId": "inc_94427",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "2 action(s) recommended by AI · 2 approved and executed.",
+      "timestamp": "2026-08-03T01:28:02.773Z",
+      "correlationId": "corr_1785720482773",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_20022": [
+    {
+      "eventId": "evt_1785720700478_g5qh",
+      "incidentId": "inc_20022",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T01:31:40.478Z",
+      "correlationId": "corr_1785720700478",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720706257_kauc",
+      "incidentId": "inc_20022",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Gemini (live)",
+      "summary": "Protected user Maya Johnson activated emergency protocol using spoken safe word Blue Folder.",
+      "timestamp": "2026-08-03T01:31:46.257Z",
+      "correlationId": "corr_1785720706257",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785720706274_v7an",
+      "incidentId": "inc_20022",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "4 action(s) recommended by AI · 4 approved and executed.",
+      "timestamp": "2026-08-03T01:31:46.274Z",
+      "correlationId": "corr_1785720706274",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_17967": [
+    {
+      "eventId": "evt_1785728201847_abyj",
+      "incidentId": "inc_17967",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T03:36:41.847Z",
+      "correlationId": "corr_1785728201847",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785728208375_nac2",
+      "incidentId": "inc_17967",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Gemini (live)",
+      "summary": "Protected user Maya Johnson activated emergency protocol via spoken safe word Blue Folder.",
+      "timestamp": "2026-08-03T03:36:48.375Z",
+      "correlationId": "corr_1785728208375",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785728208405_3szj",
+      "incidentId": "inc_17967",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "4 action(s) recommended by AI · 4 approved and executed.",
+      "timestamp": "2026-08-03T03:36:48.405Z",
+      "correlationId": "corr_1785728208405",
+      "sequence": 3,
+      "payload": null
+    }
+  ],
+  "inc_50896": [
+    {
+      "eventId": "evt_1785728202098_epg6",
+      "incidentId": "inc_50896",
+      "eventType": "INCIDENT_CREATED",
+      "source": "GATEWAY",
+      "summary": "Emergency activation initiated via SAFE_WORD",
+      "timestamp": "2026-08-03T03:36:42.098Z",
+      "correlationId": "corr_1785728202098",
+      "sequence": 1,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785728209382_qi2q",
+      "incidentId": "inc_50896",
+      "eventType": "AI_CONTEXT_SYNTHESIS",
+      "source": "Gemini (live)",
+      "summary": "Spoken safe word 'Blue Folder' was detected for Maya Johnson, initiating emergency response protocols.",
+      "timestamp": "2026-08-03T03:36:49.382Z",
+      "correlationId": "corr_1785728209382",
+      "sequence": 2,
+      "payload": null
+    },
+    {
+      "eventId": "evt_1785728209395_wo60",
+      "incidentId": "inc_50896",
+      "eventType": "AI_ACTIONS_EVALUATED",
+      "source": "Orchestration Engine",
+      "summary": "4 action(s) recommended by AI · 4 approved and executed.",
+      "timestamp": "2026-08-03T03:36:49.395Z",
+      "correlationId": "corr_1785728209395",
+      "sequence": 3,
+      "payload": null
+    }
   ]
 }

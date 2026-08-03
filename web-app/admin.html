@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Safety Contract Administration</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:940px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.requireSetup()) throw new Error('redirect');
+    Billi.renderNav('admin.html');
+    const S = Billi.state;
+
+    function esc(s) { return (s || '').toString().replace(/</g, '&lt;'); }
+
+    function render() {
+      const p = S.protectedPerson || {}, m = S.medical || {}, c = S.contract || {};
+      const tog = (key, label) => `
+        <div class="core-action-row margin-top-xs">
+          <span style="color:#e2e8f0; font-size:0.84rem;">${label}</span>
+          <button class="btn ${c[key] ? 'btn-primary' : 'btn-outline-nav'}" style="font-size:0.68rem; min-width:100px;"
+            onclick="S.contract['${key}']=!S.contract['${key}'];Billi.save();Billi.audit((S.owner||{}).name||'Owner','CONTRACT_CHANGED','${label} → '+(S.contract['${key}']?'AUTHORIZED':'OFF'));render();">
+            ${c[key] ? 'AUTHORIZED' : 'OFF'}</button>
+        </div>`;
+
+      document.getElementById('main-host').innerHTML = `
+        <section class="margin-top">
+          <div class="dash-greeting-title">Administration & Safety Contract</div>
+          <div class="dash-greeting-sub">The editable form of your setup journey. Changes apply to the next incident — never mid-crisis without record.</div>
+        </section>
+
+        <div class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
+          <div>
+            <!-- DOSSIER -->
+            <div class="card" style="padding:1.1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Protected-person dossier</div>
+              <div class="form-group margin-top-xs"><label class="form-label-muted">Name</label>
+                <input id="ad-name" class="form-control-dark" value="${esc(p.name)}"></div>
+              <div class="grid grid-2" style="gap:0.5rem;">
+                <div class="form-group margin-top-xs"><label class="form-label-muted">Age</label>
+                  <input id="ad-age" type="number" class="form-control-dark" value="${esc(p.age)}"></div>
+                <div class="form-group margin-top-xs"><label class="form-label-muted">Facility</label>
+                  <input id="ad-fac" class="form-control-dark" value="${esc(p.facility)}"></div>
+              </div>
+              <div class="form-group margin-top-xs"><label class="form-label-muted">Medical conditions</label>
+                <input id="ad-cond" class="form-control-dark" value="${esc(m.conditions)}"></div>
+              <div class="grid grid-2" style="gap:0.5rem;">
+                <div class="form-group margin-top-xs"><label class="form-label-muted">Allergies</label>
+                  <input id="ad-alrg" class="form-control-dark" value="${esc(m.allergies)}"></div>
+                <div class="form-group margin-top-xs"><label class="form-label-muted">Medications</label>
+                  <input id="ad-meds" class="form-control-dark" value="${esc(m.medications)}"></div>
+              </div>
+              <div class="form-group margin-top-xs"><label class="form-label-muted">Emergency instructions</label>
+                <textarea id="ad-instr" class="form-control-dark" rows="2">${esc(m.instructions)}</textarea></div>
+              <button class="btn btn-secondary margin-top-xs" onclick="saveDossier()">Save dossier</button>
+            </div>
+
+            <!-- SECRETS -->
+            <div class="card margin-top-xs" style="padding:1.1rem; border:1px solid rgba(245,158,11,0.3);">
+              <div class="panel-section-title" style="font-size:0.92rem;">Secrets vault</div>
+              <div class="flex-between margin-top-xs">
+                <span style="color:#e2e8f0; font-size:0.84rem;">Safe words</span>
+                <span class="text-muted" style="font-size:0.72rem;">${S.voice.safeWords.length} enrolled · masked</span>
+              </div>
+              <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
+                ${S.voice.safeWords.map((w, i) => `<span class="badge badge-indigo"><span id="adsw-${i}">••••••</span>
+                  <a style="cursor:pointer; margin-left:0.3rem;" onclick="document.getElementById('adsw-${i}').innerText='${esc(w)}'">👁</a></span>`).join('') || '<span class="text-muted" style="font-size:0.78rem;">None</span>'}
+              </div>
+              <div class="flex-between margin-top-xs">
+                <span style="color:#e2e8f0; font-size:0.84rem;">Voice calibration</span>
+                <span class="badge ${S.voice.state === 'Enrolled' ? 'badge-green' : 'badge-amber'}">${S.voice.state}</span>
+              </div>
+              <div class="grid grid-2 margin-top-xs" style="gap:0.5rem;">
+                <div class="form-group"><label class="form-label-muted">Normal PIN</label>
+                  <input id="ad-pin-n" type="password" class="form-control-dark" value="${esc(S.pins.normal)}"></div>
+                <div class="form-group"><label class="form-label-muted">Duress PIN</label>
+                  <input id="ad-pin-d" type="password" class="form-control-dark" value="${esc(S.pins.duress)}"></div>
+              </div>
+              <div class="text-muted" style="font-size:0.7rem;">⚠ Must differ. Never reuse the phone-lock PIN.</div>
+              <button class="btn btn-secondary margin-top-xs" onclick="savePins()">Save PINs</button>
+            </div>
+          </div>
+
+          <div>
+            <!-- CONTRACT TOGGLES -->
+            <div class="card" style="padding:1.1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Emergency permissions (Safety Contract)</div>
+              ${tog('gps', '📍 High-accuracy GPS & continuous location')}
+              ${tog('audio', '🎙 Audio recording')}
+              ${tog('video', '🎥 Video recording (prototype: unavailable)')}
+              ${tog('notifyNetwork', '👥 Trusted-Network notification')}
+              ${tog('silentActivation', '🤫 Silent activation')}
+              ${tog('shareMedical', '⚕ Medical-data sharing')}
+              ${tog('escalation', '⏱ Progressive escalation')}
+              ${tog('nearbyRelay', '📡 Nearby-relay participation (SIMULATED)')}
+              ${tog('bleScanning', '📶 BLE scanning')}
+              ${tog('aiProcessing', '🧠 AI processing (Gemini)')}
+              ${tog('responderAccess', '🛡 Responder access')}
+              ${tog('evidenceRetention', '🗄 Evidence retention')}
+            </div>
+
+            <!-- ZONES -->
+            <div class="card margin-top-xs" style="padding:1.1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Safe zones</div>
+              ${S.zones.map(z => `
+                <div class="flex-between margin-top-xs" style="font-size:0.8rem; padding:0.45rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+                  <span style="color:#e2e8f0;">📍 ${esc(z.name)}</span>
+                  <span class="flex-row" style="gap:0.4rem; align-items:center;">
+                    <input type="range" min="50" max="1000" step="10" value="${z.radius}" style="width:110px;"
+                      oninput="this.nextElementSibling.innerText=this.value+' m'"
+                      onchange="setRadius('${z.id}', this.value)">
+                    <span class="badge badge-blue" style="min-width:56px;">${z.radius} m</span>
+                    <a style="cursor:pointer; color:#64748b;" onclick="dropZone('${z.id}')">✕</a>
+                  </span>
+                </div>`).join('') || '<p class="text-muted margin-top-xs" style="font-size:0.78rem;">No zones.</p>'}
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Radius sliders 50–1000 m · geofence evaluation is Haversine-based in the connected backend.</div>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div class="card margin-top-xs" style="padding:1.1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Related administration</div>
+              <div class="grid grid-2 margin-top-xs" style="gap:0.4rem;">
+                <button class="btn btn-secondary" onclick="location.href='network.html'">👥 Trusted Network</button>
+                <button class="btn btn-secondary" onclick="location.href='devices.html'">📱 Device bindings</button>
+                <button class="btn btn-secondary" onclick="location.href='history.html'">🗂 Audit history</button>
+                <button class="btn btn-secondary" onclick="location.href='onboarding.html'">↻ Re-run setup journey</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function saveDossier() {
+      S.protectedPerson = { name: document.getElementById('ad-name').value.trim(), age: document.getElementById('ad-age').value, facility: document.getElementById('ad-fac').value.trim() };
+      S.medical = { ...S.medical, conditions: document.getElementById('ad-cond').value.trim(), allergies: document.getElementById('ad-alrg').value.trim(), medications: document.getElementById('ad-meds').value.trim(), instructions: document.getElementById('ad-instr').value.trim() };
+      Billi.save();
+      Billi.audit((S.owner || {}).name || 'Owner', 'DOSSIER_UPDATED', 'Protected-person dossier and medical information updated.');
+      Billi.toast('✓ Dossier saved.', 'ok');
+    }
+
+    function savePins() {
+      const n = document.getElementById('ad-pin-n').value.trim(), d = document.getElementById('ad-pin-d').value.trim();
+      if (n && d && n === d) { Billi.toast('Duress PIN must differ from the normal PIN.', 'warn'); return; }
+      S.pins = { normal: n, duress: d };
+      Billi.save();
+      Billi.audit((S.owner || {}).name || 'Owner', 'PINS_UPDATED', 'Cancellation PINs rotated (values masked in audit).');
+      Billi.toast('✓ PINs saved.', 'ok');
+    }
+
+    function setRadius(id, val) {
+      const z = S.zones.find(x => x.id === id);
+      z.radius = parseInt(val, 10);
+      Billi.save(); render();
+      Billi.audit((S.owner || {}).name || 'Owner', 'ZONE_UPDATED', `${z.name} radius set to ${z.radius} m.`);
+    }
+
+    function dropZone(id) {
+      const z = S.zones.find(x => x.id === id);
+      if (!confirm(`Remove safe zone "${z.name}"?`)) return;
+      S.zones = S.zones.filter(x => x.id !== id);
+      Billi.save(); render();
+      Billi.audit((S.owner || {}).name || 'Owner', 'ZONE_REMOVED', `${z.name} removed.`);
+    }
+
+    render();
+  </script>
+</body>
+</html>

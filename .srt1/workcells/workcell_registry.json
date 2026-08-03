@@ -1,7 +1,7 @@
 {
   "executions": [],
   "repo_path": "C:\\Users\\SEEDN\\Downloads\\Billi-emergency-coordination-main",
-  "updated_at": "2026-08-01T10:10:15.003541",
+  "updated_at": "2026-08-01T11:35:27.035692",
   "workcells": [
     {
       "authority_scope": [
@@ -24,7 +24,7 @@
         "file_hash": "15a96fb19817e3251be8ec93af7e4c93968800703776ba89282419b733eaa550",
         "filecell_id": "filecell_8ec9a00bfd09",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "README.md",
         "risk_tags": {},
@@ -123,7 +123,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994110",
+      "updated_at": "2026-08-01T11:35:27.026784",
       "workcell_id": "workcell_file_readme.md_8ec9a00bfd"
     },
     {
@@ -147,7 +147,7 @@
         "file_hash": "979976dc3f7bf0c0e1b675436f325b665be0e02cfb6721c8283b00a8188545a1",
         "filecell_id": "filecell_92bb14834a06",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\CAS-doctrine.md",
         "risk_tags": {},
@@ -334,7 +334,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994581",
+      "updated_at": "2026-08-01T11:35:27.027364",
       "workcell_id": "workcell_file_cas-doctrine.md_92bb14834a"
     },
     {
@@ -358,7 +358,7 @@
         "file_hash": "1842d3d25a88a839a4a4b79ec864ab459caabe30cd848153b020ed6c640db780",
         "filecell_id": "filecell_62092a8ed245",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\firebase-applet-config.json",
         "risk_tags": {},
@@ -473,7 +473,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994645",
+      "updated_at": "2026-08-01T11:35:27.027457",
       "workcell_id": "workcell_file_firebase-applet-config.json_62092a8ed2"
     },
     {
@@ -497,7 +497,7 @@
         "file_hash": "1698c12e1cf2b248eb16807091c1267ff282dec559cfe3ac837ba230b41115ea",
         "filecell_id": "filecell_c13fe9682af7",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\firebase-blueprint.json",
         "risk_tags": {},
@@ -932,7 +932,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994697",
+      "updated_at": "2026-08-01T11:35:27.027540",
       "workcell_id": "workcell_file_firebase-blueprint.json_c13fe9682a"
     },
     {
@@ -956,7 +956,7 @@
         "file_hash": "cd5fbcedb1c667e680bae0db4fd50620447b17d5cc3bde590a942cae397883a9",
         "filecell_id": "filecell_c7fde2f97bf1",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\index.html",
         "risk_tags": {},
@@ -1007,7 +1007,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994833",
+      "updated_at": "2026-08-01T11:35:27.027893",
       "workcell_id": "workcell_file_index.html_c7fde2f97b"
     },
     {
@@ -1031,7 +1031,7 @@
         "file_hash": "07b4bea4656bb89106008e0a8e185f690338317d9a13a03d6e957893a86949e5",
         "filecell_id": "filecell_c38540efb0fe",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\metadata.json",
         "risk_tags": {},
@@ -1098,7 +1098,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994864",
+      "updated_at": "2026-08-01T11:35:27.027948",
       "workcell_id": "workcell_file_metadata.json_c38540efb0"
     },
     {
@@ -1122,7 +1122,7 @@
         "file_hash": "5bdac08dd3b1d12967c4bda5a45de8cef22326a0e3c11088d35904d75a10bcf6",
         "filecell_id": "filecell_65b8bcb4af52",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\package.json",
         "risk_tags": {},
@@ -1365,7 +1365,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994897",
+      "updated_at": "2026-08-01T11:35:27.028037",
       "workcell_id": "workcell_file_package.json_65b8bcb4af"
     },
     {
@@ -1389,7 +1389,7 @@
         "file_hash": "017cf99abd6d1f630a85394518b2dab430f508fe87b0f591ab6dcd7658e62db6",
         "filecell_id": "filecell_902a5b23a00d",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\README.md",
         "risk_tags": {},
@@ -1520,7 +1520,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994968",
+      "updated_at": "2026-08-01T11:35:27.028163",
       "workcell_id": "workcell_file_readme.md_902a5b23a0"
     },
     {
@@ -1596,7 +1596,7 @@
         "file_hash": "e663c6a3890ea152890c06c1e24c0ee7008b977eb82cbedb51497dbf13236ff0",
         "filecell_id": "filecell_1b1558d55927",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\server.ts",
         "risk_tags": {
@@ -1743,7 +1743,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995019",
+      "updated_at": "2026-08-01T11:35:27.028234",
       "workcell_id": "workcell_file_server.ts_1b1558d559"
     },
     {
@@ -1767,7 +1767,7 @@
         "file_hash": "3a5467a7d73f7df7b8b1f4606a3315f19d32e42d548d91b0c71006b9d5f19dd1",
         "filecell_id": "filecell_4d731f2d6f7f",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\tsconfig.json",
         "risk_tags": {},
@@ -1930,7 +1930,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995132",
+      "updated_at": "2026-08-01T11:35:27.028361",
       "workcell_id": "workcell_file_tsconfig.json_4d731f2d6f"
     },
     {
@@ -1952,7 +1952,7 @@
         "file_hash": "c7b7cc4b3a6b6a08f0a4fb916bb4d4e41804d5767611bce43d4c1ad53a198192",
         "filecell_id": "filecell_831d229db1d2",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\vite.config.ts",
         "risk_tags": {},
@@ -1986,7 +1986,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995189",
+      "updated_at": "2026-08-01T11:35:27.028427",
       "workcell_id": "workcell_file_vite.config.ts_831d229db1"
     },
     {
@@ -2010,7 +2010,7 @@
         "file_hash": "729801cfaac7f2cb54aef66015d8258e345929d64888cc2deaa374d23338aaaa",
         "filecell_id": "filecell_b6e1b4ca82f0",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\XPRIZE_SUBMISSION.md",
         "risk_tags": {},
@@ -2197,7 +2197,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995248",
+      "updated_at": "2026-08-01T11:35:27.028497",
       "workcell_id": "workcell_file_xprize_submission.md_b6e1b4ca82"
     },
     {
@@ -2219,7 +2219,7 @@
         "file_hash": "18dc8f51901a03baf871f6cbc8fec4b01579d4d8e1be5bbb6d9ec039f14c218a",
         "filecell_id": "filecell_98b50ffcb076",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\product_evidence\\agent_execution_logs.txt",
         "risk_tags": {},
@@ -2253,7 +2253,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995313",
+      "updated_at": "2026-08-01T11:35:27.028599",
       "workcell_id": "workcell_file_agent_execution_logs.txt_98b50ffcb0"
     },
     {
@@ -2309,7 +2309,7 @@
         "file_hash": "aab3317f91bf930e99b7f9445aaa334f4526adfdd0e93d89eaa0357c7b190664",
         "filecell_id": "filecell_e636b96ff1c1",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\App.tsx",
         "risk_tags": {
@@ -2468,7 +2468,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995463",
+      "updated_at": "2026-08-01T11:35:27.028708",
       "workcell_id": "workcell_file_app.tsx_e636b96ff1"
     },
     {
@@ -2492,7 +2492,7 @@
         "file_hash": "69d06907ca43ff7bfba9a52b74ccf930c87a17b6112c06d5fdea83fadbbb5086",
         "filecell_id": "filecell_ad54fbfcefde",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\index.css",
         "risk_tags": {},
@@ -2551,7 +2551,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995587",
+      "updated_at": "2026-08-01T11:35:27.028818",
       "workcell_id": "workcell_file_index.css_ad54fbfcef"
     },
     {
@@ -2573,7 +2573,7 @@
         "file_hash": "5580d48b0fec68698a113d45a640b88d479dc35eb1f4b87c51f67c6cc81cee9b",
         "filecell_id": "filecell_771b0fe69cec",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\main.tsx",
         "risk_tags": {},
@@ -2607,7 +2607,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995634",
+      "updated_at": "2026-08-01T11:35:27.028907",
       "workcell_id": "workcell_file_main.tsx_771b0fe69c"
     },
     {
@@ -2631,7 +2631,7 @@
         "file_hash": "dc7bf5801c3e7a1ee569bad48894e27222cb93a7bbd6c3aeb2fc42216662ca3a",
         "filecell_id": "filecell_7f5641796d35",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\types.ts",
         "risk_tags": {
@@ -2769,7 +2769,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995708",
+      "updated_at": "2026-08-01T11:35:27.028972",
       "workcell_id": "workcell_file_types.ts_7f5641796d"
     },
     {
@@ -2825,7 +2825,7 @@
         "file_hash": "ac1f3942a2019cbcfdf747c9ba02a165dae3dea0a808e30d98e5e700ded67fdd",
         "filecell_id": "filecell_d420a8b56bf7",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\ActiveUserView.tsx",
         "risk_tags": {
@@ -2903,7 +2903,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995769",
+      "updated_at": "2026-08-01T11:35:27.029060",
       "workcell_id": "workcell_file_activeuserview.tsx_d420a8b56b"
     },
     {
@@ -2951,7 +2951,7 @@
         "file_hash": "fcef6949b68c2d0bbe4a58a0617e580d0817e882a30fdb95b58b9a7ee7c1b952",
         "filecell_id": "filecell_57e5094586a8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\AiAnalysisPanel.tsx",
         "risk_tags": {
@@ -3065,7 +3065,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995823",
+      "updated_at": "2026-08-01T11:35:27.029158",
       "workcell_id": "workcell_file_aianalysispanel.tsx_57e5094586"
     },
     {
@@ -3097,7 +3097,7 @@
         "file_hash": "21196475b25516ea4d1a43d1d994261ed535dd4a597fafae592430dc33228902",
         "filecell_id": "filecell_c970e82c11d6",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\AuditSpecsModal.tsx",
         "risk_tags": {
@@ -3162,7 +3162,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995879",
+      "updated_at": "2026-08-01T11:35:27.029219",
       "workcell_id": "workcell_file_auditspecsmodal.tsx_c970e82c11"
     },
     {
@@ -3237,7 +3237,7 @@
         "file_hash": "f4a67ce52882a9aebe0e4639025965d5d2b8c89db46267b6e21e7aadc0e701d6",
         "filecell_id": "filecell_fa91e4961029",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\ConnectedDevicesView.tsx",
         "risk_tags": {
@@ -3354,7 +3354,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.995921",
+      "updated_at": "2026-08-01T11:35:27.029257",
       "workcell_id": "workcell_file_connecteddevicesview.tsx_fa91e49610"
     },
     {
@@ -3384,7 +3384,7 @@
         "file_hash": "c2d8ad2da158cffa435ed91ea43e7db785c6f7272eb5e8f34300d9fa22bc13d3",
         "filecell_id": "filecell_c2caa71ae8dd",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\CurrentResponseWidget.tsx",
         "risk_tags": {
@@ -3457,7 +3457,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996024",
+      "updated_at": "2026-08-01T11:35:27.029354",
       "workcell_id": "workcell_file_currentresponsewidget.tsx_c2caa71ae8"
     },
     {
@@ -3507,7 +3507,7 @@
         "file_hash": "b000f4e8baa99a28af0af97bfdac1b208b6c477700b6dcea78d8fc9cbf8367aa",
         "filecell_id": "filecell_70a133097e48",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\EnvironmentControls.tsx",
         "risk_tags": {
@@ -3616,7 +3616,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996069",
+      "updated_at": "2026-08-01T11:35:27.029427",
       "workcell_id": "workcell_file_environmentcontrols.tsx_70a133097e"
     },
     {
@@ -3690,7 +3690,7 @@
         "file_hash": "5afa602e0368cd217166e0dfd7129f751c8ff6cf75a2b3d16573debd9d9c223f",
         "filecell_id": "filecell_6923ba78ffb1",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\GuardianDashboard.tsx",
         "risk_tags": {
@@ -3830,7 +3830,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996124",
+      "updated_at": "2026-08-01T11:35:27.029487",
       "workcell_id": "workcell_file_guardiandashboard.tsx_6923ba78ff"
     },
     {
@@ -3865,7 +3865,7 @@
         "file_hash": "c3b12bcccafe511faae95fdc7f4a2a01e68c241af6b5320bf3fd961dc87e3d23",
         "filecell_id": "filecell_8f918e6f10e5",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\HelpDrawerContent.tsx",
         "risk_tags": {
@@ -3944,7 +3944,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996213",
+      "updated_at": "2026-08-01T11:35:27.029562",
       "workcell_id": "workcell_file_helpdrawercontent.tsx_8f918e6f10"
     },
     {
@@ -3977,7 +3977,7 @@
         "file_hash": "037ceeff74ebcbc7396f9e74014c847b27cf7f71ef7abc3f2111d68935c325ae",
         "filecell_id": "filecell_d11fcb3134fd",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\InfoTooltip.tsx",
         "risk_tags": {
@@ -4044,7 +4044,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996258",
+      "updated_at": "2026-08-01T11:35:27.029607",
       "workcell_id": "workcell_file_infotooltip.tsx_d11fcb3134"
     },
     {
@@ -4072,7 +4072,7 @@
         "file_hash": "e972f681a169b25e4f52e4c03569acf73940e3d68e23a3e49347fcc73278d781",
         "filecell_id": "filecell_9af96a0abcdf",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\LandingPageView.tsx",
         "risk_tags": {
@@ -4123,7 +4123,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996300",
+      "updated_at": "2026-08-01T11:35:27.029651",
       "workcell_id": "workcell_file_landingpageview.tsx_9af96a0abc"
     },
     {
@@ -4150,7 +4150,7 @@
         "file_hash": "e5e15f992d08f1c232566fe3c9b8205fffd27cf11755ce1dd021668ea86c206c",
         "filecell_id": "filecell_68dd2365b269",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\MultiLayerResponse.tsx",
         "risk_tags": {
@@ -4210,7 +4210,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996339",
+      "updated_at": "2026-08-01T11:35:27.029723",
       "workcell_id": "workcell_file_multilayerresponse.tsx_68dd2365b2"
     },
     {
@@ -4285,7 +4285,7 @@
         "file_hash": "1a0661c07741bbb7a3f2b149b5718b9f26a389b7651007fd1c7298f7628bcc7d",
         "filecell_id": "filecell_2067611f2bc0",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\PlanConfigModal.tsx",
         "risk_tags": {
@@ -4544,7 +4544,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996380",
+      "updated_at": "2026-08-01T11:35:27.029764",
       "workcell_id": "workcell_file_planconfigmodal.tsx_2067611f2b"
     },
     {
@@ -4579,7 +4579,7 @@
         "file_hash": "3f420202a6d52f36ba21014bcad74befa5fd3bd5251030941e8b713b94eb14b7",
         "filecell_id": "filecell_e73dd0903864",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\ResponderDashboard.tsx",
         "risk_tags": {
@@ -4660,7 +4660,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996504",
+      "updated_at": "2026-08-01T11:35:27.029892",
       "workcell_id": "workcell_file_responderdashboard.tsx_e73dd09038"
     },
     {
@@ -4728,7 +4728,7 @@
         "file_hash": "be06dc9bb7cdbbd40b812245f2d9d0ac89a2ea9525aa2b130ac080218b1fa67f",
         "filecell_id": "filecell_1b624f89ea1c",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\components\\SetupNetworkView.tsx",
         "risk_tags": {
@@ -4921,7 +4921,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996548",
+      "updated_at": "2026-08-01T11:35:27.029946",
       "workcell_id": "workcell_file_setupnetworkview.tsx_1b624f89ea"
     },
     {
@@ -4951,7 +4951,7 @@
         "file_hash": "ca63f5587b34ceb43a2543d2d4c3e18337756d618d3ff02cdaa1ef0eaf9abeee",
         "filecell_id": "filecell_045c083e1f6b",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "Billi-emergency-coordination-main\\src\\lib\\firebase.ts",
         "risk_tags": {
@@ -5004,7 +5004,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996630",
+      "updated_at": "2026-08-01T11:35:27.030040",
       "workcell_id": "workcell_file_firebase.ts_045c083e1f"
     },
     {
@@ -5036,7 +5036,7 @@
         "file_hash": "108e1f0b781c065cb232604d97ee2f2321f69cd11d3e51198fc7f993e87478f9",
         "filecell_id": "filecell_d2ab417bc171",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "cloud-functions\\context_engine.js",
         "risk_tags": {
@@ -5091,7 +5091,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996673",
+      "updated_at": "2026-08-01T11:35:27.030081",
       "workcell_id": "workcell_file_context_engine.js_d2ab417bc1"
     },
     {
@@ -5123,7 +5123,7 @@
         "file_hash": "3db0cf1c78c1844c9988bf0fbe8db65f2224641a09a557bb4888c523ed16ca71",
         "filecell_id": "filecell_8c982374705b",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "cloud-functions\\dispatcher.js",
         "risk_tags": {
@@ -5178,7 +5178,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996712",
+      "updated_at": "2026-08-01T11:35:27.030125",
       "workcell_id": "workcell_file_dispatcher.js_8c98237470"
     },
     {
@@ -5211,7 +5211,7 @@
         "file_hash": "d464c0b19a42632ca0fa02d2b06cca09b24c1c95d8743776b811fd3781a79665",
         "filecell_id": "filecell_19b931f8977a",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "cloud-functions\\index.js",
         "risk_tags": {
@@ -5267,7 +5267,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996749",
+      "updated_at": "2026-08-01T11:35:27.030161",
       "workcell_id": "workcell_file_index.js_19b931f897"
     },
     {
@@ -5291,7 +5291,7 @@
         "file_hash": "46dfeaec0e617d4c12549ce409d4f1a95a0089db6e1c2840b55b794133346e41",
         "filecell_id": "filecell_7b81de072c84",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "cloud-functions\\package.json",
         "risk_tags": {},
@@ -5414,7 +5414,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996785",
+      "updated_at": "2026-08-01T11:35:27.030197",
       "workcell_id": "workcell_file_package.json_7b81de072c"
     },
     {
@@ -5438,7 +5438,7 @@
         "file_hash": "4b94fdba5a7c92c1a66ec05fb5004607d3e50e43137dcca6dca9da345178bb89",
         "filecell_id": "filecell_a4fce55467f6",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "docs\\BILLI_CTO_ARCHITECTURE.md",
         "risk_tags": {},
@@ -5537,7 +5537,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996843",
+      "updated_at": "2026-08-01T11:35:27.030254",
       "workcell_id": "workcell_file_billi_cto_architecture.md_a4fce55467"
     },
     {
@@ -5561,7 +5561,7 @@
         "file_hash": "a0402421b8e9164a94dd5013a8fb77240967a55a395ad419c4058697227f43d8",
         "filecell_id": "filecell_b816e40e96b9",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "docs\\CAS_DOCTRINE.md",
         "risk_tags": {},
@@ -5652,7 +5652,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996894",
+      "updated_at": "2026-08-01T11:35:27.030308",
       "workcell_id": "workcell_file_cas_doctrine.md_b816e40e96"
     },
     {
@@ -5676,7 +5676,7 @@
         "file_hash": "b7dbba329b8445aa387cd63ab173fd31789272c8f6d1cc99db62000262293d78",
         "filecell_id": "filecell_30c4ff706c53",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "docs\\IMPLEMENTATION_ROADMAP.md",
         "risk_tags": {},
@@ -5759,7 +5759,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996942",
+      "updated_at": "2026-08-01T11:35:27.030356",
       "workcell_id": "workcell_file_implementation_roadmap.md_30c4ff706c"
     },
     {
@@ -5783,7 +5783,7 @@
         "file_hash": "98ecd7b8c4fd9378db270b9e202e6b273c1624137a1c108fbfc0ff5088740894",
         "filecell_id": "filecell_1a332803436f",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "docs\\SCENARIOS_AND_EXPERIENCE.md",
         "risk_tags": {},
@@ -5906,7 +5906,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.996992",
+      "updated_at": "2026-08-01T11:35:27.030401",
       "workcell_id": "workcell_file_scenarios_and_experience.md_1a33280343"
     },
     {
@@ -5930,7 +5930,7 @@
         "file_hash": "b930666ba61835831ecc158e53677b04e0b48a810307f02d2ccf7a91a6560dd3",
         "filecell_id": "filecell_c9b76911a24c",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "docs\\XPRIZE_SUBMISSION_NARRATIVE.md",
         "risk_tags": {},
@@ -6021,7 +6021,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.997047",
+      "updated_at": "2026-08-01T11:35:27.030456",
       "workcell_id": "workcell_file_xprize_submission_narrative.md_c9b76911a2"
     },
     {
@@ -6045,7 +6045,7 @@
         "file_hash": "6c0a2ae984965c44ad95f2dd5696a3ec0cbb7555f5a928c8688bcd464c7648cf",
         "filecell_id": "filecell_7404cae88402",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "mobile-app\\pubspec.yaml",
         "risk_tags": {},
@@ -6144,7 +6144,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.997096",
+      "updated_at": "2026-08-01T11:35:27.030503",
       "workcell_id": "workcell_file_pubspec.yaml_7404cae884"
     },
     {
@@ -6168,7 +6168,7 @@
         "file_hash": "96b9fa41d8ed779ebcd10767b24f6a01b0a6e9cecd86f348d4d3624bbaf9b5b2",
         "filecell_id": "filecell_4e1844daf1d9",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "schemas\\firestore_schema.json",
         "risk_tags": {},
@@ -6603,7 +6603,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.997147",
+      "updated_at": "2026-08-01T11:35:27.030552",
       "workcell_id": "workcell_file_firestore_schema.json_4e1844daf1"
     },
     {
@@ -6627,7 +6627,7 @@
         "file_hash": "cb95b2d4a59b27c19f00f640c242343406aebae8e32cc08e58e51985c0ee0236",
         "filecell_id": "filecell_af1a12dad586",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "sdk\\flutter\\pubspec.yaml",
         "risk_tags": {},
@@ -6718,7 +6718,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.998330",
+      "updated_at": "2026-08-01T11:35:27.030730",
       "workcell_id": "workcell_file_pubspec.yaml_af1a12dad5"
     },
     {
@@ -6742,7 +6742,7 @@
         "file_hash": "6d74bf0ea6bffcae746c4215dfe2fb76af81f3cdc684f2053c52dbb5d99ae2a5",
         "filecell_id": "filecell_4a59aa19f41e",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\capability-registry\\package.json",
         "risk_tags": {},
@@ -6881,7 +6881,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999153",
+      "updated_at": "2026-08-01T11:35:27.031074",
       "workcell_id": "workcell_file_package.json_4a59aa19f4"
     },
     {
@@ -6905,7 +6905,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_029362ddecb8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\capability-registry\\tsconfig.json",
         "risk_tags": {},
@@ -7020,7 +7020,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999243",
+      "updated_at": "2026-08-01T11:35:27.031145",
       "workcell_id": "workcell_file_tsconfig.json_029362ddec"
     },
     {
@@ -7058,7 +7058,7 @@
         "file_hash": "bbaa5440863ec7938a5cdd49d43abbc9948b9ed5adcce4f90ed934b5f7ab09c9",
         "filecell_id": "filecell_069bc2b73e97",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\capability-registry\\src\\index.ts",
         "risk_tags": {
@@ -7116,7 +7116,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999313",
+      "updated_at": "2026-08-01T11:35:27.031202",
       "workcell_id": "workcell_file_index.ts_069bc2b73e"
     },
     {
@@ -7140,7 +7140,7 @@
         "file_hash": "c1b5e371b8d81751e5a3babad8d25ec04cd15d289fd2f8b80c43847194cca491",
         "filecell_id": "filecell_e8730f756222",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\communication-engine\\package.json",
         "risk_tags": {},
@@ -7279,7 +7279,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999367",
+      "updated_at": "2026-08-01T11:35:27.031246",
       "workcell_id": "workcell_file_package.json_e8730f7562"
     },
     {
@@ -7303,7 +7303,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_d62b686e8705",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\communication-engine\\tsconfig.json",
         "risk_tags": {},
@@ -7418,7 +7418,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999446",
+      "updated_at": "2026-08-01T11:35:27.031365",
       "workcell_id": "workcell_file_tsconfig.json_d62b686e87"
     },
     {
@@ -7480,7 +7480,7 @@
         "file_hash": "9fb65d2912ab60d482bc7f42e7a4a9a6ee3882c2bd05e707c27d0d8ae0cd394b",
         "filecell_id": "filecell_772f532c2b3b",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\communication-engine\\src\\index.ts",
         "risk_tags": {
@@ -7606,7 +7606,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999674",
+      "updated_at": "2026-08-01T11:35:27.031611",
       "workcell_id": "workcell_file_index.ts_772f532c2b"
     },
     {
@@ -7630,7 +7630,7 @@
         "file_hash": "4f9bd96d7840f80feaf83d823fb127bb05c179a9ad9a8a8b094bbc8561870dcc",
         "filecell_id": "filecell_ebd44280dd0b",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\context-engine\\package.json",
         "risk_tags": {},
@@ -7769,7 +7769,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999775",
+      "updated_at": "2026-08-01T11:35:27.031690",
       "workcell_id": "workcell_file_package.json_ebd44280dd"
     },
     {
@@ -7793,7 +7793,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_4b9109804694",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\context-engine\\tsconfig.json",
         "risk_tags": {},
@@ -7908,7 +7908,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999855",
+      "updated_at": "2026-08-01T11:35:27.031756",
       "workcell_id": "workcell_file_tsconfig.json_4b91098046"
     },
     {
@@ -7941,7 +7941,7 @@
         "file_hash": "4ed3cef40704933b1bc95bbadb3e8d87d8e943a6590fad33eaaebbc99e332b9e",
         "filecell_id": "filecell_d3c3b1681747",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\context-engine\\src\\index.ts",
         "risk_tags": {
@@ -8007,7 +8007,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999923",
+      "updated_at": "2026-08-01T11:35:27.031821",
       "workcell_id": "workcell_file_index.ts_d3c3b16817"
     },
     {
@@ -8031,7 +8031,7 @@
         "file_hash": "ee6959d9847120ecad8cf2326e7da7373f5325d21033706a42e5bc8fb7269261",
         "filecell_id": "filecell_16b832fe90b9",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\emergency-packet\\package.json",
         "risk_tags": {},
@@ -8170,7 +8170,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999978",
+      "updated_at": "2026-08-01T11:35:27.031869",
       "workcell_id": "workcell_file_package.json_16b832fe90"
     },
     {
@@ -8194,7 +8194,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_52b4314d4865",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\emergency-packet\\tsconfig.json",
         "risk_tags": {},
@@ -8309,7 +8309,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000050",
+      "updated_at": "2026-08-01T11:35:27.031964",
       "workcell_id": "workcell_file_tsconfig.json_52b4314d48"
     },
     {
@@ -8367,7 +8367,7 @@
         "file_hash": "bb63d82e8cc365cdc53dbf1d8a41045834bb1072e1c4b4756b3744155b71827f",
         "filecell_id": "filecell_3c4921cc23b1",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\emergency-packet\\src\\index.ts",
         "risk_tags": {
@@ -8463,7 +8463,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000201",
+      "updated_at": "2026-08-01T11:35:27.032149",
       "workcell_id": "workcell_file_index.ts_3c4921cc23"
     },
     {
@@ -8845,7 +8845,7 @@
         "file_hash": "13d962b8c13acb8bf1b2e4b2c5f4f0b658b9188197d53729172751b1ae0d4a6b",
         "filecell_id": "filecell_26c34b352539",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\feedback-engine\\package.json",
         "risk_tags": {},
@@ -8984,7 +8984,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000271",
+      "updated_at": "2026-08-01T11:35:27.032225",
       "workcell_id": "workcell_file_package.json_26c34b3525"
     },
     {
@@ -9008,7 +9008,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_9586c170e01e",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\feedback-engine\\tsconfig.json",
         "risk_tags": {},
@@ -9123,7 +9123,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000338",
+      "updated_at": "2026-08-01T11:35:27.032301",
       "workcell_id": "workcell_file_tsconfig.json_9586c170e0"
     },
     {
@@ -9145,7 +9145,7 @@
         "file_hash": "dc871f21869dfb26d6cf695d11bba19f716fb127139dd54eee1ec28b7967da26",
         "filecell_id": "filecell_330d64fc11b9",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\feedback-engine\\src\\index.ts",
         "risk_tags": {},
@@ -9179,7 +9179,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000410",
+      "updated_at": "2026-08-01T11:35:27.032433",
       "workcell_id": "workcell_file_index.ts_330d64fc11"
     },
     {
@@ -9203,7 +9203,7 @@
         "file_hash": "eb8edee46d1b581b2088d90fe13c52bfd672a72eb6b544c53bbf23acc5238945",
         "filecell_id": "filecell_a86e60b62b54",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\identity-service\\package.json",
         "risk_tags": {},
@@ -9342,7 +9342,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000791",
+      "updated_at": "2026-08-01T11:35:27.032710",
       "workcell_id": "workcell_file_package.json_a86e60b62b"
     },
     {
@@ -9366,7 +9366,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_a3501157e141",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\identity-service\\tsconfig.json",
         "risk_tags": {},
@@ -9481,7 +9481,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000862",
+      "updated_at": "2026-08-01T11:35:27.032779",
       "workcell_id": "workcell_file_tsconfig.json_a3501157e1"
     },
     {
@@ -9512,7 +9512,7 @@
         "file_hash": "bb6e6c3d3a17e5dfdc35cbdedecd9ed0932c8cd94d6643c316226cb5f10c248a",
         "filecell_id": "filecell_5790d0b6e156",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\identity-service\\src\\index.ts",
         "risk_tags": {
@@ -9566,7 +9566,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000923",
+      "updated_at": "2026-08-01T11:35:27.032839",
       "workcell_id": "workcell_file_index.ts_5790d0b6e1"
     },
     {
@@ -9590,7 +9590,7 @@
         "file_hash": "b296c4a092d91611233d9759754bd8fcc16ab6fc89e49ad975da6205b7645645",
         "filecell_id": "filecell_8b90928baa25",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\incident-timeline\\package.json",
         "risk_tags": {},
@@ -9729,7 +9729,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000971",
+      "updated_at": "2026-08-01T11:35:27.032886",
       "workcell_id": "workcell_file_package.json_8b90928baa"
     },
     {
@@ -9753,7 +9753,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_3d0ad889d099",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\incident-timeline\\tsconfig.json",
         "risk_tags": {},
@@ -9868,7 +9868,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001038",
+      "updated_at": "2026-08-01T11:35:27.032952",
       "workcell_id": "workcell_file_tsconfig.json_3d0ad889d0"
     },
     {
@@ -9924,7 +9924,7 @@
         "file_hash": "a822cae12326931b1f15392bbe07c0d13f208d3a145e60a5af223b6a032593b8",
         "filecell_id": "filecell_43946c8cb970",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\incident-timeline\\src\\index.ts",
         "risk_tags": {
@@ -10009,7 +10009,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001177",
+      "updated_at": "2026-08-01T11:35:27.033093",
       "workcell_id": "workcell_file_index.ts_43946c8cb9"
     },
     {
@@ -10033,7 +10033,7 @@
         "file_hash": "6edcb1ebeeffcf9ea673b023b0b603e8732ab0d46cb549884ce614f9be69117b",
         "filecell_id": "filecell_89776d7c8233",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\orchestration-engine\\package.json",
         "risk_tags": {},
@@ -10172,7 +10172,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001434",
+      "updated_at": "2026-08-01T11:35:27.033524",
       "workcell_id": "workcell_file_package.json_89776d7c82"
     },
     {
@@ -10196,7 +10196,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_cf1edf8cfc3c",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\orchestration-engine\\tsconfig.json",
         "risk_tags": {},
@@ -10311,7 +10311,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001501",
+      "updated_at": "2026-08-01T11:35:27.033618",
       "workcell_id": "workcell_file_tsconfig.json_cf1edf8cfc"
     },
     {
@@ -10368,7 +10368,7 @@
         "file_hash": "16d3cbf7cf686910a3139c51a9e85f6e2e72f472cebf7b939ffbff333a35c123",
         "filecell_id": "filecell_43e4cfa9f952",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\orchestration-engine\\src\\index.ts",
         "risk_tags": {
@@ -10538,7 +10538,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001628",
+      "updated_at": "2026-08-01T11:35:27.033793",
       "workcell_id": "workcell_file_index.ts_43e4cfa9f9"
     },
     {
@@ -10920,7 +10920,7 @@
         "file_hash": "7a0b52d658ca92895f202221a92bcc03a54896916814520ed21976b5a213d790",
         "filecell_id": "filecell_caace012f778",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\safety-protocol\\package.json",
         "risk_tags": {},
@@ -11059,7 +11059,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001721",
+      "updated_at": "2026-08-01T11:35:27.033890",
       "workcell_id": "workcell_file_package.json_caace012f7"
     },
     {
@@ -11083,7 +11083,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_719c20ab2276",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\safety-protocol\\tsconfig.json",
         "risk_tags": {},
@@ -11198,7 +11198,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001791",
+      "updated_at": "2026-08-01T11:35:27.033962",
       "workcell_id": "workcell_file_tsconfig.json_719c20ab22"
     },
     {
@@ -11229,7 +11229,7 @@
         "file_hash": "98b3bbd39bb5d3fb446a5dcd23e22ddbededfcf5e61f008e0cb3b18143fedb2e",
         "filecell_id": "filecell_d326bcac06e0",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\safety-protocol\\src\\index.ts",
         "risk_tags": {
@@ -11283,7 +11283,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001857",
+      "updated_at": "2026-08-01T11:35:27.034034",
       "workcell_id": "workcell_file_index.ts_d326bcac06"
     },
     {
@@ -11307,7 +11307,7 @@
         "file_hash": "6c9d03dbf1d253dcd8f48a7aed01c36318fa38afa60c97438a8ab553b3b8b280",
         "filecell_id": "filecell_ba2bd292d232",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\telemetry-processor\\package.json",
         "risk_tags": {},
@@ -11446,7 +11446,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001907",
+      "updated_at": "2026-08-01T11:35:27.034086",
       "workcell_id": "workcell_file_package.json_ba2bd292d2"
     },
     {
@@ -11470,7 +11470,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_7781ead7689c",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\telemetry-processor\\tsconfig.json",
         "risk_tags": {},
@@ -11585,7 +11585,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001984",
+      "updated_at": "2026-08-01T11:35:27.034156",
       "workcell_id": "workcell_file_tsconfig.json_7781ead768"
     },
     {
@@ -11609,7 +11609,7 @@
         "file_hash": "7d8841cff07238f8d015ddab20eeedbf8366562906e30669ab2e64e54ec2dcb8",
         "filecell_id": "filecell_15082aa7d0b8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\package.json",
         "risk_tags": {},
@@ -11708,7 +11708,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002122",
+      "updated_at": "2026-08-01T11:35:27.034315",
       "workcell_id": "workcell_file_package.json_15082aa7d0"
     },
     {
@@ -11746,7 +11746,7 @@
         "file_hash": "c45be29738995535179c7d9c373bc088a3ade03d0871b5e2a7d62227a41cb1d2",
         "filecell_id": "filecell_192ddcff6488",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_emergency.js",
         "risk_tags": {
@@ -11804,7 +11804,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002193",
+      "updated_at": "2026-08-01T11:35:27.034382",
       "workcell_id": "workcell_file_test_emergency.js_192ddcff64"
     },
     {
@@ -11821,19 +11821,19 @@
       ],
       "filecell_summary": {
         "architectural_roles": {
-          "GENERAL": 3
+          "GENERAL": 4
         },
         "dependencies": [],
         "extension": ".md",
-        "file_hash": "d9112ac3d2a6610c870878dda3d4ae74bb947f5d9d9774837ba1247316b39867",
+        "file_hash": "41cf5b9c11cbca60916b3b42b153e9534a8ec6fd5efbf27457590967e33a68f3",
         "filecell_id": "filecell_b5cd820743a0",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "ANTIGRAVITY_REPOSITORY_AUDIT.md",
         "risk_tags": {},
         "size": null,
-        "symbol_count": 3,
+        "symbol_count": 4,
         "symbols": [
           {
             "architectural_role": "GENERAL",
@@ -11847,15 +11847,23 @@
             "architectural_role": "GENERAL",
             "dependencies": [],
             "line": 14,
-            "name": "1. Physical Real-Device MVP Audit Summary",
+            "name": "1. Canonical Source Hierarchy & Git Remote Status",
             "risk_profile": [],
             "type": "h2_header"
           },
           {
             "architectural_role": "GENERAL",
             "dependencies": [],
-            "line": 20,
-            "name": "2. 12 Real-Device Finish-Line Results Summary",
+            "line": 29,
+            "name": "2. Genuinely Working vs. Unverified Real-Device Capabilities",
+            "risk_profile": [],
+            "type": "h2_header"
+          },
+          {
+            "architectural_role": "GENERAL",
+            "dependencies": [],
+            "line": 51,
+            "name": "3. Platform Verification Suites (`verification/`)",
             "risk_profile": [],
             "type": "h2_header"
           }
@@ -11887,7 +11895,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.993900",
+      "updated_at": "2026-08-01T11:35:27.025922",
       "workcell_id": "workcell_file_antigravity_repository_audit.md_b5cd820743"
     },
     {
@@ -11911,7 +11919,7 @@
         "file_hash": "2e90e6d925ced7b8e09357b76f278d6ecf6eed8db96e44ff7098e0311fb96fe1",
         "filecell_id": "filecell_fa3a8726f9cf",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\action-execution-engine\\package.json",
         "risk_tags": {},
@@ -12050,7 +12058,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.998658",
+      "updated_at": "2026-08-01T11:35:27.030829",
       "workcell_id": "workcell_file_package.json_fa3a8726f9"
     },
     {
@@ -12074,7 +12082,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_18a7a3167d53",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\action-execution-engine\\tsconfig.json",
         "risk_tags": {},
@@ -12189,7 +12197,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.998924",
+      "updated_at": "2026-08-01T11:35:27.030889",
       "workcell_id": "workcell_file_tsconfig.json_18a7a3167d"
     },
     {
@@ -12225,7 +12233,7 @@
         "file_hash": "3db77f72511301305fe75f3d240ec7ea733f38440bb07a1a92e35d7499d102e9",
         "filecell_id": "filecell_8b9e9540f6c2",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\action-execution-engine\\src\\index.ts",
         "risk_tags": {
@@ -12283,7 +12291,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999049",
+      "updated_at": "2026-08-01T11:35:27.031028",
       "workcell_id": "workcell_file_index.ts_8b9e9540f6"
     },
     {
@@ -12307,7 +12315,7 @@
         "file_hash": "beca9bdbe466080dacbc6cf6f5fc4a305c6f780fb93ee2c19ee4be92b2bfbaed",
         "filecell_id": "filecell_7314fb85ff55",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\gateway\\package.json",
         "risk_tags": {},
@@ -12446,7 +12454,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000496",
+      "updated_at": "2026-08-01T11:35:27.032519",
       "workcell_id": "workcell_file_package.json_7314fb85ff"
     },
     {
@@ -12470,7 +12478,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_586d936002f3",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\gateway\\tsconfig.json",
         "risk_tags": {},
@@ -12585,7 +12593,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000628",
+      "updated_at": "2026-08-01T11:35:27.032589",
       "workcell_id": "workcell_file_tsconfig.json_586d936002"
     },
     {
@@ -12636,7 +12644,7 @@
         "file_hash": "da5bc8372dec4b14cad5a308af7bfe01f1a860820266bc99ac34cfd4f07efe24",
         "filecell_id": "filecell_263265af1cd8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\gateway\\src\\index.ts",
         "risk_tags": {
@@ -12694,7 +12702,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000730",
+      "updated_at": "2026-08-01T11:35:27.032649",
       "workcell_id": "workcell_file_index.ts_263265af1c"
     },
     {
@@ -12734,7 +12742,7 @@
         "file_hash": "3a839e51ed21d197ca4b89486e624ee92fd2130973b1dd8e669c5925bb13b6ee",
         "filecell_id": "filecell_a952edea80a3",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\telemetry-processor\\src\\index.ts",
         "risk_tags": {
@@ -12792,7 +12800,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002062",
+      "updated_at": "2026-08-01T11:35:27.034250",
       "workcell_id": "workcell_file_index.ts_a952edea80"
     },
     {
@@ -12816,7 +12824,7 @@
         "file_hash": "9299812e9fbdcbea2a62fbcddd338573cbc662ea41c8d15db4daa8de6a01684b",
         "filecell_id": "filecell_568567d79c62",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "BUILD.md",
         "risk_tags": {},
@@ -12939,7 +12947,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.993950",
+      "updated_at": "2026-08-01T11:35:27.026329",
       "workcell_id": "workcell_file_build.md_568567d79c"
     },
     {
@@ -12969,7 +12977,7 @@
         "file_hash": "0ecf3f19b5d74adc67e9e70e8a154c425897de00112a679665964c1bdeef8c6c",
         "filecell_id": "filecell_bed542ab6196",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "sdk\\partner\\billi_partner_api.ts",
         "risk_tags": {
@@ -13042,7 +13050,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.998562",
+      "updated_at": "2026-08-01T11:35:27.030784",
       "workcell_id": "workcell_file_billi_partner_api.ts_bed542ab61"
     },
     {
@@ -13066,7 +13074,7 @@
         "file_hash": "b1dd6e672790b61aaa34318f5bd5b2ac28256d9c2d9aa09d477727b3bf59533e",
         "filecell_id": "filecell_d12634dd0ce2",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\event-processor\\package.json",
         "risk_tags": {},
@@ -13205,7 +13213,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994196",
+      "updated_at": "2026-08-01T11:35:27.026973",
       "workcell_id": "workcell_file_package.json_d12634dd0c"
     },
     {
@@ -13229,7 +13237,7 @@
         "file_hash": "a46156cdb969c918c8099a6fa2b7e278ea3d36ea2e6a8eab5df21746ca4b23c0",
         "filecell_id": "filecell_c8b361437fe4",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\event-processor\\tsconfig.json",
         "risk_tags": {},
@@ -13344,7 +13352,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994259",
+      "updated_at": "2026-08-01T11:35:27.027082",
       "workcell_id": "workcell_file_tsconfig.json_c8b361437f"
     },
     {
@@ -13366,7 +13374,7 @@
         "file_hash": "c607a36b6889382ea92def98314a5e7da85a2fdfa5401688969bd843b6cb9417",
         "filecell_id": "filecell_a86021ab18e3",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\event-processor\\src\\index.ts",
         "risk_tags": {},
@@ -13400,7 +13408,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994324",
+      "updated_at": "2026-08-01T11:35:27.027129",
       "workcell_id": "workcell_file_index.ts_a86021ab18"
     },
     {
@@ -13424,7 +13432,7 @@
         "file_hash": "b00338e96a74f3b12a80cca6daf2c7f23deabb641ade81d106d449783daff8b1",
         "filecell_id": "filecell_277d568afbd3",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\orchestrator\\package.json",
         "risk_tags": {},
@@ -13563,7 +13571,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994409",
+      "updated_at": "2026-08-01T11:35:27.027207",
       "workcell_id": "workcell_file_package.json_277d568afb"
     },
     {
@@ -13587,7 +13595,7 @@
         "file_hash": "a46156cdb969c918c8099a6fa2b7e278ea3d36ea2e6a8eab5df21746ca4b23c0",
         "filecell_id": "filecell_0d0da5b24853",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\orchestrator\\tsconfig.json",
         "risk_tags": {},
@@ -13702,7 +13710,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994470",
+      "updated_at": "2026-08-01T11:35:27.027262",
       "workcell_id": "workcell_file_tsconfig.json_0d0da5b248"
     },
     {
@@ -13724,7 +13732,7 @@
         "file_hash": "d1ab5a92755c151f30c2f9d5243e397e67ada3056b13f72a94f0f91312fdf18b",
         "filecell_id": "filecell_09370582d0f8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "archive\\superseded-services\\orchestrator\\src\\index.ts",
         "risk_tags": {},
@@ -13758,7 +13766,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994523",
+      "updated_at": "2026-08-01T11:35:27.027304",
       "workcell_id": "workcell_file_index.ts_09370582d0"
     },
     {
@@ -13788,7 +13796,7 @@
         "file_hash": "cfda08bbf69d92dce1afc8625a138960bcca2304d38f7fde5bcf22e7caf8a544",
         "filecell_id": "filecell_b846056cfa44",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_vertical_slice.js",
         "risk_tags": {
@@ -13841,7 +13849,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002451",
+      "updated_at": "2026-08-01T11:35:27.034619",
       "workcell_id": "workcell_file_test_vertical_slice.js_b846056cfa"
     },
     {
@@ -13887,7 +13895,7 @@
         "file_hash": "e68e1d788e6eba77dc4b672c57679c71ad097d816b43fc19bd99f898ea6b0833",
         "filecell_id": "filecell_7c927521c4cb",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_restart_recovery.js",
         "risk_tags": {
@@ -13945,7 +13953,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002319",
+      "updated_at": "2026-08-01T11:35:27.034498",
       "workcell_id": "workcell_file_test_restart_recovery.js_7c927521c4"
     },
     {
@@ -13969,7 +13977,7 @@
         "file_hash": "2eb477d97115d1274513ab1e5f6374ff29a8888edb8ad81b87b6a250e6e169f8",
         "filecell_id": "filecell_5b803a50f46f",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\communication-engine\\.data\\deliveries.json",
         "risk_tags": {},
@@ -14212,7 +14220,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.999517",
+      "updated_at": "2026-08-01T11:35:27.031495",
       "workcell_id": "workcell_file_deliveries.json_5b803a50f4"
     },
     {
@@ -14236,7 +14244,7 @@
         "file_hash": "9f3b12bdd67339e0922cb9ff311e6d1d12d3e83ffe5788b85601ba9ed772f2cd",
         "filecell_id": "filecell_2099f0a39b54",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\emergency-packet\\.data\\packets.json",
         "risk_tags": {},
@@ -14431,7 +14439,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.000118",
+      "updated_at": "2026-08-01T11:35:27.032039",
       "workcell_id": "workcell_file_packets.json_2099f0a39b"
     },
     {
@@ -14455,7 +14463,7 @@
         "file_hash": "6dff668b30040c7779bfd868b73798f36070b9a819c9f94005d00bd2756b7b3e",
         "filecell_id": "filecell_acd751a512be",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\incident-timeline\\.data\\timelines.json",
         "risk_tags": {},
@@ -14626,7 +14634,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001102",
+      "updated_at": "2026-08-01T11:35:27.033019",
       "workcell_id": "workcell_file_timelines.json_acd751a512"
     },
     {
@@ -14673,7 +14681,7 @@
         "file_hash": "e8a9c8674049f6fb32d3e48593ea98fa7c9d94d438bcfed82c9ef2aa2c4fa8b6",
         "filecell_id": "filecell_6f8c59f8909f",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_failure_recovery.js",
         "risk_tags": {
@@ -14731,7 +14739,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002254",
+      "updated_at": "2026-08-01T11:35:27.034438",
       "workcell_id": "workcell_file_test_failure_recovery.js_6f8c59f890"
     },
     {
@@ -14778,7 +14786,7 @@
         "file_hash": "eb5c389bc20f364a927db35a9f6b923b9b62f59ea46238336f6f0977fb31308f",
         "filecell_id": "filecell_0d799508a5d9",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_safety_guarantees.js",
         "risk_tags": {
@@ -14854,7 +14862,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002383",
+      "updated_at": "2026-08-01T11:35:27.034557",
       "workcell_id": "workcell_file_test_safety_guarantees.js_0d799508a5"
     },
     {
@@ -14898,7 +14906,7 @@
         "file_hash": "070ded8d1dc266da0b75e2adbf0c518d0999e51f405a9e1d82b5b0b40ea8610d",
         "filecell_id": "filecell_b09cc46de750",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "simulator\\test_workflow_recovery.js",
         "risk_tags": {
@@ -14956,7 +14964,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002510",
+      "updated_at": "2026-08-01T11:35:27.034672",
       "workcell_id": "workcell_file_test_workflow_recovery.js_b09cc46de7"
     },
     {
@@ -14980,7 +14988,7 @@
         "file_hash": "5cbf9d72aa5f5ef024e26167a8ad97b42e87c6b936bea5c2dff6cf8257277b93",
         "filecell_id": "filecell_a6bc04913ea0",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\orchestration-engine\\.data\\workflows.json",
         "risk_tags": {},
@@ -15087,7 +15095,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001565",
+      "updated_at": "2026-08-01T11:35:27.033702",
       "workcell_id": "workcell_file_workflows.json_a6bc04913e"
     },
     {
@@ -15108,10 +15116,10 @@
         },
         "dependencies": [],
         "extension": ".md",
-        "file_hash": "5c49d3396865ef7a44447b39300373b22c70fbd2a1b7e16817bd18e922659210",
+        "file_hash": "a80f0feb1f4e1f15ed5aba0583619bdbf486e373082d1fcdb084b9ca2bf2c7cc",
         "filecell_id": "filecell_bdcd229e57aa",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "ENGINEERING_GUARANTEES.md",
         "risk_tags": {},
@@ -15130,14 +15138,6 @@
             "architectural_role": "GENERAL",
             "dependencies": [],
             "line": 11,
-            "name": "System Maturity & Scope Classification",
-            "risk_profile": [],
-            "type": "h2_header"
-          },
-          {
-            "architectural_role": "GENERAL",
-            "dependencies": [],
-            "line": 18,
             "name": "Canonical Source Hierarchy & Repository Authority",
             "risk_profile": [],
             "type": "h2_header"
@@ -15145,7 +15145,15 @@
           {
             "architectural_role": "GENERAL",
             "dependencies": [],
-            "line": 31,
+            "line": 26,
+            "name": "System Maturity & Scope Classification",
+            "risk_profile": [],
+            "type": "h2_header"
+          },
+          {
+            "architectural_role": "GENERAL",
+            "dependencies": [],
+            "line": 33,
             "name": "1. Verified Local Software Guarantees",
             "risk_profile": [],
             "type": "h2_header"
@@ -15153,7 +15161,7 @@
           {
             "architectural_role": "GENERAL",
             "dependencies": [],
-            "line": 61,
+            "line": 64,
             "name": "2. Unverified Real-Device Boundaries (Physical Hardware Roadmap)",
             "risk_profile": [],
             "type": "h2_header"
@@ -15186,7 +15194,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994046",
+      "updated_at": "2026-08-01T11:35:27.026615",
       "workcell_id": "workcell_file_engineering_guarantees.md_bdcd229e57"
     },
     {
@@ -15210,7 +15218,7 @@
         "file_hash": "2427f21eccb0dc02e0976c5e60bf0eaf1272548a03aa93851ed05e784b4ae533",
         "filecell_id": "filecell_78e535fe31dc",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\observability\\package.json",
         "risk_tags": {},
@@ -15349,7 +15357,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001248",
+      "updated_at": "2026-08-01T11:35:27.033286",
       "workcell_id": "workcell_file_package.json_78e535fe31"
     },
     {
@@ -15373,7 +15381,7 @@
         "file_hash": "a731128fe4d4647a3fccb06b1abe86a429844c2d7f6507ab03160906dd96961c",
         "filecell_id": "filecell_036440a93e28",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\observability\\tsconfig.json",
         "risk_tags": {},
@@ -15488,7 +15496,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001316",
+      "updated_at": "2026-08-01T11:35:27.033374",
       "workcell_id": "workcell_file_tsconfig.json_036440a93e"
     },
     {
@@ -15530,7 +15538,7 @@
         "file_hash": "92638086aa3d7e40667aa388d5ac80bb4833699e61cd2eb4fecd55c89f75c18c",
         "filecell_id": "filecell_f60da652fbef",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "services\\observability\\src\\index.ts",
         "risk_tags": {
@@ -15598,7 +15606,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.001378",
+      "updated_at": "2026-08-01T11:35:27.033464",
       "workcell_id": "workcell_file_index.ts_f60da652fb"
     },
     {
@@ -15645,7 +15653,7 @@
         "file_hash": "e8a9c8674049f6fb32d3e48593ea98fa7c9d94d438bcfed82c9ef2aa2c4fa8b6",
         "filecell_id": "filecell_6aefc9884124",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\failure_recovery\\test_failure_recovery.js",
         "risk_tags": {
@@ -15703,7 +15711,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002638",
+      "updated_at": "2026-08-01T11:35:27.034790",
       "workcell_id": "workcell_file_test_failure_recovery.js_6aefc98841"
     },
     {
@@ -15749,7 +15757,7 @@
         "file_hash": "e68e1d788e6eba77dc4b672c57679c71ad097d816b43fc19bd99f898ea6b0833",
         "filecell_id": "filecell_af0b9aaf9752",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\restart_recovery\\test_restart_recovery.js",
         "risk_tags": {
@@ -15807,7 +15815,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002833",
+      "updated_at": "2026-08-01T11:35:27.034979",
       "workcell_id": "workcell_file_test_restart_recovery.js_af0b9aaf97"
     },
     {
@@ -15854,7 +15862,7 @@
         "file_hash": "eb5c389bc20f364a927db35a9f6b923b9b62f59ea46238336f6f0977fb31308f",
         "filecell_id": "filecell_43e528b0ca4e",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\safety_guarantees\\test_safety_guarantees.js",
         "risk_tags": {
@@ -15930,7 +15938,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002898",
+      "updated_at": "2026-08-01T11:35:27.035043",
       "workcell_id": "workcell_file_test_safety_guarantees.js_43e528b0ca"
     },
     {
@@ -15954,7 +15962,7 @@
         "file_hash": "86cc8c53d30f0031fbe45cfc27e932ed86361ff9862dd6d691fbc3b8426a03b6",
         "filecell_id": "filecell_0f4c09034c87",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\services\\communication-engine\\.data\\deliveries.json",
         "risk_tags": {},
@@ -16197,7 +16205,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002962",
+      "updated_at": "2026-08-01T11:35:27.035106",
       "workcell_id": "workcell_file_deliveries.json_0f4c09034c"
     },
     {
@@ -16221,7 +16229,7 @@
         "file_hash": "4914a8e5c17ea0a67148efd5445412a525df7e4de5e3c3bda831f5edfce9065e",
         "filecell_id": "filecell_302907b6d152",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\services\\emergency-packet\\.data\\packets.json",
         "risk_tags": {},
@@ -16408,7 +16416,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003065",
+      "updated_at": "2026-08-01T11:35:27.035209",
       "workcell_id": "workcell_file_packets.json_302907b6d1"
     },
     {
@@ -16432,7 +16440,7 @@
         "file_hash": "c32c267c23961e1bdc8e3a8ab9fabcc042ce08996859926a5b242d149d04f165",
         "filecell_id": "filecell_2eb4dc73e2d5",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\services\\incident-timeline\\.data\\timelines.json",
         "risk_tags": {},
@@ -16667,7 +16675,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003151",
+      "updated_at": "2026-08-01T11:35:27.035297",
       "workcell_id": "workcell_file_timelines.json_2eb4dc73e2"
     },
     {
@@ -16691,7 +16699,7 @@
         "file_hash": "6271ac3743a235d95cbe578ca45b744ff8fb1ae3054bb818511538a2abc0714e",
         "filecell_id": "filecell_b0b2adc2c16b",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\services\\orchestration-engine\\.data\\workflows.json",
         "risk_tags": {},
@@ -16926,7 +16934,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003248",
+      "updated_at": "2026-08-01T11:35:27.035395",
       "workcell_id": "workcell_file_workflows.json_b0b2adc2c1"
     },
     {
@@ -16964,7 +16972,7 @@
         "file_hash": "ed30b94c35fd1fdd230e3049003df9ac815a4aa90c7c8d9d96d6dbf64d75f955",
         "filecell_id": "filecell_c39c460364cd",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\telemetry\\test_emergency.js",
         "risk_tags": {
@@ -17022,7 +17030,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003345",
+      "updated_at": "2026-08-01T11:35:27.035493",
       "workcell_id": "workcell_file_test_emergency.js_c39c460364"
     },
     {
@@ -17052,7 +17060,7 @@
         "file_hash": "cfda08bbf69d92dce1afc8625a138960bcca2304d38f7fde5bcf22e7caf8a544",
         "filecell_id": "filecell_3d019852252d",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\vertical_slice\\test_vertical_slice.js",
         "risk_tags": {
@@ -17105,7 +17113,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003404",
+      "updated_at": "2026-08-01T11:35:27.035554",
       "workcell_id": "workcell_file_test_vertical_slice.js_3d01985225"
     },
     {
@@ -17149,7 +17157,7 @@
         "file_hash": "070ded8d1dc266da0b75e2adbf0c518d0999e51f405a9e1d82b5b0b40ea8610d",
         "filecell_id": "filecell_442da09fb5a1",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\workflow\\test_workflow_recovery.js",
         "risk_tags": {
@@ -17207,7 +17215,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.003460",
+      "updated_at": "2026-08-01T11:35:27.035610",
       "workcell_id": "workcell_file_test_workflow_recovery.js_442da09fb5"
     },
     {
@@ -17253,7 +17261,7 @@
         "file_hash": "664ade2348a4c7b7035b4c730991765f3640828b7ecb20a6fc2d062dbaa26076",
         "filecell_id": "filecell_be59468bd850",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\firestore\\test_firestore_integration.js",
         "risk_tags": {
@@ -17311,7 +17319,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002710",
+      "updated_at": "2026-08-01T11:35:27.034851",
       "workcell_id": "workcell_file_test_firestore_integration.js_be59468bd8"
     },
     {
@@ -17351,7 +17359,7 @@
         "file_hash": "59bca7da9d2edd3f2f563594f694719e616a14aa380f7fdf8be75ed3237571f5",
         "filecell_id": "filecell_0630a667dbc8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\consumer_experience\\test_consumer_emergency_journey.js",
         "risk_tags": {
@@ -17409,7 +17417,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002575",
+      "updated_at": "2026-08-01T11:35:27.034732",
       "workcell_id": "workcell_file_test_consumer_emergency_journey.js_0630a667db"
     },
     {
@@ -17441,7 +17449,7 @@
         "file_hash": "5d709ba9b5766bf0e734b28d5312075a4b984a36e14318c119ef1f16c4ee4d61",
         "filecell_id": "filecell_6321e8f3f1eb",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "verification\\partner\\test_partner_sdk.js",
         "risk_tags": {
@@ -17496,7 +17504,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.002776",
+      "updated_at": "2026-08-01T11:35:27.034924",
       "workcell_id": "workcell_file_test_partner_sdk.js_6321e8f3f1"
     },
     {
@@ -17520,7 +17528,7 @@
         "file_hash": "388ea2944a97b5bc7642a8677e5d7e0a6c234abb2f56bd4e20e59ea3735acb18",
         "filecell_id": "filecell_31e9f31ada29",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "PLATFORM_OVERVIEW.md",
         "risk_tags": {},
@@ -17595,7 +17603,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994079",
+      "updated_at": "2026-08-01T11:35:27.026673",
       "workcell_id": "workcell_file_platform_overview.md_31e9f31ada"
     },
     {
@@ -17619,7 +17627,7 @@
         "file_hash": "755eb6989e0857ea41cbd6facbc115e1fd849fb14ca888a7e265e3f1baa5df0f",
         "filecell_id": "filecell_3debcc4d8bd8",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "CANONICAL_CAPABILITY_RECOVERY_MATRIX.md",
         "risk_tags": {},
@@ -17686,7 +17694,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994000",
+      "updated_at": "2026-08-01T11:35:27.026514",
       "workcell_id": "workcell_file_canonical_capability_recovery_matrix.md_3debcc4d8b"
     },
     {
@@ -17710,7 +17718,7 @@
         "file_hash": "c413b386446bbed070beaa7480b412e5e7b527753e7d394eee1fe344395032d8",
         "filecell_id": "filecell_2b25548bb321",
         "freshness_state": "fresh",
-        "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+        "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
         "parser": "structural",
         "path": "REAL_DEVICE_MVP_VERIFICATION_2026-08-01.md",
         "risk_tags": {},
@@ -17833,7 +17841,7 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:14.994152",
+      "updated_at": "2026-08-01T11:35:27.026908",
       "workcell_id": "workcell_file_real_device_mvp_verification_2026-08-01.md_2b25548bb3"
     }
   ]

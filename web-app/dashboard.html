@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Entity Command Center</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+
+    <main class="dashboard-main-container" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.requireSetup()) throw new Error('redirect');
+    Billi.renderNav('dashboard.html');
+
+    const S = Billi.state;
+    const p = S.protectedPerson || {};
+    const entityLabel = { 'Family': 'My Family', 'School / District': 'My Students', 'Business': 'My Employees', 'University / Campus': 'My Campus', 'Healthcare Organization': 'My Patients', 'Community': 'My Community' }[S.entityType] || 'My People';
+
+    function stateChip(st) {
+      const cls = { SIMULATED: 'simulated', CONNECTED: 'connected', 'FUTURE ADAPTER': 'future', OFFLINE: 'unavail', UNAVAILABLE: 'unavail' }[st] || 'local';
+      return `<span class="sim-chip ${cls}">${st}</span>`;
+    }
+
+    function render() {
+      const active = Billi.getActiveIncident();
+      const ready = Billi.readiness();
+      const readyPct = Math.round(ready.filter(r => r.ok).length / ready.length * 100);
+      const okDevices = S.devices.filter(d => ['SIMULATED', 'CONNECTED', 'REGISTERED', 'STANDBY'].includes(d.state));
+
+      document.getElementById('main-host').innerHTML = `
+        ${active ? `
+        <section class="duress-banner margin-top flex-between" style="cursor:pointer; flex-wrap:wrap; gap:0.75rem;" onclick="location.href='incident.html'">
+          <div>
+            <strong style="color:#fca5a5; font-size:1rem;">🔴 ACTIVE INCIDENT — ${active.id}${active.duress ? ' · CRITICAL DURESS ALERT' : ''}</strong>
+            <div class="text-muted" style="font-size:0.78rem;">${active.triggerMethod} · started ${Billi.fmtAgo(active.triggeredAt)} · tap to open the Guardian Command Center</div>
+          </div>
+          <button class="btn btn-danger">OPEN COMMAND CENTER →</button>
+        </section>` : ''}
+
+        <!-- GREETING -->
+        <section class="dash-greeting-row margin-top">
+          <div>
+            <div class="dash-greeting-title">${entityLabel}</div>
+            <div class="dash-greeting-sub">${S.entityType || 'Entity'} safety ecosystem · Administrator: ${(S.owner || {}).name || '—'}</div>
+          </div>
+        </section>
+
+        <!-- PROTECTED PERSON FIRST -->
+        <section class="person-main-card margin-top">
+          <div class="flex-between" style="flex-wrap:wrap; gap:1rem;">
+            <div class="flex-row" style="gap:1rem;">
+              <div class="person-avatar-circle">${Billi.initials(p.name)}</div>
+              <div>
+                <div class="person-name-text">${p.name || 'Protected person'}</div>
+                <div class="person-sub-text">Age ${p.age || '—'} · ${p.facility || 'No facility set'}</div>
+                <div class="flex-row margin-top-xs" style="gap:0.5rem;">
+                  ${active
+                    ? `<span class="badge badge-red">INCIDENT ACTIVE</span>`
+                    : `<span class="badge badge-green">Safe · At ${S.zones[0] ? S.zones[0].name : 'no zone set'}</span>`}
+                  <span class="badge badge-blue">Last update: ${active ? Billi.fmtAgo(active.triggeredAt) : '2 min ago (SIMULATED telemetry)'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex-row" style="gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary" onclick="location.href='protected.html'">Protected Person View</button>
+              ${active ? '' : `<button class="btn btn-danger" onclick="triggerSOS()">⚠ TRIGGER EMERGENCY (SIMULATED)</button>`}
+            </div>
+          </div>
+        </section>
+
+        <!-- OPERATIONAL READINESS GRID -->
+        <div class="grid grid-fit margin-top" style="gap:0.75rem;">
+          <div class="metric-card">
+            <div class="metric-card-header">Safety Contract</div>
+            <div class="metric-card-val" style="color:${S.contract ? '#34d399' : '#fbbf24'};">${S.contract ? 'AUTHORIZED' : 'MISSING'}</div>
+            <div class="metric-card-desc">${S.contract ? `${[S.contract.gps && 'GPS', S.contract.audio && 'Audio', S.contract.notifyNetwork && 'Network'].filter(Boolean).join(' · ')} authorized` : 'Complete setup to authorize'}</div>
+            <div class="metric-card-footer"><a href="admin.html" style="color:#a5b4fc;">Edit contract →</a></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-header">Trusted Network</div>
+            <div class="metric-card-val">${S.contacts.length} contacts</div>
+            <div class="metric-card-desc">${(S.contacts.sort((a,b)=>a.priority-b.priority)[0] || {}).name ? `P1 ${S.contacts[0].name}` : 'None yet'}</div>
+            <div class="metric-card-footer"><a href="network.html" style="color:#a5b4fc;">Manage network →</a></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-header">Device Health</div>
+            <div class="metric-card-val">${okDevices.length}/${S.devices.length} ready</div>
+            <div class="metric-card-desc">${S.devices.filter(d => d.state === 'OFFLINE').length ? `⚠ ${S.devices.filter(d => d.state === 'OFFLINE').length} offline` : 'All hardware reachable'}</div>
+            <div class="metric-card-footer"><a href="devices.html" style="color:#a5b4fc;">Device hub →</a></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-header">Readiness Score</div>
+            <div class="metric-card-val" style="color:${readyPct === 100 ? '#34d399' : '#fbbf24'};">${readyPct}%</div>
+            <div class="metric-card-desc">${readyPct === 100 ? 'All checks passing' : `${ready.filter(r => !r.ok).length} item(s) open`}</div>
+            <div class="metric-card-footer">${readyPct === 100 ? 'Armed & monitoring' : '<a href="onboarding.html" style="color:#fbbf24;">Finish setup →</a>'}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
+          <!-- LIVE MAP -->
+          <div class="dash-map-card">
+            <div class="dash-map-header flex-between">
+              <span class="map-header-title">Live position — ${p.name || ''}</span>
+              <span class="sim-chip simulated">Simulated telemetry</span>
+            </div>
+            <div class="mapbox-dark-canvas" style="height:230px;">
+              <div class="map-pulsing-pin" style="background:${active ? '#ef4444' : '#10b981'}; left:48%; top:52%;"></div>
+              <div class="map-person-tag">${p.name || 'Protected'} · ${active ? 'INCIDENT ACTIVE' : 'Stationary · inside safe zone'}</div>
+            </div>
+            <div class="margin-top-xs" style="font-size:0.75rem; color:#94a3b8;">
+              Safe zones: ${S.zones.map(z => `${z.name} (${z.radius} m)`).join(' · ') || 'none configured'}
+            </div>
+          </div>
+
+          <!-- RECENT ACTIVITY -->
+          <div class="card" style="padding:1rem;">
+            <div class="flex-between">
+              <span class="panel-section-title" style="font-size:0.95rem;">Recent safety activity</span>
+              <a href="history.html" style="color:#a5b4fc; font-size:0.75rem;">Full history →</a>
+            </div>
+            <div style="max-height:230px; overflow-y:auto;">
+              ${S.audit.slice(0, 8).map(a => `
+                <div class="timeline-event-item margin-top-xs">
+                  <div class="event-time-text">${Billi.fmtClock(a.t)} · ${a.actor}</div>
+                  <div class="event-desc-text">${a.action.replace(/_/g, ' ')} — ${a.details}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- DETECTION PATHS -->
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.95rem;">Armed detection paths</span>
+            <span class="text-muted" style="font-size:0.72rem;">Every path activates the same four core actions</span>
+          </div>
+          <div class="sensor-pill-grid margin-top-xs">
+            ${Object.entries(Billi.TRIGGER_METHODS).map(([k, t]) => `
+              <div class="sensor-pill-card">
+                <div class="sensor-info">
+                  <div class="sensor-lbl">${t.method}</div>
+                  <div class="sensor-val" style="font-size:0.68rem; color:#64748b;">${t.device}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </section>`;
+    }
+
+    function triggerSOS() {
+      Billi.triggerIncident('sos_hold');
+      Billi.toast('⚠ SIMULATED emergency triggered — opening Guardian Command Center.', 'danger');
+      setTimeout(() => location.href = 'incident.html', 700);
+    }
+
+    render();
+    setInterval(() => { Billi.renderNav('dashboard.html'); }, 5000);
+  </script>
+</body>
+</html>

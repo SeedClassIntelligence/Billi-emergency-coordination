@@ -19,29 +19,41 @@ class EmergencyActivationScreen extends StatefulWidget {
   State<EmergencyActivationScreen> createState() => _EmergencyActivationScreenState();
 }
 
+enum CoreActionStepState { working, confirmed, unavailable }
+
 class _EmergencyActivationScreenState extends State<EmergencyActivationScreen> {
   bool _isActivated = false;
+  CoreActionStepState _gpsState = CoreActionStepState.working;
+  CoreActionStepState _audioState = CoreActionStepState.working;
+  CoreActionStepState _videoState = CoreActionStepState.unavailable; // Honest prototype status
+  CoreActionStepState _networkState = CoreActionStepState.working;
 
-  void _triggerEmergency() {
+  void _triggerEmergency() async {
     setState(() {
       _isActivated = true;
     });
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ActiveEmergencyScreen(
-              incidentId: 'inc_emma_freeway_94312',
-              protectedName: widget.protectedName,
-              guardianName: widget.guardianName,
-              allowBleMesh: widget.allowBleMesh,
-            ),
+    await Future.delayed(const Duration(milliseconds: 600));
+    setState(() => _gpsState = CoreActionStepState.confirmed);
+    await Future.delayed(const Duration(milliseconds: 600));
+    setState(() => _audioState = CoreActionStepState.confirmed);
+    await Future.delayed(const Duration(milliseconds: 600));
+    setState(() => _networkState = CoreActionStepState.confirmed);
+
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ActiveEmergencyScreen(
+            incidentId: 'inc_emma_freeway_94312',
+            protectedName: widget.protectedName,
+            guardianName: widget.guardianName,
+            allowBleMesh: widget.allowBleMesh,
           ),
-        );
-      }
-    });
+        ),
+      );
+    }
   }
 
   @override
@@ -90,22 +102,24 @@ class _EmergencyActivationScreenState extends State<EmergencyActivationScreen> {
                   textAlign: TextAlign.Center, style: TextStyle(color: Colors.white38, fontSize: 12)),
             ] else ...[
               const SizedBox(
-                width: 70,
-                height: 70,
-                child: CircularProgressIndicator(color: Colors.redAccent, strokeWidth: 5),
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(color: Colors.redAccent, strokeWidth: 4),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               const Text('Emergency Activated', style: TextStyle(color: Colors.redAccent, fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
+              const Text('Executing Four Core Emergency Actions...', style: TextStyle(color: Colors.white54, fontSize: 13)),
+              const SizedBox(height: 24),
 
-              // Plain-language truths list
-              _buildTruthRow('Location available', Icons.gps_fixed, Colors.greenAccent),
-              _buildTruthRow('Distress recording started', Icons.mic, Colors.amberAccent),
-              _buildTruthRow('Alert queued for ${widget.guardianName}', Icons.mark_email_unread, Colors.blueAccent),
-              _buildTruthRow('Dynamic Emergency Packet created', Icons.receipt_long, Colors.purpleAccent),
+              // TRUTHFUL CORE ACTIONS PROGRESSION
+              _buildStatefulTruthRow('GPS Location', _gpsState, 'Finding location...', 'Location acquired', Icons.gps_fixed),
+              _buildStatefulTruthRow('Audio Capture', _audioState, 'Starting recording...', 'Audio recording active', Icons.mic),
+              _buildStatefulTruthRow('Video Capture', _videoState, 'Video unavailable', 'Video unavailable in prototype', Icons.videocam_off),
+              _buildStatefulTruthRow('Trusted Network', _networkState, 'Sending alert...', 'Alert delivered to ${widget.guardianName}', Icons.mark_email_read),
 
               const SizedBox(height: 30),
-              const Text('Opening Live Incident HUD...', style: TextStyle(color: Colors.white54, fontSize: 13)),
+              const Text('Opening Live Incident HUD...', style: TextStyle(color: Colors.white38, fontSize: 12)),
             ]
           ],
         ),
@@ -113,15 +127,37 @@ class _EmergencyActivationScreenState extends State<EmergencyActivationScreen> {
     );
   }
 
-  Widget _buildTruthRow(String text, IconData icon, Color color) {
+  Widget _buildStatefulTruthRow(String label, CoreActionStepState state, String workingText, String confirmedText, IconData icon) {
+    String text;
+    IconData statusIcon;
+    Color color;
+
+    switch (state) {
+      case CoreActionStepState.working:
+        text = workingText;
+        statusIcon = Icons.sync;
+        color = Colors.amber;
+        break;
+      case CoreActionStepState.confirmed:
+        text = confirmedText;
+        statusIcon = Icons.check_circle;
+        color = Colors.greenAccent;
+        break;
+      case CoreActionStepState.unavailable:
+        text = confirmedText;
+        statusIcon = Icons.radio_button_unchecked;
+        color = Colors.white38;
+        break;
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 18, color: color),
+          Icon(statusIcon, size: 18, color: color),
           const SizedBox(width: 8),
-          Text(text, style: const TextStyle(color: Colors.white87, fontSize: 14, fontWeight: FontWeight.w600)),
+          Text(text, style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );

@@ -1,0 +1,9 @@
+{
+  "name": "billi-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Billi Emergency Coordination Platform — one-command startup for all 13 backend services + HTTPS web server.",
+  "scripts": {
+    "start": "node start-all.js"
+  }
+}

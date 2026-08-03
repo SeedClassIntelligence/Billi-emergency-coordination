@@ -1,10 +1,25 @@
 # BILLI PLATFORM: ENGINEERING GUARANTEES & VERIFICATION MATRIX
 
-**Doc Version:** 1.6.0  
+**Doc Version:** 1.7.0  
 **Target Platform:** Billi Safety Emergency Coordination Platform  
 **Master Overview:** [PLATFORM_OVERVIEW.md](file:///c:/Users/SEEDN/Downloads/Billi-emergency-coordination-main/PLATFORM_OVERVIEW.md)  
 **Architecture Specification:** [docs/BILLI_CTO_ARCHITECTURE.md](file:///c:/Users/SEEDN/Downloads/Billi-emergency-coordination-main/docs/BILLI_CTO_ARCHITECTURE.md)  
 **Canonical Build Guide:** [BUILD.md](file:///c:/Users/SEEDN/Downloads/Billi-emergency-coordination-main/BUILD.md)
+
+---
+
+## Canonical Source Hierarchy & Repository Authority
+
+1. **Authoritative Working Code**:  
+   `C:\Users\SEEDN\Downloads\Billi-emergency-coordination-main` (**VERIFIED LOCAL WORKING CODE**)
+2. **Raw Insurance Backup**:  
+   `C:\Users\SEEDN\Downloads\Billi-v2-DDD-backup-2026-07-31` (**VERIFIED EXTERNAL FOLDER COPY**)
+3. **Preserved Remote Branch**:  
+   `origin/v2-ddd-platform` (**100% VERIFIED REMOTE BRANCH CONFIRMED ON GITHUB**)
+4. **Preserved Remote Tag**:  
+   `preservation-checkpoint-v2-ddd-2026-07-31` (**100% VERIFIED REMOTE TAG CONFIRMED ON GITHUB**)
+5. **Legacy Reference Branch**:  
+   `origin/main` (**QUARANTINED MONOLITH BASELINE**)
 
 ---
 
@@ -15,23 +30,11 @@
 
 ---
 
-## Canonical Source Hierarchy & Repository Authority
-
-1. **Authoritative Working Code**:  
-   `C:\Users\SEEDN\Downloads\Billi-emergency-coordination-main` (Active development repository)
-2. **Raw Insurance Backup**:  
-   `C:\Users\SEEDN\Downloads\Billi-v2-DDD-backup-2026-07-31` (External offline folder copy)
-3. **Preserved Remote Branch**:  
-   `origin/v2-ddd-platform` (Target remote branch — Pending Git binary initialization)
-4. **Legacy Reference Branch**:  
-   `origin/main` (Quarantined React/Express monolith baseline)
-
----
-
 ## 1. Verified Local Software Guarantees
 
 | Guarantee | Verified Property | Verification Suite / Test Location |
 |---|:---:|---|
+| **Remote Git Branch & Tag Preservation**| ✅ | Branch `origin/v2-ddd-platform` & Tag `preservation-checkpoint-v2-ddd-2026-07-31` confirmed on GitHub |
 | **Partner SDK Interfaces** | ✅ | Software interfaces accepting vehicle crash and smartwatch fall payloads (`verification/partner/test_partner_sdk.js`) |
 | **Consumer Journey Flow** | ✅ | Simulated UI journey across protected and guardian screens (`verification/consumer_experience/test_consumer_emergency_journey.js`) |
 | **Protected Profile & Protocol** | ✅ | Local profile, safe word UI, and protocol setup (`test_consumer_emergency_journey.js`) |

@@ -1,0 +1,2751 @@
+{
+  "activeSharedId": null,
+  "incidents": {
+    "TEST-SHARED-1": {
+      "id": "TEST-SHARED-1",
+      "triggerMethod": "smoke test",
+      "rev": 2,
+      "telemetry": [],
+      "resolved": true
+    },
+    "BIL-2026-4069": {
+      "id": "BIL-2026-4069",
+      "correlationId": "cor_mscbtkpa3cu",
+      "triggeredAt": 1785706965262,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [
+        {
+          "t": 1785707031989,
+          "actor": "Evelyn Johnson",
+          "type": "GUARDIAN_ACKNOWLEDGED",
+          "details": "Acknowledged the incident — responding now. ETA 3 minutes (SIMULATED route)."
+        },
+        {
+          "t": 1785707031990,
+          "actor": "Evelyn Johnson",
+          "type": "RESPONDER_STATUS",
+          "details": "Responding — ETA 3 min"
+        },
+        {
+          "t": 1785707072399,
+          "actor": "Officer Davis",
+          "type": "RESPONDER_STATUS",
+          "details": "Acknowledged — reviewing tactical picture"
+        },
+        {
+          "t": 1785707072408,
+          "actor": "Officer Davis",
+          "type": "RESPONDER_STATUS",
+          "details": "En route — ETA 4 min"
+        }
+      ],
+      "resolved": true,
+      "resolvedAt": 1785707170775,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "Multi-session milestone proof completed: A/B/C sessions coordinated one shared incident with real spoken output.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 10,
+      "telemetry": [
+        {
+          "event_type": "AUDIO_ERROR",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:42:45.447Z",
+          "reason": "Permission denied",
+          "permission_state": "DENIED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:42:50.521Z",
+          "text": "Billi is active. Your alert is being sent.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:42:52.912Z",
+          "text": "Your alert was delivered to your trusted network.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:43:52.088Z",
+          "text": "Your mother is responding.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:44:55.300Z",
+          "text": "Billi is active. Your alert is being sent.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:44:55.303Z",
+          "text": "Your alert was delivered to your trusted network.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_elz3swzv",
+          "timestamp": "2026-08-02T21:44:55.359Z",
+          "text": "Your mother is responding.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "BACKGROUND"
+        }
+      ],
+      "backend": {
+        "incidentId": "inc_27748",
+        "packetId": "pkt_1785706965310_2l7a9y",
+        "severity": "MEDIUM",
+        "connectedAt": 1785706965398
+      },
+      "lastTelemetryAt": 1785707095380
+    },
+    "HTTPS-PROOF-1": {
+      "id": "HTTPS-PROOF-1",
+      "triggerMethod": "https proxy smoke test",
+      "rev": 2,
+      "telemetry": [],
+      "resolved": true
+    },
+    "BIL-2026-1572": {
+      "id": "BIL-2026-1572",
+      "correlationId": "cor_msccfh3q6ou",
+      "triggeredAt": 1785707987030,
+      "triggerKey": "crash",
+      "triggerDevice": "Family Vehicle Unit",
+      "triggerMethod": "8.5g crash impact (simulated adapter)",
+      "scenario": "Scenario 03 — Vehicle Crash",
+      "duress": false,
+      "duressAt": null,
+      "actions": [
+        {
+          "t": 1785708274497,
+          "actor": "Anna Reyes",
+          "type": "INCIDENT_STABILIZED",
+          "details": "Situation stabilized — protected person in guardian contact."
+        }
+      ],
+      "resolved": false,
+      "resolvedAt": null,
+      "resolution": null,
+      "path": [
+        {
+          "lat": 38.0146,
+          "lng": -122.1341,
+          "speed": 0,
+          "label": "Vehicle stopped — I-80 E shoulder near Exit 14"
+        }
+      ],
+      "transcripts": [
+        "Vehicle alarm and airbag deployment sounds recorded.",
+        "No voice response from driver seat.",
+        "Traffic noise. Second voice outside: \"Hey — are you okay in there?\""
+      ],
+      "preEvents": [
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "HIGH_G_IMPACT — 8.5g deceleration recorded"
+        },
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "AIRBAG_DEPLOYED · DRIVER_SEAT_OCCUPIED"
+        },
+        {
+          "dt": -1,
+          "actor": "Vehicle Unit",
+          "label": "VEHICLE_STOPPED — sudden deceleration 47 → 0 mph"
+        },
+        {
+          "dt": 0,
+          "actor": "Billi",
+          "label": "Automatic emergency activation — no manual phone interaction required"
+        }
+      ],
+      "context": {
+        "protectedPerson": {
+          "name": "David Reyes",
+          "age": 41,
+          "facility": "Vehicle — Interstate 80 East"
+        },
+        "medical": {
+          "conditions": "Type 1 diabetes",
+          "allergies": "None documented",
+          "medications": "Insulin pump (abdomen)",
+          "equipment": "Blood glucose kit in glovebox",
+          "instructions": "Check insulin pump after impact. Glucose kit in glovebox. Notify spouse Anna immediately.",
+          "physician": "Dr. Okafor — Bayside Endocrinology"
+        },
+        "contacts": [
+          {
+            "id": "c_anna",
+            "name": "Anna Reyes",
+            "role": "Primary Guardian",
+            "relationship": "Spouse",
+            "priority": 1,
+            "phone": "+1 (555) 410-8821",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_mike",
+            "name": "Michael Reyes",
+            "role": "Secondary Guardian",
+            "relationship": "Brother",
+            "priority": 2,
+            "phone": "+1 (555) 411-3305",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_road",
+            "name": "Roadside Response Liaison",
+            "role": "Campus Safety",
+            "relationship": "Partner responder desk",
+            "priority": 3,
+            "phone": "+1 (555) 800-4141",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": false,
+            "availability": "24/7"
+          }
+        ],
+        "owner": {
+          "name": "Anna Reyes",
+          "role": "Primary Guardian",
+          "relationship": "Spouse",
+          "phone": "+1 (555) 410-8821"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 108,
+      "telemetry": [
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:05:33.458Z",
+          "text": "Billi is active. Your alert is being sent.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:05:33.461Z",
+          "text": "Your alert was delivered to your trusted network.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "NETWORK_STATE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:48.823Z",
+          "type": "4g",
+          "downlink_mbps": 1.6,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_MONITORING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:48.834Z",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:48.904Z",
+          "avg_dynamic_ms2": 0.08,
+          "samples": 1,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:53.444Z",
+          "latitude": 36.1742715,
+          "longitude": -115.1641462,
+          "accuracy_meters": 23.804000854492188,
+          "altitude_meters": 604.17919921875,
+          "speed_mps": null,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:53.921Z",
+          "avg_dynamic_ms2": 0.12,
+          "samples": 300,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_RECORDING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:55.236Z",
+          "chunk_seconds": 10,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:55.856Z",
+          "latitude": 36.1742649,
+          "longitude": -115.1641014,
+          "accuracy_meters": 21.70599937438965,
+          "altitude_meters": 604.1561279296875,
+          "speed_mps": 0.14675350487232208,
+          "heading_degrees": 25.488445281982422,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:56.841Z",
+          "latitude": 36.1742554,
+          "longitude": -115.1640847,
+          "accuracy_meters": 20.493999481201172,
+          "altitude_meters": 604.1561279296875,
+          "speed_mps": 0.1428210288286209,
+          "heading_degrees": 27.15215301513672,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:57.838Z",
+          "latitude": 36.1742521,
+          "longitude": -115.1640864,
+          "accuracy_meters": 18.483999252319336,
+          "altitude_meters": 604.1443481445312,
+          "speed_mps": 0.13550816476345062,
+          "heading_degrees": 27.797115325927734,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:58.838Z",
+          "latitude": 36.1743399,
+          "longitude": -115.1641025,
+          "accuracy_meters": 16.145999908447266,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.42274022102355957,
+          "heading_degrees": 3.6210622787475586,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:58.937Z",
+          "avg_dynamic_ms2": 0.11,
+          "samples": 301,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:07:59.839Z",
+          "latitude": 36.1743088,
+          "longitude": -115.1641484,
+          "accuracy_meters": 13.95300006866455,
+          "altitude_meters": 604.1100463867188,
+          "speed_mps": 0.26736852526664734,
+          "heading_degrees": 312.03240966796875,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:00.441Z",
+          "latitude": 36.1742964,
+          "longitude": -115.1641537,
+          "accuracy_meters": 15.166999816894531,
+          "altitude_meters": 604.1100463867188,
+          "speed_mps": 0.2323642522096634,
+          "heading_degrees": 278.5569763183594,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:01.444Z",
+          "latitude": 36.1742871,
+          "longitude": -115.1641759,
+          "accuracy_meters": 13.310999870300293,
+          "altitude_meters": 604.1100463867188,
+          "speed_mps": 0.41346046328544617,
+          "heading_degrees": 258.8980407714844,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:02.440Z",
+          "latitude": 36.1742814,
+          "longitude": -115.1641715,
+          "accuracy_meters": 11.807999610900879,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.029881834983825684,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:02.979Z",
+          "latitude": 36.174276,
+          "longitude": -115.1641692,
+          "accuracy_meters": 11.413999557495117,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.0300644151866436,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:03.446Z",
+          "latitude": 36.1742757,
+          "longitude": -115.1641805,
+          "accuracy_meters": 10.08899974822998,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.030005741864442825,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTIONLESS_PERIOD",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:03.920Z",
+          "seconds": 15,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:03.953Z",
+          "avg_dynamic_ms2": 0.14,
+          "samples": 299,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:04.442Z",
+          "latitude": 36.1742762,
+          "longitude": -115.1641795,
+          "accuracy_meters": 9.73900032043457,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.035459619015455246,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:05.263Z",
+          "segment": 1,
+          "bytes": 158600,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:05.436Z",
+          "latitude": 36.174277,
+          "longitude": -115.1641773,
+          "accuracy_meters": 9.98799991607666,
+          "altitude_meters": 604.1212768554688,
+          "speed_mps": 0.042007800191640854,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:06.445Z",
+          "latitude": 36.1742783,
+          "longitude": -115.1641749,
+          "accuracy_meters": 7.310999870300293,
+          "altitude_meters": 604.1331176757812,
+          "speed_mps": 0.04796656593680382,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:07.442Z",
+          "latitude": 36.1742798,
+          "longitude": -115.1641731,
+          "accuracy_meters": 6.716000080108643,
+          "altitude_meters": 604.2135009765625,
+          "speed_mps": 0.051429230719804764,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:08.442Z",
+          "latitude": 36.1742812,
+          "longitude": -115.1641706,
+          "accuracy_meters": 6.396999835968018,
+          "altitude_meters": 604.2714233398438,
+          "speed_mps": 0.1146116778254509,
+          "heading_degrees": 89.98880004882812,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:08.970Z",
+          "avg_dynamic_ms2": 0.15,
+          "samples": 300,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:09.438Z",
+          "latitude": 36.1742824,
+          "longitude": -115.164168,
+          "accuracy_meters": 6.130000114440918,
+          "altitude_meters": 604.340087890625,
+          "speed_mps": 0.10622517764568329,
+          "heading_degrees": 89.96343231201172,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:10.442Z",
+          "latitude": 36.1742834,
+          "longitude": -115.1641661,
+          "accuracy_meters": 5.9070000648498535,
+          "altitude_meters": 604.4441528320312,
+          "speed_mps": 0.08874262124300003,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:11.436Z",
+          "latitude": 36.1742842,
+          "longitude": -115.1641646,
+          "accuracy_meters": 5.826000213623047,
+          "altitude_meters": 604.5245361328125,
+          "speed_mps": 0.08497028052806854,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:12.443Z",
+          "latitude": 36.1742848,
+          "longitude": -115.1641633,
+          "accuracy_meters": 5.64900016784668,
+          "altitude_meters": 604.5594482421875,
+          "speed_mps": 0.08192804455757141,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:13.441Z",
+          "latitude": 36.1742856,
+          "longitude": -115.1641607,
+          "accuracy_meters": 5.400000095367432,
+          "altitude_meters": 604.5706787109375,
+          "speed_mps": 0.12239734828472137,
+          "heading_degrees": 91.11283111572266,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:13.986Z",
+          "avg_dynamic_ms2": 0.13,
+          "samples": 301,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:14.441Z",
+          "latitude": 36.1742861,
+          "longitude": -115.164159,
+          "accuracy_meters": 5.334000110626221,
+          "altitude_meters": 604.5706787109375,
+          "speed_mps": 0.09599310159683228,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:15.277Z",
+          "segment": 2,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:15.440Z",
+          "latitude": 36.1742865,
+          "longitude": -115.1641574,
+          "accuracy_meters": 5.206999778747559,
+          "altitude_meters": 604.5706787109375,
+          "speed_mps": 0.08339798450469971,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:16.438Z",
+          "latitude": 36.1742868,
+          "longitude": -115.1641559,
+          "accuracy_meters": 5.0279998779296875,
+          "altitude_meters": 604.5706787109375,
+          "speed_mps": 0.07670991867780685,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:17.443Z",
+          "latitude": 36.1742873,
+          "longitude": -115.1641542,
+          "accuracy_meters": 4.985000133514404,
+          "altitude_meters": 604.5706787109375,
+          "speed_mps": 0.07135041803121567,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:18.445Z",
+          "latitude": 36.1742874,
+          "longitude": -115.1641529,
+          "accuracy_meters": 4.861999988555908,
+          "altitude_meters": 604.5594482421875,
+          "speed_mps": 0.11415798962116241,
+          "heading_degrees": 114.88615417480469,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "NETWORK_STATE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:25.460Z",
+          "type": "4g",
+          "downlink_mbps": 1.6,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_MONITORING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:25.463Z",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:25.519Z",
+          "avg_dynamic_ms2": 0.06,
+          "samples": 1,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_RECORDING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:25.609Z",
+          "chunk_seconds": 10,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:26.590Z",
+          "latitude": 36.1742871,
+          "longitude": -115.1641495,
+          "accuracy_meters": 5.198999881744385,
+          "altitude_meters": 604.5133056640625,
+          "speed_mps": 0.14492714405059814,
+          "heading_degrees": 90.7161865234375,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:27.442Z",
+          "latitude": 36.1742871,
+          "longitude": -115.164147,
+          "accuracy_meters": 5.046000003814697,
+          "altitude_meters": 604.490234375,
+          "speed_mps": 0.15158730745315552,
+          "heading_degrees": 90.1561050415039,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:28.443Z",
+          "latitude": 36.1742868,
+          "longitude": -115.1641437,
+          "accuracy_meters": 4.881999969482422,
+          "altitude_meters": 604.4210815429688,
+          "speed_mps": 0.14588607847690582,
+          "heading_degrees": 90.04964447021484,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:29.445Z",
+          "latitude": 36.1742861,
+          "longitude": -115.1641399,
+          "accuracy_meters": 4.684999942779541,
+          "altitude_meters": 604.4092407226562,
+          "speed_mps": 0.1358688920736313,
+          "heading_degrees": 123.75293731689453,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:30.439Z",
+          "latitude": 36.1742842,
+          "longitude": -115.1641437,
+          "accuracy_meters": 4.5289998054504395,
+          "altitude_meters": 604.3980102539062,
+          "speed_mps": 0.13525539636611938,
+          "heading_degrees": 181.4718017578125,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:30.535Z",
+          "avg_dynamic_ms2": 0.12,
+          "samples": 300,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:31.340Z",
+          "latitude": 36.1742836,
+          "longitude": -115.1641458,
+          "accuracy_meters": 4.443999767303467,
+          "altitude_meters": 604.3980102539062,
+          "speed_mps": 0.13835939764976501,
+          "heading_degrees": 183.52635192871094,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_MONITORING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:32.095Z",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:32.100Z",
+          "latitude": 36.1742836,
+          "longitude": -115.1641458,
+          "accuracy_meters": 4.443999767303467,
+          "altitude_meters": 604.3980102539062,
+          "speed_mps": 0.13835939764976501,
+          "heading_degrees": 183.52635192871094,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_RECORDING_STARTED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:32.126Z",
+          "chunk_seconds": 10,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:33.213Z",
+          "latitude": 36.1742812,
+          "longitude": -115.1641462,
+          "accuracy_meters": 4.0269999504089355,
+          "altitude_meters": 604.3861694335938,
+          "speed_mps": 0.11772549897432327,
+          "heading_degrees": 96.41118621826172,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:34.442Z",
+          "latitude": 36.1742809,
+          "longitude": -115.1641447,
+          "accuracy_meters": 3.7950000762939453,
+          "altitude_meters": 604.3861694335938,
+          "speed_mps": 0.1134987622499466,
+          "heading_degrees": 90.33502197265625,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:35.440Z",
+          "latitude": 36.1742798,
+          "longitude": -115.1641445,
+          "accuracy_meters": 3.746999979019165,
+          "altitude_meters": 604.3749389648438,
+          "speed_mps": 0.11805902421474457,
+          "heading_degrees": 143.5966339111328,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:35.552Z",
+          "avg_dynamic_ms2": 0.12,
+          "samples": 505,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:35.628Z",
+          "segment": 1,
+          "bytes": 158286,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:36.446Z",
+          "latitude": 36.1742784,
+          "longitude": -115.1641444,
+          "accuracy_meters": 3.7130000591278076,
+          "altitude_meters": 604.3631591796875,
+          "speed_mps": 0.11265289783477783,
+          "heading_degrees": 147.13143920898438,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:37.441Z",
+          "latitude": 36.1742774,
+          "longitude": -115.1641442,
+          "accuracy_meters": 3.684000015258789,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.10619240254163742,
+          "heading_degrees": 156.9962921142578,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:38.443Z",
+          "latitude": 36.1742764,
+          "longitude": -115.1641436,
+          "accuracy_meters": 3.6489999294281006,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.10316526889801025,
+          "heading_degrees": 153.33792114257812,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:39.438Z",
+          "latitude": 36.1742756,
+          "longitude": -115.1641427,
+          "accuracy_meters": 3.5989999771118164,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.09976137429475784,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:39.812Z",
+          "latitude": 36.1742754,
+          "longitude": -115.1641426,
+          "accuracy_meters": 3.6040000915527344,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.09954219311475754,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:40.426Z",
+          "latitude": 36.1742752,
+          "longitude": -115.1641424,
+          "accuracy_meters": 3.617000102996826,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.09985072910785675,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:40.553Z",
+          "avg_dynamic_ms2": 0.75,
+          "samples": 600,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:40.891Z",
+          "latitude": 36.1742752,
+          "longitude": -115.1641419,
+          "accuracy_meters": 3.621000051498413,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.12040296196937561,
+          "heading_degrees": 137.23521423339844,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:41.445Z",
+          "latitude": 36.1742746,
+          "longitude": -115.1641385,
+          "accuracy_meters": 3.6040000915527344,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.08967258781194687,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:42.141Z",
+          "segment": 2,
+          "bytes": 160518,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:42.444Z",
+          "latitude": 36.1742744,
+          "longitude": -115.1641377,
+          "accuracy_meters": 3.6010000705718994,
+          "altitude_meters": 604.3631591796875,
+          "speed_mps": 0.0783597007393837,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:43.437Z",
+          "latitude": 36.174274,
+          "longitude": -115.1641367,
+          "accuracy_meters": 3.6080000400543213,
+          "altitude_meters": 604.3749389648438,
+          "speed_mps": 0.08308005332946777,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:44.442Z",
+          "latitude": 36.1742736,
+          "longitude": -115.1641359,
+          "accuracy_meters": 3.6050000190734863,
+          "altitude_meters": 604.4323120117188,
+          "speed_mps": 0.105814628303051,
+          "heading_degrees": 135.80540466308594,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:45.439Z",
+          "latitude": 36.1742727,
+          "longitude": -115.1641349,
+          "accuracy_meters": 3.5859999656677246,
+          "altitude_meters": 604.4553833007812,
+          "speed_mps": 0.09690935909748077,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:45.568Z",
+          "avg_dynamic_ms2": 0.33,
+          "samples": 601,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:45.634Z",
+          "segment": 3,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:46.443Z",
+          "latitude": 36.1742724,
+          "longitude": -115.1641341,
+          "accuracy_meters": 3.578000068664551,
+          "altitude_meters": 604.4671630859375,
+          "speed_mps": 0.22423528134822845,
+          "heading_degrees": 140.9040069580078,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:47.444Z",
+          "latitude": 36.1742716,
+          "longitude": -115.1641326,
+          "accuracy_meters": 3.5859999656677246,
+          "altitude_meters": 604.4784545898438,
+          "speed_mps": 0.4922502934932709,
+          "heading_degrees": 144.34335327148438,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:48.439Z",
+          "latitude": 36.1742692,
+          "longitude": -115.1641294,
+          "accuracy_meters": 3.7869999408721924,
+          "altitude_meters": 604.490234375,
+          "speed_mps": 0.10040401667356491,
+          "heading_degrees": 139.29258728027344,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:49.439Z",
+          "latitude": 36.1742684,
+          "longitude": -115.1641277,
+          "accuracy_meters": 4.059999942779541,
+          "altitude_meters": 604.490234375,
+          "speed_mps": 0.0853486880660057,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:50.417Z",
+          "latitude": 36.1742681,
+          "longitude": -115.164127,
+          "accuracy_meters": 4.192999839782715,
+          "altitude_meters": 604.490234375,
+          "speed_mps": 0.08531695604324341,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:50.585Z",
+          "avg_dynamic_ms2": 0.18,
+          "samples": 601,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:51.444Z",
+          "latitude": 36.1742668,
+          "longitude": -115.1641274,
+          "accuracy_meters": 4.465000152587891,
+          "altitude_meters": 604.4784545898438,
+          "speed_mps": 0.09553686529397964,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:52.176Z",
+          "segment": 4,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:52.435Z",
+          "latitude": 36.1742662,
+          "longitude": -115.1641255,
+          "accuracy_meters": 4.486000061035156,
+          "altitude_meters": 604.4784545898438,
+          "speed_mps": 0.10190653055906296,
+          "heading_degrees": 139.7022705078125,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:53.444Z",
+          "latitude": 36.1742656,
+          "longitude": -115.1641238,
+          "accuracy_meters": 4.611000061035156,
+          "altitude_meters": 604.4553833007812,
+          "speed_mps": 0.09625624865293503,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:54.439Z",
+          "latitude": 36.1742651,
+          "longitude": -115.1641223,
+          "accuracy_meters": 4.564000129699707,
+          "altitude_meters": 604.4210815429688,
+          "speed_mps": 0.11327596008777618,
+          "heading_degrees": 136.35906982421875,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:55.442Z",
+          "latitude": 36.1742647,
+          "longitude": -115.1641208,
+          "accuracy_meters": 4.539000034332275,
+          "altitude_meters": 604.3980102539062,
+          "speed_mps": 0.10912853479385376,
+          "heading_degrees": 134.5232696533203,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:55.585Z",
+          "avg_dynamic_ms2": 0.37,
+          "samples": 601,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:55.680Z",
+          "segment": 5,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:56.444Z",
+          "latitude": 36.1742644,
+          "longitude": -115.1641195,
+          "accuracy_meters": 4.49399995803833,
+          "altitude_meters": 604.3749389648438,
+          "speed_mps": 0.13162648677825928,
+          "heading_degrees": 129.64910888671875,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:57.437Z",
+          "latitude": 36.1742645,
+          "longitude": -115.1641185,
+          "accuracy_meters": 4.454999923706055,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.13270199298858643,
+          "heading_degrees": 126.52806854248047,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:58.443Z",
+          "latitude": 36.1742643,
+          "longitude": -115.1641172,
+          "accuracy_meters": 4.434000015258789,
+          "altitude_meters": 604.3518676757812,
+          "speed_mps": 0.11708807200193405,
+          "heading_degrees": 128.85098266601562,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:08:59.444Z",
+          "latitude": 36.174264,
+          "longitude": -115.1641159,
+          "accuracy_meters": 4.426000118255615,
+          "altitude_meters": 604.340087890625,
+          "speed_mps": 0.10549873113632202,
+          "heading_degrees": 135.14183044433594,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:00.023Z",
+          "latitude": 36.1742641,
+          "longitude": -115.1641155,
+          "accuracy_meters": 4.429999828338623,
+          "altitude_meters": 604.3287963867188,
+          "speed_mps": 0.1053764820098877,
+          "heading_degrees": 135.79360961914062,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:00.443Z",
+          "latitude": 36.1742636,
+          "longitude": -115.1641163,
+          "accuracy_meters": 4.386000156402588,
+          "altitude_meters": 604.3287963867188,
+          "speed_mps": 0.09679785370826721,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:00.602Z",
+          "avg_dynamic_ms2": 0.45,
+          "samples": 599,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:01.439Z",
+          "latitude": 36.1742635,
+          "longitude": -115.1641155,
+          "accuracy_meters": 4.361000061035156,
+          "altitude_meters": 604.3170166015625,
+          "speed_mps": 0.09171639382839203,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:02.191Z",
+          "segment": 6,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:02.437Z",
+          "latitude": 36.1742637,
+          "longitude": -115.1641146,
+          "accuracy_meters": 4.339000225067139,
+          "altitude_meters": 604.3057861328125,
+          "speed_mps": 0.08450670540332794,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:03.443Z",
+          "latitude": 36.1742635,
+          "longitude": -115.1641138,
+          "accuracy_meters": 4.260000228881836,
+          "altitude_meters": 604.3057861328125,
+          "speed_mps": 0.08305194228887558,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:04.440Z",
+          "latitude": 36.1742632,
+          "longitude": -115.164113,
+          "accuracy_meters": 4.208000183105469,
+          "altitude_meters": 604.2944946289062,
+          "speed_mps": 0.0825665295124054,
+          "heading_degrees": null,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:05.439Z",
+          "latitude": 36.1742629,
+          "longitude": -115.1641123,
+          "accuracy_meters": 4.164000034332275,
+          "altitude_meters": 604.2944946289062,
+          "speed_mps": 0.21116755902767181,
+          "heading_degrees": 132.6502227783203,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "MOTION_SAMPLE",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:05.618Z",
+          "avg_dynamic_ms2": 0.26,
+          "samples": 595,
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "AUDIO_SEGMENT_SEALED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:05.713Z",
+          "segment": 7,
+          "bytes": 161338,
+          "mime": "audio/webm;codecs=opus",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:06.130Z",
+          "latitude": 36.1742624,
+          "longitude": -115.1641114,
+          "accuracy_meters": 4.173999786376953,
+          "altitude_meters": 604.2944946289062,
+          "speed_mps": 0.22626665234565735,
+          "heading_degrees": 137.3599090576172,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "LOCATION_UPDATED",
+          "source_device_id": "dev_2d33dhxz",
+          "timestamp": "2026-08-02T22:09:06.435Z",
+          "latitude": 36.1742619,
+          "longitude": -115.1641111,
+          "accuracy_meters": 4.171000003814697,
+          "altitude_meters": 604.3057861328125,
+          "speed_mps": 0.3100880980491638,
+          "heading_degrees": 140.50469970703125,
+          "mode": "INCIDENT_HIGH_ACCURACY",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        }
+      ],
+      "backend": {
+        "incidentId": "inc_72656",
+        "packetId": "pkt_1785707988102_ovie8p",
+        "severity": "MEDIUM",
+        "connectedAt": 1785707987514
+      },
+      "lastTelemetryAt": 1785708547185,
+      "realLocation": {
+        "event_type": "LOCATION_UPDATED",
+        "source_device_id": "dev_2d33dhxz",
+        "timestamp": "2026-08-02T22:09:06.435Z",
+        "latitude": 36.1742619,
+        "longitude": -115.1641111,
+        "accuracy_meters": 4.171000003814697,
+        "altitude_meters": 604.3057861328125,
+        "speed_mps": 0.3100880980491638,
+        "heading_degrees": 140.50469970703125,
+        "mode": "INCIDENT_HIGH_ACCURACY",
+        "permission_state": "AUTHORIZED",
+        "execution_state": "FOREGROUND"
+      }
+    },
+    "BIL-2026-9636": {
+      "id": "BIL-2026-9636",
+      "correlationId": "cor_mscdkon14ph",
+      "triggeredAt": 1785709909693,
+      "triggerKey": "crash",
+      "triggerDevice": "Family Vehicle Unit",
+      "triggerMethod": "8.5g crash impact (simulated adapter)",
+      "scenario": "Scenario 03 — Vehicle Crash",
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": false,
+      "resolvedAt": null,
+      "resolution": null,
+      "path": [
+        {
+          "lat": 38.0146,
+          "lng": -122.1341,
+          "speed": 0,
+          "label": "Vehicle stopped — I-80 E shoulder near Exit 14"
+        }
+      ],
+      "transcripts": [
+        "Vehicle alarm and airbag deployment sounds recorded.",
+        "No voice response from driver seat.",
+        "Traffic noise. Second voice outside: \"Hey — are you okay in there?\""
+      ],
+      "preEvents": [
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "HIGH_G_IMPACT — 8.5g deceleration recorded"
+        },
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "AIRBAG_DEPLOYED · DRIVER_SEAT_OCCUPIED"
+        },
+        {
+          "dt": -1,
+          "actor": "Vehicle Unit",
+          "label": "VEHICLE_STOPPED — sudden deceleration 47 → 0 mph"
+        },
+        {
+          "dt": 0,
+          "actor": "Billi",
+          "label": "Automatic emergency activation — no manual phone interaction required"
+        }
+      ],
+      "context": {
+        "protectedPerson": {
+          "name": "David Reyes",
+          "age": 41,
+          "facility": "Vehicle — Interstate 80 East"
+        },
+        "medical": {
+          "conditions": "Type 1 diabetes",
+          "allergies": "None documented",
+          "medications": "Insulin pump (abdomen)",
+          "equipment": "Blood glucose kit in glovebox",
+          "instructions": "Check insulin pump after impact. Glucose kit in glovebox. Notify spouse Anna immediately.",
+          "physician": "Dr. Okafor — Bayside Endocrinology"
+        },
+        "contacts": [
+          {
+            "id": "c_anna",
+            "name": "Anna Reyes",
+            "role": "Primary Guardian",
+            "relationship": "Spouse",
+            "priority": 1,
+            "phone": "+1 (555) 410-8821",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_mike",
+            "name": "Michael Reyes",
+            "role": "Secondary Guardian",
+            "relationship": "Brother",
+            "priority": 2,
+            "phone": "+1 (555) 411-3305",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_road",
+            "name": "Roadside Response Liaison",
+            "role": "Campus Safety",
+            "relationship": "Partner responder desk",
+            "priority": 3,
+            "phone": "+1 (555) 800-4141",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": false,
+            "availability": "24/7"
+          }
+        ],
+        "owner": {
+          "name": "Anna Reyes",
+          "role": "Primary Guardian",
+          "relationship": "Spouse",
+          "phone": "+1 (555) 410-8821"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 2,
+      "telemetry": [],
+      "backend": {
+        "incidentId": "inc_84254",
+        "packetId": "pkt_1785709909832_d7b6mp",
+        "severity": "MEDIUM",
+        "connectedAt": 1785709909992
+      }
+    },
+    "BIL-2026-1262": {
+      "id": "BIL-2026-1262",
+      "correlationId": "cor_mscds1wv3b5",
+      "triggeredAt": 1785710253487,
+      "triggerKey": "crash",
+      "triggerDevice": "Family Vehicle Unit",
+      "triggerMethod": "8.5g crash impact (simulated adapter)",
+      "scenario": "Scenario 03 — Vehicle Crash",
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785710353727,
+      "resolution": {
+        "by": "Anna Reyes",
+        "notes": "No additional notes.",
+        "reason": "Protected person confirmed safe"
+      },
+      "path": [
+        {
+          "lat": 38.0146,
+          "lng": -122.1341,
+          "speed": 0,
+          "label": "Vehicle stopped — I-80 E shoulder near Exit 14"
+        }
+      ],
+      "transcripts": [
+        "Vehicle alarm and airbag deployment sounds recorded.",
+        "No voice response from driver seat.",
+        "Traffic noise. Second voice outside: \"Hey — are you okay in there?\""
+      ],
+      "preEvents": [
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "HIGH_G_IMPACT — 8.5g deceleration recorded"
+        },
+        {
+          "dt": -2,
+          "actor": "Vehicle Unit",
+          "label": "AIRBAG_DEPLOYED · DRIVER_SEAT_OCCUPIED"
+        },
+        {
+          "dt": -1,
+          "actor": "Vehicle Unit",
+          "label": "VEHICLE_STOPPED — sudden deceleration 47 → 0 mph"
+        },
+        {
+          "dt": 0,
+          "actor": "Billi",
+          "label": "Automatic emergency activation — no manual phone interaction required"
+        }
+      ],
+      "context": {
+        "protectedPerson": {
+          "name": "David Reyes",
+          "age": 41,
+          "facility": "Vehicle — Interstate 80 East"
+        },
+        "medical": {
+          "conditions": "Type 1 diabetes",
+          "allergies": "None documented",
+          "medications": "Insulin pump (abdomen)",
+          "equipment": "Blood glucose kit in glovebox",
+          "instructions": "Check insulin pump after impact. Glucose kit in glovebox. Notify spouse Anna immediately.",
+          "physician": "Dr. Okafor — Bayside Endocrinology"
+        },
+        "contacts": [
+          {
+            "id": "c_anna",
+            "name": "Anna Reyes",
+            "role": "Primary Guardian",
+            "relationship": "Spouse",
+            "priority": 1,
+            "phone": "+1 (555) 410-8821",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_mike",
+            "name": "Michael Reyes",
+            "role": "Secondary Guardian",
+            "relationship": "Brother",
+            "priority": 2,
+            "phone": "+1 (555) 411-3305",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_road",
+            "name": "Roadside Response Liaison",
+            "role": "Campus Safety",
+            "relationship": "Partner responder desk",
+            "priority": 3,
+            "phone": "+1 (555) 800-4141",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": false,
+            "availability": "24/7"
+          }
+        ],
+        "owner": {
+          "name": "Anna Reyes",
+          "role": "Primary Guardian",
+          "relationship": "Spouse",
+          "phone": "+1 (555) 410-8821"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 3,
+      "telemetry": [],
+      "backend": {
+        "incidentId": "inc_99875",
+        "packetId": "pkt_1785710253604_v304io",
+        "severity": "MEDIUM",
+        "connectedAt": 1785710253629
+      }
+    },
+    "BIL-2026-5705": {
+      "id": "BIL-2026-5705",
+      "correlationId": "cor_msc9a5955nj",
+      "triggeredAt": 1785702699545,
+      "triggerKey": "fall",
+      "triggerDevice": "Apple Watch Ultra 2",
+      "triggerMethod": "Hard fall detection",
+      "scenario": "Scenario 02 — Help After a Fall",
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": null,
+      "resolution": {
+        "by": "System",
+        "notes": "Test cleanup",
+        "reason": "cleanup"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 4,
+      "telemetry": [
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_lyiinwxv",
+          "timestamp": "2026-08-03T00:00:51.267Z",
+          "text": "Billi is active. Your alert is being sent.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        },
+        {
+          "event_type": "SPOKEN_OUTPUT",
+          "source_device_id": "dev_lyiinwxv",
+          "timestamp": "2026-08-03T00:00:51.273Z",
+          "text": "Your alert was delivered to your trusted network.",
+          "mode": "reassurance",
+          "permission_state": "AUTHORIZED",
+          "execution_state": "FOREGROUND"
+        }
+      ],
+      "backend": {
+        "incidentId": "inc_88799",
+        "packetId": "pkt_1785714453660_6a2qjr",
+        "severity": "MEDIUM",
+        "connectedAt": 1785714454032
+      },
+      "lastTelemetryAt": 1785715251290
+    },
+    "BIL-2026-2923": {
+      "id": "BIL-2026-2923",
+      "correlationId": "cor_mschpplm2jz",
+      "triggeredAt": 1785716862682,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785716884793,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "Gemini wiring verification complete.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 3,
+      "telemetry": [],
+      "backend": {
+        "incidentId": "inc_77148",
+        "packetId": "pkt_1785716862801_2du281",
+        "severity": "MEDIUM",
+        "connectedAt": 1785716863013
+      }
+    },
+    "BIL-2026-3668": {
+      "id": "BIL-2026-3668",
+      "correlationId": "cor_msci5vzg5j4",
+      "triggeredAt": 1785717617452,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785717643131,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "AI-recommendation wiring verification complete.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 2,
+      "telemetry": []
+    },
+    "BIL-2026-6691": {
+      "id": "BIL-2026-6691",
+      "correlationId": "cor_msciae3e5r3",
+      "triggeredAt": 1785717827546,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785717866416,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "Backend timeline UI wiring verified.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 2,
+      "telemetry": []
+    },
+    "BIL-2026-8502": {
+      "id": "BIL-2026-8502",
+      "correlationId": "cor_mscjtgk66jf",
+      "triggeredAt": 1785720396822,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785720734406,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "Live Gemini end-to-end verification complete — real API key, working model, latency-safe timeouts all confirmed.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only"
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 3,
+      "telemetry": [],
+      "backend": {
+        "incidentId": "inc_20022",
+        "packetId": "pkt_1785720700469_w1wqkp",
+        "severity": "CRITICAL",
+        "connectedAt": 1785720706283
+      }
+    },
+    "BIL-2026-2678": {
+      "id": "BIL-2026-2678",
+      "correlationId": "cor_mscogqut769",
+      "triggeredAt": 1785728201717,
+      "triggerKey": "safe_word",
+      "triggerDevice": "Ray-Ban Meta Glasses",
+      "triggerMethod": "Spoken safe word \"Blue Folder\"",
+      "scenario": null,
+      "duress": false,
+      "duressAt": null,
+      "actions": [],
+      "resolved": true,
+      "resolvedAt": 1785728250699,
+      "resolution": {
+        "by": "Evelyn Johnson",
+        "notes": "Notify-toggle verification complete.",
+        "reason": "Protected person confirmed safe"
+      },
+      "context": {
+        "protectedPerson": {
+          "name": "Maya Johnson",
+          "age": 11,
+          "facility": "Pine Middle School"
+        },
+        "medical": {
+          "conditions": "Mild asthma",
+          "allergies": "Peanuts",
+          "medications": "Albuterol rescue inhaler (in backpack)",
+          "equipment": "Albuterol inhaler",
+          "instructions": "Keep calm. Locate rescue inhaler in backpack. Call Mother immediately, then Campus Safety.",
+          "physician": "Dr. Patel — Bayview Pediatrics, +1 (555) 210-8890"
+        },
+        "contacts": [
+          {
+            "id": "c_mom",
+            "name": "Evelyn Johnson",
+            "role": "Primary Guardian",
+            "relationship": "Mother",
+            "priority": 1,
+            "phone": "+1 (555) 987-6543",
+            "channels": [
+              "Push",
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_dad",
+            "name": "Marcus Johnson",
+            "role": "Secondary Guardian",
+            "relationship": "Father",
+            "priority": 2,
+            "phone": "+1 (555) 876-5432",
+            "channels": [
+              "SMS",
+              "Call"
+            ],
+            "canAcknowledge": true,
+            "canResolve": true,
+            "medicalAccess": true,
+            "evidenceAccess": true,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "Available"
+          },
+          {
+            "id": "c_officer",
+            "name": "Officer Davis",
+            "role": "Campus Safety",
+            "relationship": "Campus Officer · Badge #402",
+            "priority": 3,
+            "phone": "+1 (555) 432-1098",
+            "channels": [
+              "SMS"
+            ],
+            "canAcknowledge": true,
+            "canResolve": false,
+            "medicalAccess": true,
+            "evidenceAccess": false,
+            "locationAccess": true,
+            "duressVisibility": true,
+            "availability": "On duty 7a–4p"
+          },
+          {
+            "id": "c_grandma",
+            "name": "Grandma Clara",
+            "role": "Extended Circle",
+            "relationship": "Maternal Grandmother",
+            "priority": 4,
+            "phone": "+1 (555) 234-5678",
+            "channels": [
+              "Call"
+            ],
+            "canAcknowledge": false,
+            "canResolve": false,
+            "medicalAccess": false,
+            "evidenceAccess": false,
+            "locationAccess": false,
+            "duressVisibility": false,
+            "availability": "Fallback only",
+            "notifyEnabled": false
+          }
+        ],
+        "owner": {
+          "name": "Evelyn Johnson",
+          "role": "Primary Guardian",
+          "relationship": "Mother",
+          "phone": "+1 (555) 987-6543"
+        },
+        "spokenMode": "reassurance"
+      },
+      "rev": 3,
+      "telemetry": [],
+      "backend": {
+        "incidentId": "inc_50896",
+        "packetId": "pkt_1785728202090_wzpr9v",
+        "severity": "CRITICAL",
+        "connectedAt": 1785728209402
+      }
+    }
+  }
+}

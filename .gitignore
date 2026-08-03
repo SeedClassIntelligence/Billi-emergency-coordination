@@ -60,3 +60,4 @@ archive/
 *.bak
 *.tmp
 *~
+tools/certs/

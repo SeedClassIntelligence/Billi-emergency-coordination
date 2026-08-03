@@ -1,7 +1,18 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
+import { ProtectedPersonContract } from "../../../packages/api-contracts/src";
+import { CANONICAL_PROTECTED_PERSON } from "../../../packages/demo-fixtures/src";
 
 const app = express();
 app.use(express.json());
+
+// Browser CORS support for the web-app frontend
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 const PORT = process.env.PORT || 8085;
 
@@ -10,40 +21,19 @@ app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "HEALTHY", service: "billi-identity-service", timestamp: new Date().toISOString() });
 });
 
-interface UserIdentity {
-  userId: string;
-  name: string;
-  age: number;
-  role: "PROTECTED_INDIVIDUAL" | "GUARDIAN" | "RESPONDER";
-  guardians: Array<{ name: string; phone: string; priority: number }>;
-  boundDevices: string[];
-}
-
-const mockIdentities: Record<string, UserIdentity> = {
-  user_emma_001: {
-    userId: "user_emma_001",
-    name: "Emma Miller",
-    age: 10,
-    role: "PROTECTED_INDIVIDUAL",
-    guardians: [
-      { name: "Sarah Miller (Mother)", phone: "+15550192834", priority: 1 },
-      { name: "John Miller (Father)", phone: "+15550199988", priority: 2 }
-    ],
-    boundDevices: ["device_phone_emma_01", "device_watch_emma_01"]
-  }
-};
-
 // Retrieve User Identity & Relationships
 app.get("/identity/:userId", (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const identity = mockIdentities[userId] || {
-    userId,
-    name: "Protected User",
-    age: 18,
-    role: "PROTECTED_INDIVIDUAL",
-    guardians: [{ name: "Primary Guardian", phone: "+15550000000", priority: 1 }],
-    boundDevices: ["device_default"]
-  };
+  const identity: ProtectedPersonContract = 
+    userId === CANONICAL_PROTECTED_PERSON.userId || userId === "user_emma_001"
+      ? CANONICAL_PROTECTED_PERSON
+      : {
+          userId,
+          name: "Protected Person",
+          age: 18,
+          medicalNotes: "No documented allergies",
+          emergencyInstructions: "Notify primary guardian"
+        };
 
   console.log(`[IDENTITY_SERVICE] Retrieved identity for user: ${userId} (${identity.name})`);
   res.status(200).json(identity);

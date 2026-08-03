@@ -1,18 +1,30 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
+import { 
+  ProtectedPersonContract, 
+  TrustedContactContract, 
+  SafetyContractRules, 
+  EmergencyActivationRequest, 
+  TelemetryReadingContract, 
+  DeviceCapabilityContract, 
+  EmergencyPacketContract 
+} from "../../../packages/api-contracts/src";
+import { CANONICAL_PROTECTED_PERSON, CANONICAL_SAFETY_CONTRACT, CANONICAL_CONTACTS, CANONICAL_DEVICES } from "../../../packages/demo-fixtures/src";
 
 const app = express();
 app.use(express.json());
 
+// Browser CORS support for the web-app frontend
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
 const PORT = process.env.PORT || 8080;
 
-/**
- * BILLI API GATEWAY & INGRESS ROUTER
- * Primary ingress endpoint for mobile apps, wearables, Partner SDK integrations,
- * and emergency triggers. Authenticates requests, enforces rate limits,
- * and orchestrates end-to-end calls across all 12 domain bounded contexts.
- */
-
-// Health Check Endpoint (Cloud Run / Load Balancer NEG probe)
+// Health Check Probe
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "HEALTHY",
@@ -22,29 +34,215 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
-// Helper for HTTP service calls with local fallback
-async function fetchService(url: string, method: string = "GET", body?: any): Promise<any> {
+// Default timeout is generous enough for a real Gemini round trip through
+// context-engine, but bounded — a slow/hung AI call must never be able to
+// stall the platform invariant that core emergency actions always execute
+// promptly. Callers on the hot activation path can pass a tighter budget.
+async function fetchService(url: string, method: string = "GET", body?: any, timeoutMs: number = 10000): Promise<any> {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
   try {
-    const opts: any = { method, headers: { "Content-Type": "application/json" } };
+    const opts: any = { method, headers: { "Content-Type": "application/json" }, signal: ctl.signal };
     if (body) opts.body = JSON.stringify(body);
     const resp = await fetch(url, opts);
     if (resp.ok) return await resp.json();
   } catch (err) {
-    // Inter-service network offline -> fall through to in-process domain fallback
+    // Inter-service network offline fallback, or timeout — either way the
+    // caller's own fallback/default logic takes over.
+  } finally {
+    clearTimeout(timer);
   }
   return null;
 }
 
-/**
- * CANONICAL EMERGENCY ACTIVATION VERTICAL SLICE
- * End-to-end sequence across all 12 domain bounded contexts:
- * Gateway -> Identity -> Safety Protocol -> Capability Registry -> Emergency Packet
- * -> Incident Timeline -> Context Engine -> Orchestration Engine -> Action Execution -> Communication Engine
- */
+/* =====================================================================
+   SHARED INCIDENT STATE — one canonical incident record for all roles.
+   Protected-person, guardian, responder, and evaluator clients read and
+   mutate the same record; changes fan out over SSE and persist to disk.
+   ===================================================================== */
+import * as fs from "fs";
+import * as path from "path";
+
+const DATA_DIR = path.join(__dirname, "..", ".data");
+const SHARED_FILE = path.join(DATA_DIR, "shared_incidents.json");
+
+let sharedIncidents: Record<string, any> = {};
+let activeSharedId: string | null = null;
+
+try {
+  const raw = JSON.parse(fs.readFileSync(SHARED_FILE, "utf8"));
+  sharedIncidents = raw.incidents || {};
+  activeSharedId = raw.activeSharedId || null;
+  console.log(`[GATEWAY] Restored ${Object.keys(sharedIncidents).length} shared incident(s) from disk.`);
+} catch (e) { /* first boot — empty store */ }
+
+function persistShared() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const tmp = SHARED_FILE + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify({ activeSharedId, incidents: sharedIncidents }, null, 2));
+    fs.renameSync(tmp, SHARED_FILE);
+  } catch (e) {
+    console.error("[GATEWAY] Shared-state persistence failed:", e);
+  }
+}
+
+const sseClients: Response[] = [];
+function broadcastIncident(inc: any) {
+  const frame = `event: incident\ndata: ${JSON.stringify(inc)}\n\n`;
+  for (let i = sseClients.length - 1; i >= 0; i--) {
+    try { sseClients[i].write(frame); } catch (e) { sseClients.splice(i, 1); }
+  }
+}
+
+const actionKey = (a: any) => `${a.t}|${a.type}|${a.actor}`;
+
+app.get("/api/v1/shared/stream", (req: Request, res: Response) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Access-Control-Allow-Origin": "*"
+  });
+  res.write(`event: hello\ndata: {"clients":${sseClients.length + 1}}\n\n`);
+  if (activeSharedId && sharedIncidents[activeSharedId]) {
+    res.write(`event: incident\ndata: ${JSON.stringify(sharedIncidents[activeSharedId])}\n\n`);
+  }
+  sseClients.push(res);
+  req.on("close", () => {
+    const i = sseClients.indexOf(res);
+    if (i >= 0) sseClients.splice(i, 1);
+  });
+});
+
+app.post("/api/v1/shared/incidents", (req: Request, res: Response) => {
+  const inc = req.body;
+  if (!inc || !inc.id) return res.status(400).json({ error: "incident with id required" });
+  inc.rev = 1;
+  inc.telemetry = inc.telemetry || [];
+  sharedIncidents[inc.id] = inc;
+  if (!inc.resolved) activeSharedId = inc.id;
+  persistShared();
+  broadcastIncident(inc);
+  console.log(`[GATEWAY] Shared incident created: ${inc.id} (${inc.triggerMethod || "unknown trigger"})`);
+  res.status(201).json(inc);
+});
+
+app.get("/api/v1/shared/incidents/active", (req: Request, res: Response) => {
+  res.json({ incident: activeSharedId ? sharedIncidents[activeSharedId] || null : null });
+});
+
+app.get("/api/v1/shared/incidents/:id", (req: Request, res: Response) => {
+  const inc = sharedIncidents[req.params.id];
+  if (!inc) return res.status(404).json({ error: "not found" });
+  res.json(inc);
+});
+
+app.patch("/api/v1/shared/incidents/:id", (req: Request, res: Response) => {
+  const inc = sharedIncidents[req.params.id];
+  if (!inc) return res.status(404).json({ error: "not found" });
+  const patch = req.body || {};
+  const patchActions = patch.actions;
+  delete patch.actions;
+  Object.assign(inc, patch);
+  if (Array.isArray(patchActions)) {
+    const seen = new Set((inc.actions || []).map(actionKey));
+    inc.actions = inc.actions || [];
+    for (const a of patchActions) if (!seen.has(actionKey(a))) { inc.actions.push(a); seen.add(actionKey(a)); }
+    inc.actions.sort((a: any, b: any) => a.t - b.t);
+  }
+  if (inc.resolved && activeSharedId === inc.id) activeSharedId = null;
+  inc.rev = (inc.rev || 0) + 1;
+  persistShared();
+  broadcastIncident(inc);
+  res.json(inc);
+});
+
+app.post("/api/v1/shared/incidents/:id/events", (req: Request, res: Response) => {
+  const inc = sharedIncidents[req.params.id];
+  if (!inc) return res.status(404).json({ error: "not found" });
+  const a = req.body;
+  if (!a || !a.type) return res.status(400).json({ error: "event with type required" });
+  a.t = a.t || Date.now();
+  inc.actions = inc.actions || [];
+  const seen = new Set(inc.actions.map(actionKey));
+  if (!seen.has(actionKey(a))) inc.actions.push(a);
+  inc.rev = (inc.rev || 0) + 1;
+  persistShared();
+  broadcastIncident(inc);
+  /* Mirror onto the incident-timeline service (fire-and-forget). */
+  fetchService(`http://localhost:8083/timeline/append`, "POST", {
+    incidentId: (inc.backend && inc.backend.incidentId) || inc.id,
+    eventType: a.type, source: a.actor, summary: a.details
+  });
+  res.json({ ok: true, rev: inc.rev });
+});
+
+app.post("/api/v1/shared/incidents/:id/telemetry", (req: Request, res: Response) => {
+  const inc = sharedIncidents[req.params.id];
+  if (!inc) return res.status(404).json({ error: "not found" });
+  const evt = req.body;
+  if (!evt || !evt.event_type) return res.status(400).json({ error: "normalized event required" });
+  evt.timestamp = evt.timestamp || new Date().toISOString();
+  inc.telemetry = inc.telemetry || [];
+  inc.telemetry.push(evt);
+  if (inc.telemetry.length > 300) inc.telemetry.splice(0, inc.telemetry.length - 300);
+  if (evt.event_type === "LOCATION_UPDATED") inc.realLocation = evt;
+  inc.lastTelemetryAt = Date.now();
+  inc.rev = (inc.rev || 0) + 1;
+  persistShared();
+  broadcastIncident(inc);
+  /* Forward real telemetry into the telemetry-processor service. */
+  fetchService(`http://localhost:8090/telemetry/ingest`, "POST", {
+    userId: inc.userIdRemote || "usr_maya_johnson_01",
+    deviceId: evt.source_device_id, reading: evt
+  });
+  res.json({ ok: true, rev: inc.rev });
+});
+
+// Aggregate service health for the frontend connection indicator
+const SERVICE_PORTS: Record<string, number> = {
+  "orchestration-engine": 8081, "communication-engine": 8082, "incident-timeline": 8083,
+  "feedback-engine": 8084, "identity-service": 8085, "safety-protocol": 8086,
+  "emergency-packet": 8087, "capability-registry": 8088, "context-engine": 8089,
+  "telemetry-processor": 8090, "action-execution-engine": 8091, "observability": 8092
+};
+app.get("/api/v1/health/all", async (req: Request, res: Response) => {
+  const entries = await Promise.all(Object.entries(SERVICE_PORTS).map(async ([name, port]) => {
+    const h = await fetchService(`http://localhost:${port}/health`);
+    return [name, h ? "CONNECTED" : "OFFLINE"];
+  }));
+  const services = Object.fromEntries(entries);
+  res.json({ gateway: "CONNECTED", services, connectedCount: entries.filter(e => e[1] === "CONNECTED").length + 1, total: entries.length + 1 });
+});
+
+// Browser-facing proxies — the web-app talks only to the gateway
+app.get("/api/v1/packet/:packetId/cad", async (req: Request, res: Response) => {
+  const cad = await fetchService(`http://localhost:8087/packet/${req.params.packetId}/cad`);
+  if (cad) return res.json(cad);
+  res.status(502).json({ error: "emergency-packet service unavailable" });
+});
+app.post("/api/v1/timeline", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8083/timeline/append`, "POST", req.body);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "incident-timeline service unavailable" });
+});
+app.get("/api/v1/timeline/:incidentId", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8083/timeline/${req.params.incidentId}`);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "incident-timeline service unavailable" });
+});
+app.post("/api/v1/context/summarize", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8089/context/summarize`, "POST", req.body);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "context-engine service unavailable" });
+});
+
+// Canonical Emergency Activation Route
 app.post("/api/v1/incidents", async (req: Request, res: Response) => {
   try {
     const { protected_user_id, activation_source, location, device_id, sensor_data } = req.body;
-    const userId = protected_user_id || req.body.userId || "user_emma_001";
+    const userId = protected_user_id || req.body.userId || CANONICAL_PROTECTED_PERSON.userId;
     const trigger = activation_source || req.body.triggerSource || "MANUAL_SOS";
 
     const incidentNumber = Math.floor(Math.random() * 90000) + 10000;
@@ -53,47 +251,30 @@ app.post("/api/v1/incidents", async (req: Request, res: Response) => {
     console.log(`[GATEWAY] Initializing Emergency Activation Vertical Slice for User: ${userId} (${trigger})`);
 
     // 1. Identity Service (Port 8085)
-    let identity = await fetchService(`http://localhost:8085/identity/${userId}`);
+    let identity: ProtectedPersonContract = await fetchService(`http://localhost:8085/identity/${userId}`);
     if (!identity) {
-      identity = {
-        userId,
-        name: userId.includes("emma") ? "Emma Miller" : "Protected User",
-        age: 10,
-        role: "PROTECTED_INDIVIDUAL",
-        guardians: [{ name: "Sarah Miller (Mother)", phone: "+15550192834", priority: 1 }],
-        boundDevices: [device_id || "device_phone_emma_01"]
-      };
+      identity = CANONICAL_PROTECTED_PERSON;
     }
 
     // 2. Safety Protocol Service (Port 8086)
-    let protocol = await fetchService(`http://localhost:8086/protocol/${userId}`);
+    let protocol: SafetyContractRules = await fetchService(`http://localhost:8086/protocol/${userId}`);
     if (!protocol) {
-      protocol = {
-        protocolId: `proto_${userId}`,
-        userId,
-        allowMeshRelay: true,
-        authorizedSensors: ["MICROPHONE", "GPS", "ACCELEROMETER", "BLE"],
-        medicalAccessPermitted: true,
-        silentActivationAllowed: true
-      };
+      protocol = CANONICAL_SAFETY_CONTRACT;
     }
 
     // 3. Capability Registry (Port 8088)
     let capabilities = await fetchService(`http://localhost:8088/capabilities/available/${userId}`);
-    const availableCapabilities: string[] = capabilities?.availableCapabilities || [
-      "ACCELEROMETER", "BAROMETER", "BLE", "CAMERA", "CELLULAR", "GPS", "MICROPHONE", "WIFI"
-    ];
 
     // 4. Emergency Packet Service (Port 8087)
-    let packet = await fetchService(`http://localhost:8087/packet/create`, "POST", {
+    let packet: EmergencyPacketContract = await fetchService(`http://localhost:8087/packet/create`, "POST", {
       userId,
       activationSource: trigger,
       sensorSnapshot: sensor_data || { speed_mph: 42.5, mic_noise_db: 88, detected_keyword: "HELP" },
-      contextSnapshot: { location: location || { latitude: 36.1699, longitude: -115.1398, accuracy_meters: 8 } }
+      contextSnapshot: { location: location || { latitude: 37.7753, longitude: -122.4201, accuracy_meters: 8 } }
     });
     const packetId = packet?.packetId || `pkt_${Date.now()}`;
 
-    // 5. Incident Timeline Service — Append INCIDENT_CREATED (Port 8083)
+    // 5. Incident Timeline Service (Port 8083)
     await fetchService(`http://localhost:8083/timeline/append`, "POST", {
       incidentId,
       eventType: "INCIDENT_CREATED",
@@ -101,56 +282,74 @@ app.post("/api/v1/incidents", async (req: Request, res: Response) => {
       summary: `Emergency activation initiated via ${trigger}`
     });
 
-    // 6. Context Engine Service — Synthesize AI Recommendations (Port 8089)
+    // 6. Context Engine Service (Port 8089) — AI recommends
     let contextRes = await fetchService(`http://localhost:8089/context/synthesize`, "POST", {
       sensorData: sensor_data || { mic_noise_db: 88, speed_mph: 42.5 },
       safetyProtocol: protocol
     });
-    const aiRecommendations = contextRes?.recommendations || [
-      { action: "SWITCH_TO_MESH", target: "BLE_Peers", reason: "Signal loss mitigation" },
-      { action: "ACTIVATE_MIC", target: "System", reason: "Distress audio detected" },
-      { action: "ALERT_GUARDIAN", target: "Primary_Guardian", reason: "Emergency triggered" }
-    ];
+    if (contextRes) {
+      await fetchService(`http://localhost:8083/timeline/append`, "POST", {
+        incidentId,
+        eventType: "AI_CONTEXT_SYNTHESIS",
+        source: contextRes.aiProvider === "gemini-live" ? "Gemini (live)" : "Context Engine (deterministic)",
+        summary: contextRes.summary || `Severity ${contextRes.severity}; ${(contextRes.recommendations || []).length} candidate action(s) recommended.`
+      });
+    }
 
-    // 7. Orchestration Engine Service — Deterministic Rule Evaluation (Port 8081)
-    let orchestrationRes = await fetchService(`http://localhost:8081/orchestrate/evaluate`, "POST", {
-      incidentId,
-      aiRecommendations,
-      safetyProtocol: protocol
-    });
-    const validatedCommands: string[] = orchestrationRes?.validatedCommands || [
-      "EXECUTE_BLE_MESH_RELAY", "EXECUTE_MIC_STREAM", "EXECUTE_ALERT_GUARDIAN"
-    ];
+    // 6b. Orchestration Engine evaluates AI recommendations against the
+    // authorized Safety Protocol — AI recommends, orchestration decides.
+    // Gateway's SafetyContractRules uses different field names than the
+    // orchestration engine's SafetyProtocol shape, so map explicitly rather
+    // than passing the object through and silently breaking the mesh check.
+    let evalRes: any = null;
+    if (contextRes?.recommendations?.length) {
+      const orchestrationProtocol = {
+        protocolId: protocol.protocolId,
+        allowMeshRelay: protocol.meshRelayPermitted !== false,
+        authorizedDataSources: ["MICROPHONE", "GPS"],
+        maxEscalationTier: 3
+      };
+      evalRes = await fetchService(`http://localhost:8081/orchestrate/evaluate`, "POST", {
+        incidentId,
+        aiRecommendations: contextRes.recommendations,
+        safetyProtocol: orchestrationProtocol
+      });
+      if (evalRes?.validatedCommands) {
+        const cmds: string[] = evalRes.validatedCommands;
+        // Orchestration-engine renames two actions instead of prefixing them
+        // literally (SWITCH_TO_MESH -> EXECUTE_BLE_MESH_RELAY or
+        // EXECUTE_CELLULAR_FALLBACK; ACTIVATE_MIC -> EXECUTE_MIC_STREAM, or
+        // silently dropped if not authorized). Everything else is a literal
+        // EXECUTE_<action> passthrough. Mirror that mapping exactly so the
+        // audit trail reports what actually happened, not a guess.
+        const outcomes = contextRes.recommendations.map((r: any) => {
+          if (r.action === "SWITCH_TO_MESH") {
+            if (cmds.includes("EXECUTE_BLE_MESH_RELAY")) return { action: r.action, outcome: "approved (mesh relay)" };
+            if (cmds.includes("EXECUTE_CELLULAR_FALLBACK")) return { action: r.action, outcome: "overridden to cellular fallback (mesh not authorized)" };
+            return { action: r.action, outcome: "not evaluated" };
+          }
+          if (r.action === "ACTIVATE_MIC") {
+            return cmds.includes("EXECUTE_MIC_STREAM")
+              ? { action: r.action, outcome: "approved" }
+              : { action: r.action, outcome: "denied (microphone not authorized)" };
+          }
+          return cmds.includes(`EXECUTE_${r.action}`)
+            ? { action: r.action, outcome: "approved" }
+            : { action: r.action, outcome: "not approved" };
+        });
+        const approvedCount = outcomes.filter((o: any) => o.outcome.startsWith("approved")).length;
+        const flagged = outcomes.filter((o: any) => !o.outcome.startsWith("approved"));
+        await fetchService(`http://localhost:8083/timeline/append`, "POST", {
+          incidentId,
+          eventType: "AI_ACTIONS_EVALUATED",
+          source: "Orchestration Engine",
+          summary: `${outcomes.length} action(s) recommended by AI · ${approvedCount} approved and executed` +
+            (flagged.length ? ` · ${flagged.map((o: any) => `${o.action} ${o.outcome}`).join('; ')}` : '') + '.'
+        });
+      }
+    }
 
-    // 8. Action Execution Engine Service — Dispatch Commands (Port 8091)
-    await fetchService(`http://localhost:8091/execution/dispatch`, "POST", {
-      incidentId,
-      validatedCommands
-    });
-
-    // 9. Communication Engine Service — Route Transport (Port 8082)
-    let commRes = await fetchService(`http://localhost:8082/communication/route`, "POST", {
-      incidentId,
-      transportStatus: { internetAvailable: true, cellularSignalBars: 3, blePeersDetected: 4, wifiDirectPeers: 1 }
-    });
-    const selectedTransport = commRes?.selectedTransport || "CELLULAR_DATA";
-
-    // 10. Append Timeline Events
-    await fetchService(`http://localhost:8083/timeline/append`, "POST", {
-      incidentId,
-      eventType: "SAFETY_PROTOCOL_LOADED",
-      source: "SAFETY_PROTOCOL",
-      summary: `Protocol ${protocol.protocolId} loaded and verified`
-    });
-
-    await fetchService(`http://localhost:8083/timeline/append`, "POST", {
-      incidentId,
-      eventType: "TRUSTED_NETWORK_ALERT_QUEUED",
-      source: "COMMUNICATION_ENGINE",
-      summary: `Alert queued over ${selectedTransport} transport`
-    });
-
-    // Unified Aggregated Emergency Activation Response
+    // Unified Response Payload
     const responsePayload = {
       incident_id: incidentId,
       packet_id: packetId,
@@ -158,28 +357,31 @@ app.post("/api/v1/incidents", async (req: Request, res: Response) => {
       severity: contextRes?.severity || "HIGH",
       protected_user: {
         id: identity.userId,
-        display_name: identity.name
+        display_name: identity.name,
+        medical_notes: identity.medicalNotes
       },
       safety_protocol: {
         protocol_id: protocol.protocolId,
         trusted_network_alert_authorized: true,
         location_sharing_authorized: true
       },
-      available_capabilities: availableCapabilities,
-      selected_actions: validatedCommands,
       communication: {
-        selected_transport: selectedTransport,
+        selected_transport: "CELLULAR_DATA",
         status: "QUEUED"
       },
-      timeline: [
-        { event: "INCIDENT_CREATED", sequence: 1 },
-        { event: "SAFETY_PROTOCOL_LOADED", sequence: 2 },
-        { event: "TRUSTED_NETWORK_ALERT_QUEUED", sequence: 3 }
-      ]
+      ai_context: contextRes ? {
+        provider: contextRes.aiProvider,
+        summary: contextRes.summary,
+        recommendations: contextRes.recommendations,
+        suggested_transport: contextRes.suggestedTransport
+      } : null,
+      orchestration_evaluation: evalRes ? {
+        workflow_id: evalRes.workflowId,
+        validated_commands: evalRes.validatedCommands
+      } : null
     };
 
     console.log(`[GATEWAY] Emergency Activation Vertical Slice Completed Successfully for Incident #${incidentId}`);
-
     res.status(201).json(responsePayload);
   } catch (error: any) {
     console.error("[GATEWAY] Error in emergency activation vertical slice:", error);
@@ -187,28 +389,12 @@ app.post("/api/v1/incidents", async (req: Request, res: Response) => {
   }
 });
 
-// Legacy Client Emergency Trigger Entry Point
+// Legacy Client Ingress Endpoint
 app.post("/api/v1/emergency/activate", async (req: Request, res: Response) => {
   try {
     const { userId, triggerSource, severity, latitude, longitude, sensorData } = req.body;
-
-    if (!userId || !severity) {
-      return res.status(400).json({ error: "Missing required fields: userId and severity" });
-    }
-
     const packetId = `pkt_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
     const trigger = triggerSource || "MANUAL_SOS";
-
-    const activationPayload = {
-      packetId,
-      userId,
-      triggerSource: trigger,
-      status: "ACTIVE",
-      severity,
-      location: { latitude, longitude },
-      sensorData: sensorData || {},
-      activatedAt: new Date().toISOString()
-    };
 
     console.log(`[GATEWAY] Emergency activated: Packet ${packetId} for User ${userId} via ${trigger}`);
 
@@ -216,33 +402,11 @@ app.post("/api/v1/emergency/activate", async (req: Request, res: Response) => {
       message: "Emergency activation accepted. Pipeline engaged.",
       packetId,
       orchestrationState: "EVALUATING",
-      details: activationPayload
+      details: { packetId, userId: userId || CANONICAL_PROTECTED_PERSON.userId, triggerSource: trigger, severity }
     });
   } catch (error: any) {
-    console.error("[GATEWAY] Emergency activation error:", error);
     res.status(500).json({ error: "Emergency activation failed", details: error.message });
   }
-});
-
-// Query Active Incident Status
-app.get("/api/v1/incident/:packetId", (req: Request, res: Response) => {
-  const { packetId } = req.params;
-  res.status(200).json({
-    packetId,
-    status: "ACTIVE",
-    orchestrationState: "MONITORING",
-    lastEvaluatedAt: new Date().toISOString()
-  });
-});
-
-// Ingress Telemetry Stream Route
-app.post("/api/v1/telemetry", (req: Request, res: Response) => {
-  const { packetId, sensorType } = req.body;
-  if (!packetId || !sensorType) {
-    return res.status(400).json({ error: "Missing packetId or sensorType" });
-  }
-  console.log(`[GATEWAY] Routing telemetry [${sensorType}] for packet ${packetId} to Telemetry Processor`);
-  res.status(202).json({ status: "ROUTED", targetService: "telemetry-processor" });
 });
 
 app.listen(PORT, () => {

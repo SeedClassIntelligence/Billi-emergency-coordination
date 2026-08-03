@@ -1,4 +1,7 @@
 import express, { Request, Response } from "express";
+import { SafetyContractRules } from "../../../packages/api-contracts/src";
+import { CANONICAL_SAFETY_CONTRACT } from "../../../packages/demo-fixtures/src";
+import { evaluateGeofenceStatus } from "../../../packages/safety-contract/src";
 
 const app = express();
 app.use(express.json());
@@ -10,29 +13,19 @@ app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "HEALTHY", service: "billi-safety-protocol-service", timestamp: new Date().toISOString() });
 });
 
-interface ProtocolRules {
-  protocolId: string;
-  userId: string;
-  allowMeshRelay: boolean;
-  authorizedSensors: string[];
-  medicalAccessPermitted: boolean;
-  silentActivationAllowed: boolean;
-}
-
-// Retrieve Pre-Authorized Safety Protocol for User / Entity query (SDK, Vehicle, School)
+// Retrieve Pre-Authorized Safety Protocol for User
 app.get("/protocol/:userId", (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const protocol: ProtocolRules = {
-    protocolId: `proto_${userId}`,
-    userId,
-    allowMeshRelay: true,
-    authorizedSensors: ["MICROPHONE", "GPS", "ACCELEROMETER", "BLE"],
-    medicalAccessPermitted: true,
-    silentActivationAllowed: true
-  };
-
+  const protocol: SafetyContractRules = CANONICAL_SAFETY_CONTRACT;
   console.log(`[SAFETY_PROTOCOL] Evaluated backend safety protocol for user: ${userId}`);
   res.status(200).json(protocol);
+});
+
+// Evaluate Geofence Status
+app.post("/protocol/evaluate-geofence", (req: Request, res: Response) => {
+  const { latitude, longitude } = req.body;
+  const result = evaluateGeofenceStatus(latitude || 37.7753, longitude || -122.4201, CANONICAL_SAFETY_CONTRACT);
+  res.status(200).json(result);
 });
 
 app.listen(PORT, () => {

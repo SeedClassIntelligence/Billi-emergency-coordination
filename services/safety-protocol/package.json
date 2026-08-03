@@ -2,10 +2,10 @@
   "name": "billi-safety-protocol-service",
   "version": "1.0.0",
   "description": "Billi Safety Protocol Evaluation & Permission Matrix Microservice",
-  "main": "dist/index.js",
+  "main": "dist/services/safety-protocol/src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/services/safety-protocol/src/index.js",
     "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {

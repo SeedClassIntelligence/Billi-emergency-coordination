@@ -8,9 +8,9 @@ class GuardianIncidentDashboard extends StatefulWidget {
 
   const GuardianIncidentDashboard({
     super.key,
-    required this.incidentId,
-    required this.protectedName,
-    required this.guardianName,
+    this.incidentId = 'inc_emma_freeway_94312',
+    this.protectedName = 'Emma Miller (Age 10)',
+    this.guardianName = 'Sarah Miller (Mother)',
   });
 
   @override
@@ -19,7 +19,7 @@ class GuardianIncidentDashboard extends StatefulWidget {
 
 class _GuardianIncidentDashboardState extends State<GuardianIncidentDashboard> {
   bool _hasResponded = false;
-  String _transportPath = 'BLE MESH RELAY (4 Peers)';
+  final String _transportPath = 'CELLULAR (Stable) → MESH RELAY READY';
 
   @override
   Widget build(BuildContext context) {
@@ -27,72 +27,105 @@ class _GuardianIncidentDashboardState extends State<GuardianIncidentDashboard> {
       backgroundColor: const Color(0xFF0F0F12),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E1E24),
-        title: Text('GUARDIAN HUD: ${widget.protectedName.toUpperCase()}',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
+        title: const Text('GUARDIAN MODE: SARAH MILLER (MOTHER)',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: Colors.greenAccent)),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(Icons.shield, color: Colors.greenAccent, size: 20),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. PROTECTED PERSON IDENTITY & STATUS FIRST
+            // 1. LIVE MAP AT THE VERY TOP
+            Container(
+              height: 180,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A22),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.redAccent.withOpacity(0.5), width: 1.5),
+              ),
+              child: Stack(
+                children: [
+                  // Stylized Map Grid representation
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.map, size: 48, color: Colors.white24),
+                        SizedBox(height: 6),
+                        Text('INTERSTATE 15 SOUTH (LAS VEGAS AREA)', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold)),
+                        Text('GPS Fix: 36.1699° N, -115.1398° W (Accuracy: 4.2m)', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(8)),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.navigation, color: Colors.white, size: 14),
+                          SizedBox(width: 4),
+                          Text('MOVING @ 42 MPH SB', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.blueAccent)),
+                      child: Text(_transportPath, style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold, fontSize: 10)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // 2. PROTECTED PERSON IDENTITY & MEDICAL CONTRACT
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: const Color(0xFF1E1E24),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
+                border: Border.all(color: Colors.white10),
               ),
               child: Row(
                 children: [
                   const CircleAvatar(
                     radius: 26,
                     backgroundColor: Colors.redAccent,
-                    child: Icon(Icons.person, color: Colors.white, size: 30),
+                    child: Icon(Icons.child_care, color: Colors.white, size: 30),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.protectedName, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                        const Text('Age 10 • Mild Asthma (Albuterol Inhaler)', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                        const SizedBox(height: 4),
-                        const Text('Activation: 14:00:02 • Battery: 84%', style: TextStyle(color: Colors.greenAccent, fontSize: 12, fontWeight: FontWeight.w600)),
+                      children: const [
+                        Text('Emma Miller (Daughter)', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('Age 10 • Mild Asthma (Requires Albuterol)', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                        SizedBox(height: 4),
+                        Text('Last Update: 12s ago • Battery: 84%', style: TextStyle(color: Colors.greenAccent, fontSize: 12, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 14),
-
-            // 2. LOCATION & TRANSPORT STATUS
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: const Color(0xFF1E1E24), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white10)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('LAST KNOWN LOCATION & TRANSPORT', style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold)),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-                        child: Text(_transportPath, style: const TextStyle(color: Colors.blueAccent, fontSize: 10, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Text('Hwy 1 Northbound @ 42.5 mph (GPS Lock: 4m)', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                ],
-              ),
-            ),
             const SizedBox(height: 16),
 
-            // 3. ACKNOWLEDGMENT / I AM RESPONDING BUTTON
+            // 3. PRIMARY ACTION: I AM RESPONDING & GUARDIAN RESPONSE PATH
             if (!_hasResponded) ...[
               SizedBox(
                 width: double.infinity,
@@ -120,31 +153,66 @@ class _GuardianIncidentDashboardState extends State<GuardianIncidentDashboard> {
                   children: [
                     Icon(Icons.check_circle, color: Colors.greenAccent),
                     SizedBox(width: 10),
-                    Text('Response Recorded: Mother is responding', style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14)),
+                    Text('Response Recorded: Sarah Miller is responding', style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14)),
                   ],
                 ),
               ),
             ],
 
+            const SizedBox(height: 12),
+
+            // GUARDIAN RESPONSE ACTIONS BAR
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E24), side: const BorderSide(color: Colors.blueAccent)),
+                    icon: const Icon(Icons.map, size: 16, color: Colors.blueAccent),
+                    label: const Text('Live Route', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    onPressed: () {},
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E24), side: const BorderSide(color: Colors.greenAccent)),
+                    icon: const Icon(Icons.call, size: 16, color: Colors.greenAccent),
+                    label: const Text('Call Emma', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    onPressed: () {},
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E24), side: const BorderSide(color: Colors.purpleAccent)),
+                    icon: const Icon(Icons.chat_bubble_outline, size: 16, color: Colors.purpleAccent),
+                    label: const Text('Quiet Msg', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 16),
 
-            // 4. ORDERED TIMELINE
-            const Text('ORDERED INCIDENT TIMELINE', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold)),
+            // 4. CANONICAL TIMELINE
+            const Text('ORDERED INCIDENT TIMELINE', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
             const SizedBox(height: 10),
-            _buildTimelineRow('14:02:10', 'Mother (Sarah Miller) clicked "I Am Responding"', Colors.greenAccent),
-            _buildTimelineRow('14:00:08', 'Communication switched to BLE Mesh Relay (4 Peer Nodes)', Colors.orangeAccent),
-            _buildTimelineRow('14:00:06', 'Guardian Alert queued via Cellular Data', Colors.blueAccent),
-            _buildTimelineRow('14:00:02', 'Emergency SOS Activated by Emma Miller', Colors.redAccent),
+            if (_hasResponded)
+              _buildTimelineRow('10:02:05', 'Mother (Sarah Miller) clicked "I Am Responding"', Colors.greenAccent),
+            _buildTimelineRow('10:02:02', 'Alert delivered to Sarah Miller via Cellular Data', Colors.blueAccent),
+            _buildTimelineRow('10:02:01', 'Four Core Actions Initiated (GPS Lock, Audio Active)', Colors.amberAccent),
+            _buildTimelineRow('10:02:00', 'Emergency SOS Activated by Emma Miller on I-15', Colors.redAccent),
 
             const SizedBox(height: 16),
 
-            // 5. AI ASSISTANT SUMMARY (PLACED LAST AS AN ASSISTANT TOOL)
+            // 5. DETERMINISTIC & VALID AI ASSISTANT SUMMARY
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A24),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.purple.withOpacity(0.3)),
+                border: Border.all(color: Colors.purple.withOpacity(0.4)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,13 +221,13 @@ class _GuardianIncidentDashboardState extends State<GuardianIncidentDashboard> {
                     children: [
                       Icon(Icons.auto_awesome, color: Colors.amberAccent, size: 16),
                       SizedBox(width: 6),
-                      Text('GEMINI AI ASSISTANT SUMMARY',
+                      Text('SITUATION SUMMARY (AI-ASSISTED • 10:02 AM)',
                           style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 1.0)),
                     ],
                   ),
                   SizedBox(height: 6),
                   Text(
-                    '"Sudden acceleration detected; child moving at ~42 mph after manual activation. Distress detected in ambient microphone. Signal switched to BLE Mesh Relay due to dead-zone location."',
+                    'Emma activated Billi on Interstate 15 South near Las Vegas. Her device is moving at approximately 42 mph. Her mother Sarah Miller has received the alert. Cellular connection is stable.',
                     style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.3),
                   ),
                 ],
@@ -167,7 +235,7 @@ class _GuardianIncidentDashboardState extends State<GuardianIncidentDashboard> {
             ),
             const SizedBox(height: 20),
 
-            // 6. RESOLUTION CONTROLS BUTTON
+            // 6. RESOLUTION CONTROLS
             SizedBox(
               width: double.infinity,
               height: 48,

@@ -7,8 +7,8 @@
       "file_count": 120,
       "filecell_count": 120,
       "freshness_state": "fresh",
-      "last_indexed_at": "2026-08-01T10:10:15.067492",
-      "manifest_hash": "b4ff790d7f3b5293e6d542ce9d2e88b69647f1fffd846e9687254f994c2471eb",
+      "last_indexed_at": "2026-08-01T11:35:27.098654",
+      "manifest_hash": "3d44bf729aedc12459cff7cc340d65bdd372a36082c0dd9a0fc6de5e4eccef3c",
       "name": "Billi-emergency-coordination-main",
       "path": "C:\\Users\\SEEDN\\Downloads\\Billi-emergency-coordination-main",
       "repo_id": "repo_86a480ccf754",
@@ -19,10 +19,10 @@
         "signature": "unsigned",
         "verification": "unverified"
       },
-      "updated_at": "2026-08-01T10:10:15.067528",
+      "updated_at": "2026-08-01T11:35:27.099109",
       "workcell_count": 120
     }
   ],
-  "updated_at": "2026-08-01T10:10:15.067532",
+  "updated_at": "2026-08-01T11:35:27.099147",
   "version": 1
 }

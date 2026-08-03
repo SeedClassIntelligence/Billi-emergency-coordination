@@ -1,9 +1,18 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
 const app = express();
 app.use(express.json());
+
+// Browser CORS support for the web-app frontend
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 const PORT = process.env.PORT || 8087;
 const DATA_DIR = path.join(__dirname, "../.data");
@@ -204,6 +213,45 @@ app.get("/packet/:packetId", (req: Request, res: Response) => {
     return res.status(404).json({ error: "Packet not found" });
   }
   res.status(200).json(packet);
+});
+
+// Export CAD 911 Digital Packet
+app.get("/packet/:packetId/cad", (req: Request, res: Response) => {
+  const packet = packetStore.get(req.params.packetId);
+  if (!packet) {
+    return res.status(404).json({ error: "Packet not found" });
+  }
+
+  const cadPacket = {
+    cadPacketId: `cad_${packet.packetId}`,
+    generatedAt: new Date().toISOString(),
+    incidentNumber: packet.incidentNumber,
+    protectedPerson: {
+      name: "Maya Johnson",
+      age: 11,
+      medicalNotes: "Mild Asthma. Carries rescue Albuterol inhaler. Peanut allergy.",
+      instructions: "If unresponsive, check backpack for Albuterol inhaler. Notify Evelyn Johnson immediately."
+    },
+    latestGpsFix: {
+      lat: packet.contextSnapshot?.location?.latitude || 37.7753,
+      lng: packet.contextSnapshot?.location?.longitude || -122.4201,
+      accuracyMeters: 8,
+      speedMph: 42.5,
+      timestamp: packet.startTime
+    },
+    deviceStatus: {
+      batteryPercent: 82,
+      signalState: "GOOD",
+      phoneOff: false,
+      degraded: false
+    },
+    humanStatus: packet.humanStatus,
+    timelineEventCount: 5,
+    evidenceCount: packet.sensorSnapshot ? 2 : 1
+  };
+
+  console.log(`[EMERGENCY_PACKET] Exported CAD Digital Packet for Packet #${packet.incidentNumber}`);
+  res.status(200).json(cadPacket);
 });
 
 app.listen(PORT, () => {

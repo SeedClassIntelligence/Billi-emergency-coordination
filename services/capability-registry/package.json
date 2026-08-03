@@ -2,10 +2,10 @@
   "name": "billi-capability-registry",
   "version": "1.0.0",
   "description": "Billi Device Capability Abstraction & Inventory Provider Microservice",
-  "main": "dist/index.js",
+  "main": "dist/services/capability-registry/src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/services/capability-registry/src/index.js",
     "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {

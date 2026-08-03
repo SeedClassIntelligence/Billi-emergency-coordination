@@ -2,10 +2,10 @@
   "name": "billi-identity-service",
   "version": "1.0.0",
   "description": "Billi User Identity, Guardian Relationships, and Device Binding Microservice",
-  "main": "dist/index.js",
+  "main": "dist/services/identity-service/src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/services/identity-service/src/index.js",
     "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {

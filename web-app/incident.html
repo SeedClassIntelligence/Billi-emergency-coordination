@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Guardian Command Center</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" id="main-host"></main>
+  </div>
+
+  <!-- RESOLVE MODAL -->
+  <div class="modal-overlay" id="resolve-modal" style="display:none;">
+    <div class="modal-dialog-card" style="max-width:440px;">
+      <h3 style="color:#fff;">Resolve incident</h3>
+      <div class="form-group margin-top-xs"><label class="form-label-muted">Reason</label>
+        <select id="res-reason" class="form-control-dark">
+          <option>Protected person confirmed safe</option>
+          <option>Reunited with guardian</option>
+          <option>False alarm / accidental trigger</option>
+          <option>Handled by campus responder</option>
+        </select></div>
+      <div class="form-group margin-top-xs"><label class="form-label-muted">Resolution notes</label>
+        <textarea id="res-notes" class="form-control-dark" rows="3" placeholder="Reunited with Maya at the school office. Inhaler on hand, no injuries."></textarea></div>
+      <div class="flex-row margin-top" style="gap:0.5rem; justify-content:flex-end;">
+        <button class="btn btn-outline-nav" onclick="document.getElementById('resolve-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-primary" onclick="doResolve()">✓ Resolve incident</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    Billi.renderNav('incident.html');
+
+    const S = Billi.state;
+    const p = S.protectedPerson || Billi.FIXTURE.protectedPerson;
+    const m = S.medical || Billi.FIXTURE.medical;
+    const guardianName = (S.owner && S.owner.name) || 'Evelyn Johnson';
+
+    function lifecycleRail(current) {
+      return `<div class="lifecycle-rail">${Billi.LIFECYCLE.map(st => {
+        const idx = Billi.LIFECYCLE.indexOf(st), curIdx = Billi.LIFECYCLE.indexOf(current);
+        return `<span class="lifecycle-node ${idx < curIdx ? 'done' : idx === curIdx ? 'current' : ''}">${st.replace(/_/g, ' ')}</span>`;
+      }).join('')}</div>`;
+    }
+
+    function coreRow(icon, label, val, cls) {
+      return `<div class="core-action-row margin-top-xs"><span style="color:#e2e8f0; font-size:0.84rem;">${icon} ${label}</span><span class="${cls}">${val}</span></div>`;
+    }
+
+    function trailMap(v) {
+      /* Project lat/lng onto the canvas: linear scaling around THIS incident's route bounds. */
+      const route = (v.inc.path && v.inc.path.length) ? v.inc.path : Billi.SIM_PATH;
+      const lats = route.map(pt => pt.lat), lngs = route.map(pt => pt.lng);
+      const mnLa = Math.min(...lats), mxLa = Math.max(...lats), mnLo = Math.min(...lngs), mxLo = Math.max(...lngs);
+      const px = (pt) => ({ x: 8 + 84 * ((pt.lng - mnLo) / (mxLo - mnLo || 1)), y: 88 - 76 * ((pt.lat - mnLa) / (mxLa - mnLa || 1)) });
+      const dots = v.trail.map((pt, i) => {
+        const c = px(pt);
+        return `<div class="trail-dot ${i === v.trail.length - 1 ? 'current' : ''}" style="left:${c.x}%; top:${c.y}%;"></div>`;
+      }).join('');
+      const responder = v.contacts.find(c => /Responding|En route|On scene/i.test(c.status));
+      const respDot = responder ? `<div class="trail-dot responder" style="left:18%; top:80%;"></div><div class="map-person-tag" style="left:6%; top:86%; font-size:0.62rem;">🟢 ${responder.name.split(' ')[0]} responding</div>` : '';
+      return `
+        <div class="mapbox-dark-canvas" style="height:250px; position:relative;">
+          ${dots}${respDot}
+          <div class="map-person-tag">${p.name} · ${v.loc.speed} mph · ${v.loc.label}</div>
+        </div>`;
+    }
+
+    /* Live Gemini summary: fetched async through the gateway; the local
+       deterministic v.aiSummary is the instant, always-available default
+       until (if) a real call resolves. Honestly labelled either way. */
+    const geminiState = { provider: 'deterministic-fallback', text: null, label: 'Deterministic fallback — checking live Gemini…', fetchedFor: null };
+
+    function refreshGeminiSummary(inc, v) {
+      if (geminiState.fetchedFor === inc.id + inc.actions.length) return; // avoid duplicate calls for unchanged state
+      geminiState.fetchedFor = inc.id + inc.actions.length;
+      fetch(`${(location.protocol === 'https:') ? '' : 'http://localhost:8080'}/api/v1/context/summarize`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          incidentId: inc.id, timelineEvents: v.events, duress: inc.duress,
+          protectedPerson: p, medical: m
+        })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        if (!data) return;
+        geminiState.provider = data.aiProvider || 'deterministic-fallback';
+        geminiState.text = data.summary || null;
+        geminiState.label = geminiState.provider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback — live Gemini not connected';
+        const chip = document.getElementById('gemini-chip');
+        const textEl = document.getElementById('gemini-text');
+        if (chip) { chip.textContent = geminiState.label; chip.className = `sim-chip ${geminiState.provider === 'gemini-live' ? 'connected' : 'local'}`; }
+        if (textEl && geminiState.text) textEl.textContent = geminiState.text;
+      }).catch(() => { geminiState.label = 'Deterministic fallback — gateway unreachable'; });
+    }
+
+    /* Backend timeline: real events recorded server-side (AI_CONTEXT_SYNTHESIS,
+       AI_ACTIONS_EVALUATED, etc.) that the local client-side simulation never
+       generates on its own. Fetched once the gateway has a backend incident
+       id, merged into the displayed timeline, and clearly marked CONNECTED
+       so they're never confused with the local simulation. */
+    const backendTimeline = { fetchedFor: null, events: [] };
+    const GW = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
+
+    function refreshBackendTimeline(inc) {
+      const backendId = inc.backend && inc.backend.incidentId;
+      if (!backendId || backendTimeline.fetchedFor === backendId) return;
+      backendTimeline.fetchedFor = backendId;
+      fetch(`${GW}/api/v1/timeline/${backendId}`).then(r => r.ok ? r.json() : null).then(data => {
+        if (!data || !Array.isArray(data.events)) return;
+        // INCIDENT_CREATED is redundant with the local TRIGGER event — every
+        // other backend event type (AI synthesis, action evaluation, future
+        // additions) is genuinely new information the local sim can't produce.
+        backendTimeline.events = data.events
+          .filter(e => e.eventType !== 'INCIDENT_CREATED')
+          .map(e => ({ t: new Date(e.timestamp).getTime(), actor: e.source, label: `${e.eventType.replace(/_/g, ' ')} — ${e.summary}`, backend: true }));
+        const el = document.getElementById('timeline-scroll');
+        if (el) render();
+      }).catch(() => {});
+    }
+
+    function render() {
+      const host = document.getElementById('main-host');
+      const inc = Billi.getActiveIncident() || S.incidents[0];
+      if (!inc) {
+        host.innerHTML = `<section class="card text-center margin-top" style="padding:2.5rem;">
+          <h2 style="color:#fff;">No active incident</h2>
+          <p class="text-muted margin-top-xs">All protected people are safe. Billi is ${S.armed ? 'armed and monitoring' : 'not armed'}.</p>
+          <div class="flex-row margin-top" style="gap:0.6rem; justify-content:center;">
+            <button class="btn btn-secondary" onclick="location.href='dashboard.html'">← Command Center</button>
+            <button class="btn btn-outline-nav" onclick="location.href='history.html'">Incident history</button>
+          </div></section>`;
+        return;
+      }
+      const v = Billi.incidentView(inc);
+      const resolved = inc.resolved;
+      refreshGeminiSummary(inc, v);
+      refreshBackendTimeline(inc);
+      const mergedEvents = [...v.events, ...backendTimeline.events].sort((a, b) => a.t - b.t);
+
+      host.innerHTML = `
+        ${inc.duress ? `
+        <section class="duress-banner margin-top">
+          <strong style="color:#fca5a5; font-size:1.05rem;">🚨 CRITICAL DURESS ALERT — possible coerced cancellation</strong>
+          <div style="color:#fecaca; font-size:0.8rem; margin-top:0.25rem;">${p.name}'s device shows a believable "cancelled" screen. Silent escalation is active — do NOT call the device openly. Location and audio continue.</div>
+        </section>` : ''}
+
+        <!-- 1. PROTECTED PERSON & LIVE SITUATION -->
+        <section class="person-main-card margin-top">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.75rem;">
+            <div class="flex-row" style="gap:1rem;">
+              <div class="person-avatar-circle" style="${resolved ? '' : 'border-color:#ef4444;'}">${Billi.initials(p.name)}</div>
+              <div>
+                <div class="flex-row" style="gap:0.5rem; align-items:center;">
+                  <span class="person-name-text">${p.name}</span>
+                  <span class="text-muted" style="font-size:0.8rem;">Age ${p.age}</span>
+                  ${resolved ? '<span class="badge badge-green">RESOLVED</span>' : '<span class="badge badge-red">LIVE</span>'}
+                </div>
+                <div class="person-sub-text">${inc.id} · ${inc.triggerMethod} · started ${Billi.fmtAgo(inc.triggeredAt)}${inc.scenario ? ' · ' + inc.scenario : ''}
+                  ${inc.backend ? `<span class="sim-chip connected" style="margin-left:0.35rem;" title="Gateway accepted this activation">CONNECTED · ${inc.backend.incidentId} · ${inc.backend.packetId}</span>` : `<span class="sim-chip local" style="margin-left:0.35rem;">LOCAL — gateway not reached</span>`}</div>
+                <div class="flex-row margin-top-xs" style="gap:0.45rem; flex-wrap:wrap; font-size:0.72rem;">
+                  <span class="badge badge-blue">📍 ${v.loc.lat.toFixed(5)}, ${v.loc.lng.toFixed(5)}</span>
+                  <span class="badge badge-indigo">${v.loc.speed} mph · ${v.loc.speed > 15 ? 'vehicle-speed movement' : v.loc.speed > 0 ? 'moving' : 'stationary'}</span>
+                  <span class="badge ${v.degraded ? 'badge-amber' : 'badge-green'}">Comm: ${v.commPath}</span>
+                  <span class="badge ${v.protection.pct >= 90 ? 'badge-green' : 'badge-amber'}">Protection: ${v.protection.tier} ${v.protection.pct}%</span>
+                  <span class="badge badge-blue">🔋 82% (SIMULATED)</span>
+                </div>
+              </div>
+            </div>
+            <div style="min-width:230px;">${lifecycleRail(v.lifecycle)}</div>
+          </div>
+        </section>
+
+        <div class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
+          <div>
+            <!-- 2. LIVE MAP -->
+            <div class="dash-map-card">
+              <div class="dash-map-header flex-between">
+                <span class="map-header-title">Live route & movement trail</span>
+                <span class="sim-chip simulated">Simulated telemetry</span>
+              </div>
+              ${trailMap(v)}
+              <div class="margin-top-xs text-muted" style="font-size:0.72rem;">Last update ${Billi.fmtAgo(inc.triggeredAt + (v.trail.length - 1) * 8000)} · accuracy ${v.degraded ? '45 m (estimated)' : '6 m (GPS)'} · trail shows ${v.trail.length} confirmed fixes</div>
+            </div>
+
+            <!-- 3. FOUR CORE ACTIONS -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Four core emergency actions</div>
+              ${coreRow('📍', 'Location', v.core.gps + (v.degraded ? ' · DEGRADED' : ''), v.degraded ? 'state-wait' : 'state-ok')}
+              ${coreRow('🎙', 'Audio recording', v.core.audio, 'state-ok')}
+              ${coreRow('🎥', 'Video', v.core.video, 'state-unavail')}
+              ${coreRow('👥', 'Trusted Network alert', v.core.network, v.core.network === 'DELIVERED' || v.core.network === 'ACKNOWLEDGED' ? 'state-ok' : 'state-wait')}
+            </div>
+
+            <!-- 6. ESCALATION -->
+            <div class="escalation-box margin-top-xs ${v.escalation.acknowledged ? 'cleared' : v.escalation.escalated ? 'fired' : ''}">
+              <div class="flex-between">
+                <strong style="color:#fff; font-size:0.88rem;">⏱ Progressive escalation</strong>
+                <span style="font-weight:800; color:${v.escalation.acknowledged ? '#34d399' : v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'};">
+                  ${v.escalation.acknowledged ? 'HALTED' : v.escalation.remaining > 0 ? `T-${v.escalation.remaining}s` : 'LADDER COMPLETE'}</span>
+              </div>
+              <div class="progress-track-bg margin-top-xs">
+                <div class="progress-bar-fill" style="width:${v.escalation.acknowledged ? 100 : Math.round((45 - v.escalation.remaining) / 45 * 100)}%; background:${v.escalation.acknowledged ? '#10b981' : 'linear-gradient(90deg,#f59e0b,#ef4444)'};"></div>
+              </div>
+              <div class="text-muted margin-top-xs" style="font-size:0.72rem;">${v.escalation.label}</div>
+              ${v.escalation.stages.map(s => `<div style="font-size:0.72rem; margin-top:0.25rem; color:${s.fired ? '#fbbf24' : '#475569'};">${s.fired ? '●' : '○'} T-${s.at}s — ${s.label}</div>`).join('')}
+            </div>
+
+            <!-- REAL DEVICE TELEMETRY (Capability Adapter Layer) -->
+            ${(inc.telemetry && inc.telemetry.length) ? `
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(16,185,129,0.35);">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.9rem;">📡 Real device telemetry</span>
+                <span class="sim-chip connected">${inc.telemetry.length} events · ${(inc.realLocation ? 'REAL GPS FIX' : 'no GPS fix yet')}</span>
+              </div>
+              ${inc.realLocation ? `<div style="font-size:0.78rem; color:#34d399; margin-top:0.3rem;">📍 ${inc.realLocation.latitude.toFixed(5)}, ${inc.realLocation.longitude.toFixed(5)} · ±${Math.round(inc.realLocation.accuracy_meters || 0)} m · ${inc.realLocation.mode || ''}</div>` : ''}
+              <div style="max-height:120px; overflow-y:auto;">
+                ${inc.telemetry.slice(-6).reverse().map(e => `
+                  <div class="margin-top-xs" style="font-size:0.7rem; font-family:monospace; color:#94a3b8;">
+                    [${new Date(e.timestamp).toLocaleTimeString()}] ${e.event_type} · ${e.source_device_id} · ${e.permission_state}/${e.execution_state}${e.magnitude_ms2 ? ' · ' + e.magnitude_ms2 + ' m/s²' : ''}${e.segment ? ' · seg ' + e.segment + ' (' + e.bytes + ' B)' : ''}${e.reason ? ' · ' + e.reason : ''}</div>`).join('')}
+              </div>
+            </div>` : ''}
+
+            <!-- 9. GEMINI -->
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.9rem;">🧠 AI-assisted summary</span>
+                <span class="sim-chip ${geminiState.provider === 'gemini-live' ? 'connected' : 'local'}" id="gemini-chip">${geminiState.label}</span>
+              </div>
+              <p style="color:#c7d2fe; font-size:0.84rem; margin-top:0.4rem;" id="gemini-text">${geminiState.text || v.aiSummary}</p>
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Interpretation, not confirmed fact. People make decisions; AI assists.</div>
+            </div>
+          </div>
+
+          <div>
+            <!-- 4. GUARDIAN RESPONSE CONTROLS -->
+            <div class="card" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Guardian response — ${guardianName}</div>
+              <div class="grid grid-2 margin-top-xs" style="gap:0.45rem;">
+                <button class="btn btn-danger" ${resolved || v.escalation.acknowledged ? 'disabled style="opacity:0.5;"' : ''} onclick="act('ack')">✓ I AM RESPONDING</button>
+                <button class="btn btn-secondary" ${resolved ? 'disabled' : ''} onclick="act('call')">📞 Call ${p.name.split(' ')[0]}</button>
+                <button class="btn btn-secondary" ${resolved ? 'disabled' : ''} onclick="act('quiet')">💬 Quiet message</button>
+                <button class="btn btn-secondary" ${resolved ? 'disabled' : ''} onclick="act('navigate')">🧭 Navigate to location</button>
+                <button class="btn btn-secondary" onclick="act('packet')">📄 Export 911-Ready Packet</button>
+                <button class="btn btn-secondary" ${resolved ? 'disabled' : ''} onclick="act('services')">🚓 Contact emergency services</button>
+                <button class="btn btn-secondary" ${resolved ? 'disabled' : ''} onclick="act('stabilize')">🛡 Mark stabilized</button>
+                <button class="btn btn-primary" ${resolved ? 'disabled' : ''} onclick="document.getElementById('resolve-modal').style.display='flex'">✓ Resolve incident</button>
+              </div>
+            </div>
+
+            <!-- 5. RESPONSE MATRIX -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Trusted Network response matrix</div>
+              ${v.contacts.sort((a,b)=>a.priority-b.priority).map(c => `
+                <div class="flex-between margin-top-xs" style="padding:0.55rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:10px;">
+                  <div class="flex-row" style="gap:0.55rem;">
+                    <div class="avatar-initials" style="width:30px; height:30px; font-size:0.7rem;">${Billi.initials(c.name)}</div>
+                    <div>
+                      <div style="color:#fff; font-size:0.82rem; font-weight:600;">${c.name} <span class="text-muted" style="font-weight:400;">P${c.priority}</span></div>
+                      <div class="text-muted" style="font-size:0.68rem;">${(c.channels || []).join(' / ')} · alert ${c.alertState}</div>
+                    </div>
+                  </div>
+                  <span class="badge ${!c.notifyEnabled ? 'badge-slate' : /Responding|En route|On scene|Acknowledged/i.test(c.status) ? 'badge-green' : /Delivered|ACKNOWLEDGED/i.test(c.alertState) ? 'badge-blue' : 'badge-amber'}" style="font-size:0.66rem;">${c.status}</span>
+                </div>`).join('')}
+            </div>
+
+            <!-- 7. EVIDENCE -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.92rem;">Evidence</span>
+                <span class="text-muted" style="font-size:0.68rem;">Audio ✓ · Video — · Photos —</span>
+              </div>
+              <div style="max-height:150px; overflow-y:auto;">
+                ${v.evidence.map((s, i) => `
+                  <div class="margin-top-xs" style="font-size:0.75rem; font-family:monospace; color:${i > 2 ? '#fca5a5' : '#94a3b8'};">
+                    [${Billi.fmtClock(s.t)}] ${s.type === 'audio' ? '🎙' : 'ℹ'} ${s.transcript}</div>`).join('')}
+              </div>
+            </div>
+
+            <!-- MEDICAL -->
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(239,68,68,0.25);">
+              <div class="panel-section-title" style="font-size:0.92rem;">⚕ Medical dossier (authorized)</div>
+              <div style="font-size:0.8rem; color:#e2e8f0; margin-top:0.3rem;">
+                ${m.conditions} · Allergies: ${m.allergies}<br>
+                <span class="text-muted" style="font-size:0.74rem;">${m.medications}</span><br>
+                <span style="color:#fbbf24; font-size:0.74rem;">${m.instructions}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. TIMELINE -->
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.92rem;">Incident timeline — append-only</span>
+            <span class="text-muted" style="font-size:0.7rem;">Correlation ${inc.correlationId}${backendTimeline.events.length ? ` · <span class="sim-chip connected" style="vertical-align:middle;">${backendTimeline.events.length} backend event(s)</span>` : ''}</span>
+          </div>
+          <div style="max-height:210px; overflow-y:auto;" id="timeline-scroll">
+            ${mergedEvents.map(e => `
+              <div class="timeline-event-item margin-top-xs" ${e.backend ? 'style="border-left:2px solid rgba(16,185,129,0.5); padding-left:0.5rem;"' : ''}>
+                <div class="event-time-text">${Billi.fmtClock(e.t)} · ${e.actor}${e.backend ? ' <span class="sim-chip connected" style="font-size:0.55rem; padding:0.05rem 0.35rem;">BACKEND</span>' : ''}</div>
+                <div class="event-desc-text">${e.label}</div>
+              </div>`).join('')}
+          </div>
+        </section>
+
+        ${resolved ? `
+        <section class="card margin-top text-center" style="padding:1.25rem; border:1px solid rgba(16,185,129,0.4);">
+          <h3 style="color:#34d399;">Incident resolved — ${inc.resolution.reason}</h3>
+          <p class="text-muted" style="font-size:0.8rem;">${inc.resolution.notes} · by ${inc.resolution.by}</p>
+          <button class="btn btn-secondary margin-top-xs" onclick="location.href='history.html'">Post-incident review →</button>
+        </section>` : ''}`;
+    }
+
+    function act(kind) {
+      const inc = Billi.getActiveIncident();
+      if (!inc && kind !== 'packet') return;
+      if (kind === 'ack') {
+        Billi.recordAction('GUARDIAN_ACKNOWLEDGED', guardianName, 'Acknowledged the incident — responding now. ETA 3 minutes (SIMULATED route).');
+        const c = S.contacts.find(x => x.priority === 1);
+        if (c) Billi.recordAction('RESPONDER_STATUS', guardianName, 'Responding — ETA 3 min');
+        Billi.toast('✓ You are marked as responding. Escalation halted.', 'ok');
+      }
+      if (kind === 'call') Billi.recordAction('CONTACT_ATTEMPT', guardianName, `Voice call placed to ${p.name}'s device (SIMULATED — carrier voice not connected).`);
+      if (kind === 'quiet') Billi.recordAction('QUIET_MESSAGE', guardianName, `Quiet message sent: "I see your alert. I am on my way." (SIMULATED delivery)`);
+      if (kind === 'navigate') Billi.recordAction('NAVIGATION_STARTED', guardianName, 'Turn-by-turn navigation started toward last confirmed location (SIMULATED).');
+      if (kind === 'services') Billi.recordAction('EMERGENCY_SERVICES_CONTACTED', guardianName, 'Guardian contacted emergency services by phone. NOTE: no live 911/CAD integration — recommended manual call.');
+      if (kind === 'stabilize') { Billi.recordAction('INCIDENT_STABILIZED', guardianName, 'Situation stabilized — protected person in guardian contact.'); Billi.toast('Marked stabilized.', 'ok'); }
+      if (kind === 'packet') {
+        const target = Billi.getActiveIncident() || S.incidents[0];
+        const local = Billi.buildPacket(target);
+        /* CONNECTED path: append the real CAD serialization from :8087 when reachable. */
+        Billi.fetchRemoteCad(target).then(cad => {
+          const full = cad
+            ? local + '\n\nCONNECTED CAD SERIALIZATION (emergency-packet service :8087):\n' + JSON.stringify(cad, null, 2)
+            : local + '\n\n[LOCAL MODE — connected CAD service not reached; packet above is the local serialization]';
+          navigator.clipboard.writeText(full).then(() => Billi.toast(cad ? '📄 Packet copied — includes CONNECTED CAD from emergency-packet service.' : '📄 Packet copied (local serialization).', 'ok'));
+        });
+      }
+      render(); Billi.renderNav('incident.html');
+    }
+
+    function doResolve() {
+      const reason = document.getElementById('res-reason').value;
+      const notes = document.getElementById('res-notes').value || 'No additional notes.';
+      Billi.resolveIncident(guardianName, notes, reason);
+      document.getElementById('resolve-modal').style.display = 'none';
+      Billi.toast('✓ Incident resolved. Billi returns to armed readiness after review.', 'ok');
+      render(); Billi.renderNav('incident.html');
+    }
+
+    render();
+    /* If navigation interrupted the original gateway call, re-send the activation once. */
+    Billi.retryRemoteActivation().then(r => { if (r) { render(); } });
+    /* Shared-state push: re-render the moment another session mutates the incident. */
+    document.addEventListener('billi:shared', () => { render(); Billi.renderNav('incident.html'); });
+    setInterval(() => { if (Billi.getActiveIncident()) { render(); Billi.renderNav('incident.html'); } }, 2000);
+  </script>
+</body>
+</html>

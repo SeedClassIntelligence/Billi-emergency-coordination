@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Safety Coordination Platform</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+
+  <!-- TOP NAVBAR CONTAINER -->
+  <header id="top-nav" class="top-navbar">
+    <div class="nav-flex">
+      <div class="brand-wrapper" onclick="window.location.href='landing.html'">
+        <span class="brand-mark">BILLI</span>
+      </div>
+
+      <nav class="center-nav-links">
+        <a href="landing.html">Platform</a>
+        <a href="landing.html">Features</a>
+        <a href="#demos-section" onclick="scrollToDemos(); return false;">Live Demos</a>
+        <a href="landing.html">Architecture</a>
+      </nav>
+
+      <div class="nav-actions flex-row">
+        <button class="btn btn-outline-nav" onclick="window.location.href='auth.html'">Log In</button>
+        <button class="btn btn-primary-nav" onclick="window.location.href='auth.html'">Get Started</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LANDING PAGE CONTAINER (SURFACE 1) -->
+  <main>
+    <section class="hero-wrapper text-center">
+      <h1 class="hero-title-main">Safety Coordination<br>Platform</h1>
+      <p class="hero-subheadline-1">Every second accounted for. Every person protected.</p>
+      <p class="hero-subheadline-2">Families · Schools · Businesses · Universities · Hospitals · Communities</p>
+
+      <div class="hero-cta-group flex-row justify-center">
+        <button class="btn btn-hero-primary" onclick="scrollToDemos()">Explore Live Demos →</button>
+        <button class="btn btn-hero-secondary" onclick="window.location.href='auth.html'">Create Account</button>
+      </div>
+
+      <!-- PRODUCT SHOWCASE BROWSER MOCKUP WINDOW -->
+      <div class="product-window-frame margin-top-lg">
+        <div class="window-header-bar flex-between">
+          <div class="window-dots flex-row">
+            <span class="dot red-dot"></span>
+            <span class="dot yellow-dot"></span>
+            <span class="dot green-dot"></span>
+          </div>
+          <div class="window-url-bar">guardiancommand.com</div>
+          <div style="width: 40px;"></div>
+        </div>
+        <div class="window-content-grid">
+          <div class="window-map-pane">
+            <div class="mapbox-dark-canvas" style="height: 100%; border-radius: 8px;">
+              <div class="map-pulsing-pin" style="background: #a855f7; box-shadow: 0 0 20px #a855f7;"></div>
+              <div class="map-person-tag" style="background: rgba(15,23,42,0.9); border: 1px solid rgba(168,85,247,0.4);">📍 Active Tracking Pin</div>
+            </div>
+          </div>
+          <div class="window-control-pane">
+            <div class="window-pane-header">Guardian Command Center</div>
+            <div class="window-action-grid grid grid-2">
+              <div class="win-btn active-purple">Configure</div>
+              <div class="win-btn">Detect</div>
+              <div class="win-btn">Action Grid</div>
+              <div class="win-btn">Metrics</div>
+              <div class="win-btn">Duress Escalation</div>
+              <div class="win-btn">Resolve</div>
+            </div>
+            <div class="window-timer-box margin-top">
+              <div class="flex-between" style="font-size: 0.75rem; color: #94a3b8;">
+                <span>Escalation Timer</span>
+                <span class="text-amber">20:00</span>
+              </div>
+              <div class="progress-bar-track margin-top-xs">
+                <div class="progress-bar-fill" style="width: 65%; background: linear-gradient(90deg, #f59e0b, #ef4444);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 PERFORMANCE STAT CARDS -->
+      <div class="grid grid-3 container margin-top-lg">
+        <div class="card stat-card text-center">
+          <div class="stat-number">&lt; 2 seconds</div>
+          <div class="stat-label">— Trigger to GPS Lock</div>
+        </div>
+        <div class="card stat-card text-center">
+          <div class="stat-number">45 seconds</div>
+          <div class="stat-label">— Escalation Timer</div>
+        </div>
+        <div class="card stat-card text-center">
+          <div class="stat-number">9</div>
+          <div class="stat-label">— Emergency Activation Paths</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="container section-spacing text-center">
+      <div class="section-tag-muted">How It Works</div>
+      <h2 class="section-title-white">How Billi Protects</h2>
+
+      <div class="grid grid-4 margin-top-md">
+        <div class="card process-step-card text-left">
+          <span class="step-num-text">01</span>
+          <h3 class="step-title-text">Configure →</h3>
+        </div>
+
+        <div class="card process-step-card text-left">
+          <span class="step-num-text">02</span>
+          <h3 class="step-title-text">Detect →</h3>
+        </div>
+
+        <div class="card process-step-card text-left">
+          <span class="step-num-text">03</span>
+          <h3 class="step-title-text">Coordinate →</h3>
+        </div>
+
+        <div class="card process-step-card text-left">
+          <span class="step-num-text">04</span>
+          <h3 class="step-title-text">Resolve</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 LIVE DEMONSTRATIONS GRID -->
+    <section id="demos-section" class="container section-spacing text-center">
+      <div class="section-tag-muted">9 Live Demonstrations</div>
+      <h2 class="section-title-white">Experience Billi — 9 Real-World Scenarios</h2>
+      <p class="text-muted margin-top-xs" style="margin-bottom: 2.5rem;">Click any scenario card below to launch the live active incident simulation.</p>
+
+      <div class="grid grid-3 text-left">
+        <!-- SCENARIO 1 -->
+        <div class="card scenario-card-stripe stripe-blue" onclick="Billi.runDemo(1)" style="cursor: pointer;">
+          <div class="scenario-tag text-blue">SCENARIO 01</div>
+          <h3 class="scenario-card-title margin-top-xs">Protect a Child</h3>
+          <div class="scenario-persona text-blue">Maya Johnson (Age 11)</div>
+          <p class="scenario-desc">Spoken safe word "Blue Folder" matched on Ray-Ban Glasses, geofence exit breach at 42.5 mph, mother response, and 911 CAD packet export.</p>
+          <div class="scenario-cta text-blue margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 2 -->
+        <div class="card scenario-card-stripe stripe-cyan" onclick="Billi.runDemo(2)" style="cursor: pointer;">
+          <div class="scenario-tag text-cyan">SCENARIO 02</div>
+          <h3 class="scenario-card-title margin-top-xs">Help After a Fall</h3>
+          <div class="scenario-persona text-cyan">Robert Ellis (Age 78)</div>
+          <p class="scenario-desc">Apple Watch Ultra 2 hard fall detection, 15s unresponsive countdown alert, accelerometry telemetry spike, emergency contact dispatch.</p>
+          <div class="scenario-cta text-cyan margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 3 -->
+        <div class="card scenario-card-stripe stripe-light-blue" onclick="Billi.runDemo(3)" style="cursor: pointer;">
+          <div class="scenario-tag text-blue">SCENARIO 03</div>
+          <h3 class="scenario-card-title margin-top-xs">Vehicle Crash</h3>
+          <div class="scenario-persona text-blue">David Reyes (Driver)</div>
+          <p class="scenario-desc">Automotive 8.5g impact decelerometer spike, airbag deployment sensor trigger, rapid trajectory stop alert to first responders.</p>
+          <div class="scenario-cta text-blue margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 4 -->
+        <div class="card scenario-card-stripe stripe-red" onclick="Billi.runDemo(4)" style="cursor: pointer;">
+          <div class="scenario-tag text-red">SCENARIO 04</div>
+          <h3 class="scenario-card-title margin-top-xs">Medical Emergency</h3>
+          <div class="scenario-persona text-red">Lisa Tran (Severe Asthma)</div>
+          <p class="scenario-desc">Acoustic distress noise spike (>80dB), pre-authorized Albuterol inhaler instructions dispatched to campus emergency responders.</p>
+          <div class="scenario-cta text-red margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 5 -->
+        <div class="card scenario-card-stripe stripe-green" onclick="Billi.runDemo(5)" style="cursor: pointer;">
+          <div class="scenario-tag text-green">SCENARIO 05</div>
+          <h3 class="scenario-card-title margin-top-xs">Campus Emergency</h3>
+          <div class="scenario-persona text-green">Jasmine Cole & Officer Davis</div>
+          <p class="scenario-desc">Silent BLE beacon squeeze, campus safety officer dispatch alert, tactical location pin at East Entrance with ground unit status.</p>
+          <div class="scenario-cta text-green margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 6 -->
+        <div class="card scenario-card-stripe stripe-amber" onclick="Billi.runDemo(6)" style="cursor: pointer;">
+          <div class="scenario-tag text-amber">SCENARIO 06</div>
+          <h3 class="scenario-card-title margin-top-xs">Duress Defense</h3>
+          <div class="scenario-persona text-amber">Coercion Scenario</div>
+          <p class="scenario-desc">Attacker forces cancellation; user enters Duress PIN 9999. Screen feigns cancellation while silent 911 escalation fires immediately.</p>
+          <div class="scenario-cta text-amber margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 7 -->
+        <div class="card scenario-card-stripe stripe-crimson" onclick="Billi.runDemo(7)" style="cursor: pointer;">
+          <div class="scenario-tag" style="color: #dc2626;">SCENARIO 07</div>
+          <h3 class="scenario-card-title margin-top-xs">Signal Loss Failover</h3>
+          <div class="scenario-persona" style="color: #dc2626;">Tunnel Dead Zone</div>
+          <p class="scenario-desc">Cellular signal drops to 0 bars in tunnel. Automatic encrypted BLE peer-to-peer mesh relay fallback takes over tracking seamless continuity.</p>
+          <div class="scenario-cta margin-top" style="color: #dc2626;">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 8 -->
+        <div class="card scenario-card-stripe stripe-slate" onclick="Billi.runDemo(8)" style="cursor: pointer;">
+          <div class="scenario-tag" style="color: #ea580c;">SCENARIO 08</div>
+          <h3 class="scenario-card-title margin-top-xs">Phone Power-Off</h3>
+          <div class="scenario-persona" style="color: #ea580c;">Power-Off Event</div>
+          <p class="scenario-desc">Primary phone battery dies or powers down. Active tracking seamlessly falls back to Apple Watch Ultra 2 and Smart Tag hardware nodes.</p>
+          <div class="scenario-cta margin-top" style="color: #ea580c;">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 9 -->
+        <div class="card scenario-card-stripe stripe-bright-red" onclick="Billi.runDemo(9)" style="cursor: pointer;">
+          <div class="scenario-tag" style="color: #b91c1c;">SCENARIO 09</div>
+          <h3 class="scenario-card-title margin-top-xs">45s Progressive Escalation</h3>
+          <div class="scenario-persona" style="color: #b91c1c;">Unacknowledged Event</div>
+          <p class="scenario-desc">Guardian unacknowledged after 45 seconds; system automatically escalates and co-dispatches Campus Security & 911 PSAP.</p>
+          <div class="scenario-cta margin-top" style="color: #b91c1c;">Launch Demo →</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER CTA SECTION -->
+    <section class="container section-spacing text-center" style="padding-bottom: 5rem;">
+      <h2 class="section-title-white" style="font-size: 2.25rem;">Ready to protect what matters?</h2>
+      <button class="btn btn-hero-primary margin-top-md" onclick="window.location.href='auth.html'" style="padding: 14px 32px; font-size: 1.1rem;">Create Your Account →</button>
+    </section>
+  </main>
+
+  <script src="billi-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Build Your Safety Ecosystem</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+
+  <div class="onboarding-full-wrapper">
+    <header class="onboarding-top-bar flex-between">
+      <div class="brand-mark" onclick="location.href='landing.html'" style="cursor:pointer;">BILLI</div>
+      <div class="flex-row" style="gap:0.75rem; align-items:center;">
+        <span class="sim-chip local">Setup saves locally · refresh-safe · resumable</span>
+        <button class="btn-dash-logout" onclick="Billi.logout()">Exit Setup</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main-container" style="max-width: 880px; margin: 0 auto;">
+
+      <section class="text-center margin-top">
+        <h1 class="onboarding-hero-title">Welcome to Billi</h1>
+        <p class="onboarding-hero-sub">Let's build your safety ecosystem. Every decision you make here becomes part of the Safety Contract — so nothing has to be decided during an emergency.</p>
+        <button class="btn btn-outline-nav margin-top-xs" style="font-size:0.72rem;" onclick="prefillDemo()">⚡ Evaluator quick-fill (Maya Johnson fixture)</button>
+      </section>
+
+      <!-- PROGRESS -->
+      <section class="setup-progress-box margin-top-md">
+        <div class="flex-between">
+          <span class="progress-title-text" id="prog-text">Step 1 of 9</span>
+          <span class="pill-badge-blue" id="prog-badge">0% Complete</span>
+        </div>
+        <div class="progress-track-bg margin-top-xs">
+          <div class="progress-fill-indigo" id="prog-bar" style="width:11%;"></div>
+        </div>
+      </section>
+
+      <!-- STEP PANES -->
+      <section class="onboarding-main-card margin-top-md" id="step-host"></section>
+
+      <!-- NAV BUTTONS -->
+      <div class="onboarding-bottom-buttons flex-between margin-top">
+        <button class="btn-pill-back" id="btn-back" onclick="goStep(cur-1)">← Back</button>
+        <button class="btn-pill-next" id="btn-next" onclick="nextStep()">Next →</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    if (Billi.state.setup.complete) location.href = 'dashboard.html';
+
+    const S = Billi.state;
+    let cur = S.setup.step || 1;
+
+    const STEP_TITLES = ['Choose the Entity', 'Account Owner', 'Protected Person', 'Medical & Emergency Dossier',
+      'Trusted Network', 'Safety Contract', 'Voice & Coercion Protection', 'Safe Zones & Devices', 'Test, Review & Activate'];
+
+    const ENTITIES = [
+      ['Family', 'Protect children, elders, and loved ones'],
+      ['School / District', 'Campus-wide student protection'],
+      ['Business', 'Employee lone-worker safety'],
+      ['University / Campus', 'Student & staff coordination'],
+      ['Healthcare Organization', 'Patient & caregiver protection'],
+      ['Community', 'Neighborhood safety mesh']
+    ];
+
+    const DEVICE_CATALOG = [
+      ['iPhone 15 Pro', 'Phone (Primary Hub)', 'SIMULATED'], ['Apple Watch Ultra 2', 'Watch', 'SIMULATED'],
+      ['Garmin Fenix 7 Pro', 'Watch', 'REGISTERED'], ['Samsung Galaxy Ring', 'Ring', 'STANDBY'],
+      ['Pixel Watch 3 LTE', 'Watch', 'OFFLINE'], ['Ray-Ban Meta Glasses', 'Glasses', 'SIMULATED'],
+      ['Sennheiser Accentum', 'Headphones', 'STANDBY'], ['Billi Smart Tag', 'Smart Tag', 'SIMULATED'],
+      ['Family Vehicle Unit', 'Vehicle', 'FUTURE ADAPTER']
+    ];
+
+    function esc(s) { return (s || '').toString().replace(/</g, '&lt;'); }
+    function field(id, label, val, ph, type) {
+      return `<div class="form-group margin-top-xs"><label class="form-label-muted">${label}</label>
+        <input id="${id}" type="${type || 'text'}" class="form-control-dark" placeholder="${ph || ''}" value="${esc(val)}"></div>`;
+    }
+    function stateChip(st) {
+      const cls = { SIMULATED: 'simulated', CONNECTED: 'connected', 'FUTURE ADAPTER': 'future', OFFLINE: 'unavail', UNAVAILABLE: 'unavail' }[st] || 'local';
+      return `<span class="sim-chip ${cls}">${st}</span>`;
+    }
+
+    /* ---------- STEP RENDERERS ---------- */
+    function render() {
+      document.getElementById('prog-text').innerText = `Step ${cur} of 9 — ${STEP_TITLES[cur - 1]}`;
+      document.getElementById('prog-badge').innerText = `${Math.round(((cur - 1) / 9) * 100)}% Complete`;
+      document.getElementById('prog-bar').style.width = `${Math.round((cur / 9) * 100)}%`;
+      document.getElementById('btn-back').style.visibility = cur === 1 ? 'hidden' : 'visible';
+      document.getElementById('btn-next').innerText = cur === 9 ? '✓ ACTIVATE BILLI' : `Next: ${STEP_TITLES[cur] || ''} →`;
+      document.getElementById('step-host').innerHTML = STEPS[cur - 1]();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const STEPS = [
+      /* 1 — Entity */
+      () => `
+        <h2 class="panel-section-title">Who is this safety ecosystem for?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">The entity type shapes what your command center displays — My Family, My Students, My Employees.</p>
+        <div class="grid grid-2 margin-top" style="gap:0.6rem;">
+          ${ENTITIES.map(([name, desc]) => `
+            <div class="card" style="cursor:pointer; padding:1rem; border:1px solid ${S.entityType === name ? 'rgba(99,102,241,0.7)' : 'rgba(255,255,255,0.08)'}; background:${S.entityType === name ? 'rgba(99,102,241,0.12)' : ''};"
+                 onclick="S.entityType='${name}'; Billi.save(); render();">
+              <strong style="color:#fff;">${name}</strong>
+              <div class="text-muted" style="font-size:0.76rem; margin-top:0.2rem;">${desc}</div>
+            </div>`).join('')}
+        </div>`,
+
+      /* 2 — Owner */
+      () => {
+        const o = S.owner || {};
+        return `
+        <h2 class="panel-section-title">Create the account owner</h2>
+        <p class="text-muted" style="font-size:0.85rem;">The account owner is the primary administrator and usually the Priority-1 guardian.</p>
+        ${field('own-name', 'Full name', o.name, 'Evelyn Johnson')}
+        <div class="grid grid-2" style="gap:0.75rem;">
+          ${field('own-role', 'Role', o.role, 'Primary Guardian')}
+          ${field('own-rel', 'Relationship to protected person', o.relationship, 'Mother')}
+        </div>
+        ${field('own-phone', 'Phone', o.phone, '+1 (555) 987-6543', 'tel')}`;
+      },
+
+      /* 3 — Protected person */
+      () => {
+        const p = S.protectedPerson || {};
+        return `
+        <h2 class="panel-section-title">Add the protected person</h2>
+        <p class="text-muted" style="font-size:0.85rem;">The protected person is the persistent center of Billi — everything else exists to protect them.</p>
+        ${field('pp-name', 'Full name', p.name, 'Maya Johnson')}
+        <div class="grid grid-2" style="gap:0.75rem;">
+          ${field('pp-age', 'Age', p.age, '11', 'number')}
+          ${field('pp-fac', 'School / workplace / facility', p.facility, 'Pine Middle School')}
+        </div>`;
+      },
+
+      /* 4 — Medical */
+      () => {
+        const m = S.medical || {};
+        return `
+        <h2 class="panel-section-title">Medical & emergency dossier</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Shared only with contacts you authorize, and only during an emergency.</p>
+        <div class="grid grid-2" style="gap:0.75rem;">
+          ${field('md-cond', 'Medical conditions', m.conditions, 'Mild asthma')}
+          ${field('md-alrg', 'Allergies', m.allergies, 'Peanuts')}
+        </div>
+        <div class="grid grid-2" style="gap:0.75rem;">
+          ${field('md-meds', 'Medications & location', m.medications, 'Albuterol rescue inhaler (in backpack)')}
+          ${field('md-phys', 'Physician / care contact', m.physician, 'Dr. Patel — Bayview Pediatrics')}
+        </div>
+        <div class="form-group margin-top-xs"><label class="form-label-muted">Emergency instructions for responders</label>
+          <textarea id="md-instr" class="form-control-dark" rows="3" placeholder="Keep calm. Locate rescue inhaler...">${esc(m.instructions)}</textarea></div>`;
+      },
+
+      /* 5 — Trusted network */
+      () => `
+        <h2 class="panel-section-title">Build the Trusted Network</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Who responds, in what order, with what authority. Priority 1 is alerted first.</p>
+        <div id="tn-list" class="margin-top-xs">
+          ${S.contacts.sort((a,b)=>a.priority-b.priority).map(c => `
+            <div class="card flex-between margin-top-xs" style="padding:0.75rem 1rem;">
+              <div class="flex-row" style="gap:0.7rem;">
+                <div class="avatar-initials">${Billi.initials(c.name)}</div>
+                <div>
+                  <strong style="color:#fff;">${esc(c.name)}</strong>
+                  <div class="text-muted" style="font-size:0.75rem;">${esc(c.role)} · ${esc(c.relationship)} · ${esc(c.phone)} · ${(c.channels||[]).join(' / ')}</div>
+                  <div class="text-muted" style="font-size:0.7rem;">${c.notifyEnabled === false ? '🔕 Not notified' : '🔔 Notified on emergency'} · ${c.canAcknowledge ? '✓ Acknowledge' : '— No acknowledge'} · ${c.canResolve ? '✓ Resolve' : '— No resolve'} · ${c.medicalAccess ? '✓ Medical' : '— No medical'} · ${c.duressVisibility ? '✓ Duress alerts' : '— No duress'}</div>
+                </div>
+              </div>
+              <div class="flex-row" style="gap:0.4rem; align-items:center;">
+                <span class="badge badge-indigo">Priority ${c.priority}</span>
+                <button class="btn-dash-logout" onclick="S.contacts=S.contacts.filter(x=>x.id!=='${c.id}');Billi.save();render();">✕</button>
+              </div>
+            </div>`).join('') || '<p class="text-muted" style="font-size:0.82rem;">No contacts yet — add at least two.</p>'}
+        </div>
+        <div class="card margin-top" style="padding:1rem; border:1px dashed rgba(99,102,241,0.4);">
+          <strong style="color:#fff; font-size:0.9rem;">Add contact</strong>
+          <div class="grid grid-2" style="gap:0.6rem;">
+            ${field('tn-name', 'Name', '', 'Marcus Johnson')}
+            ${field('tn-rel', 'Relationship', '', 'Father')}
+          </div>
+          <div class="grid grid-3" style="gap:0.6rem;">
+            ${field('tn-phone', 'Phone', '', '+1 (555) ...', 'tel')}
+            <div class="form-group margin-top-xs"><label class="form-label-muted">Role</label>
+              <select id="tn-role" class="form-control-dark">
+                <option>Primary Guardian</option><option>Secondary Guardian</option><option>Campus Safety</option><option>Caregiver</option><option>Extended Circle</option>
+              </select></div>
+            <div class="form-group margin-top-xs"><label class="form-label-muted">Priority</label>
+              <select id="tn-prio" class="form-control-dark"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+          </div>
+          <div class="flex-row margin-top-xs" style="gap:1rem; font-size:0.78rem; color:#94a3b8; flex-wrap:wrap;">
+            <label><input type="checkbox" id="tn-notify" checked> Notify on emergency</label>
+            <label><input type="checkbox" id="tn-ack" checked> Acknowledgment rights</label>
+            <label><input type="checkbox" id="tn-res"> Resolution rights</label>
+            <label><input type="checkbox" id="tn-med"> Medical access</label>
+            <label><input type="checkbox" id="tn-dur" checked> Duress visibility</label>
+          </div>
+          <p class="text-muted" style="font-size:0.7rem; margin-top:0.3rem;">By default, everyone in the Trusted Network is notified the instant an emergency is triggered — priority order only decides who leads the response if nobody acknowledges. Uncheck "Notify on emergency" to keep someone in the network without alerting them.</p>
+          <button class="btn btn-secondary margin-top-xs" onclick="addContact()">+ Add to Trusted Network</button>
+        </div>`,
+
+      /* 6 — Safety contract */
+      () => {
+        if (!S.contract) { S.contract = { gps:true, audio:true, video:false, notifyNetwork:true, silentActivation:true, spokenMode:'reassurance', deterrent:false, shareMedical:true, escalation:true, nearbyRelay:false, bleScanning:true, safeZoneMonitoring:true, wearables:true, evidenceRetention:true, aiProcessing:true, responderAccess:true }; Billi.save(); }
+        const c = S.contract;
+        const tog = (key, label, desc) => `
+          <div class="card flex-between margin-top-xs" style="padding:0.7rem 1rem;">
+            <div><strong style="color:#fff; font-size:0.88rem;">${label}</strong><div class="text-muted" style="font-size:0.72rem;">${desc}</div></div>
+            <button class="btn ${c[key] ? 'btn-primary' : 'btn-outline-nav'}" style="min-width:96px;" onclick="S.contract['${key}']=!S.contract['${key}'];Billi.save();render();">${c[key] ? 'AUTHORIZED' : 'OFF'}</button>
+          </div>`;
+        return `
+        <h2 class="panel-section-title">Configure the Safety Contract</h2>
+        <p class="text-muted" style="font-size:0.85rem;">The Safety Contract defines exactly what Billi may do during an emergency. No permission dialogs at emergency time — every decision is made here, now.</p>
+        ${tog('gps', 'High-accuracy GPS & continuous location', 'Location, speed, heading, movement history during incidents')}
+        ${tog('audio', 'Audio recording', 'Ambient audio evidence from authorized devices')}
+        ${tog('video', 'Video recording', 'Video capture — honest state: unavailable in this prototype')}
+        ${tog('notifyNetwork', 'Trusted-Network notification', 'Alert your contacts by priority when Billi activates')}
+        ${tog('silentActivation', 'Silent activation', 'Triggers make no sound or screen change visible to an aggressor')}
+        ${tog('shareMedical', 'Medical-information sharing', 'Dossier shared with authorized responders during incidents')}
+        ${tog('escalation', 'Progressive escalation', '45-second guardian window, then staged escalation ladder')}
+        ${tog('nearbyRelay', 'Nearby-relay participation', 'BLE relay strategy when cellular fails (SIMULATED in prototype)')}
+        ${tog('bleScanning', 'BLE device scanning', 'Discover and bind protection hardware')}
+        ${tog('aiProcessing', 'AI processing (Gemini)', 'AI-assisted summaries — assists, never decides')}
+        <div class="card margin-top-xs" style="padding:0.7rem 1rem;">
+          <strong style="color:#fff; font-size:0.88rem;">Spoken response mode</strong>
+          <div class="flex-row margin-top-xs" style="gap:0.5rem;">
+            ${['reassurance','deterrent','silent'].map(m => `<button class="btn ${c.spokenMode===m?'btn-primary':'btn-outline-nav'}" onclick="S.contract.spokenMode='${m}';Billi.save();render();">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
+          </div>
+          <div class="text-muted" style="font-size:0.72rem; margin-top:0.4rem;">Reassurance: "Your mother received your alert." · Deterrent: "Billi emergency protocol is active." · Silent: no outward audio.</div>
+        </div>`;
+      },
+
+      /* 7 — Voice & coercion */
+      () => {
+        const v = S.voice, p = S.pins;
+        return `
+        <h2 class="panel-section-title">Voice & coercion protection</h2>
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <div class="flex-between">
+            <strong style="color:#fff;">Spoken safe words</strong>
+            <span class="text-muted" style="font-size:0.72rem;">Masked after saving · reveal deliberately</span>
+          </div>
+          <div id="sw-list" class="flex-row margin-top-xs" style="gap:0.5rem; flex-wrap:wrap;">
+            ${v.safeWords.map((w, i) => `<span class="badge badge-indigo" style="font-size:0.78rem;">
+              <span id="sw-${i}">••••••••</span>
+              <a style="cursor:pointer; margin-left:0.4rem;" onclick="document.getElementById('sw-${i}').innerText='${esc(w)}'">👁</a>
+              <a style="cursor:pointer; margin-left:0.3rem;" onclick="S.voice.safeWords.splice(${i},1);Billi.save();render();">✕</a></span>`).join('') || '<span class="text-muted" style="font-size:0.8rem;">None enrolled</span>'}
+          </div>
+          <div class="flex-row margin-top-xs" style="gap:0.5rem;">
+            <input id="sw-new" class="form-control-dark" placeholder='e.g. "Blue Folder"' style="flex:1;">
+            <button class="btn btn-secondary" onclick="const w=document.getElementById('sw-new').value.trim(); if(w){S.voice.safeWords.push(w);Billi.save();render();}">+ Add</button>
+          </div>
+        </div>
+
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <div class="flex-between">
+            <strong style="color:#fff;">Voice calibration</strong>
+            <span class="voice-state-chip ${v.state === 'Enrolled' ? 'badge-green badge' : 'badge badge-amber'}">${v.state}</span>
+          </div>
+          <p class="text-muted" style="font-size:0.75rem;">Not enrolled → Recording (3s) → Processing → Enrolled → Re-record</p>
+          <button class="btn btn-secondary margin-top-xs" id="voice-btn" onclick="calibrateVoice()">${v.state === 'Enrolled' ? '↻ Re-record voiceprint' : '🎙 Record voiceprint (3s)'}</button>
+        </div>
+
+        <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(245,158,11,0.3);">
+          <strong style="color:#fff;">Cancellation PINs</strong>
+          <p class="text-muted" style="font-size:0.75rem;">⚠ Never reuse your phone-lock PIN. The duress PIN must differ from the normal PIN — entering it feigns cancellation while silently escalating.</p>
+          <div class="grid grid-2" style="gap:0.75rem;">
+            ${field('pin-norm', 'Normal cancellation PIN', p.normal, '1234', 'password')}
+            ${field('pin-dur', 'Duress PIN (coercion defense)', p.duress, '9999', 'password')}
+          </div>
+          <div id="pin-warn" class="text-red" style="font-size:0.75rem;"></div>
+        </div>`;
+      },
+
+      /* 8 — Zones & devices */
+      () => `
+        <h2 class="panel-section-title">Safe zones & protection hardware</h2>
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <strong style="color:#fff;">Geofenced safe zones</strong>
+          ${S.zones.map(z => `
+            <div class="flex-between margin-top-xs" style="font-size:0.82rem; padding:0.5rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+              <span style="color:#e2e8f0;">📍 ${esc(z.name)} <span class="text-muted" style="font-size:0.72rem;">${esc(z.address)} · ${z.lat.toFixed(4)}, ${z.lng.toFixed(4)}</span></span>
+              <span class="flex-row" style="gap:0.5rem; align-items:center;">
+                <span class="badge badge-blue">${z.radius} m</span>
+                <a style="cursor:pointer; color:#64748b;" onclick="S.zones=S.zones.filter(x=>x.id!=='${z.id}');Billi.save();render();">✕</a>
+              </span>
+            </div>`).join('') || '<p class="text-muted" style="font-size:0.8rem;">No zones yet.</p>'}
+          <div class="grid grid-2 margin-top-xs" style="gap:0.6rem;">
+            ${field('zn-name', 'Zone name', '', 'Pine Middle School')}
+            ${field('zn-addr', 'Street address', '', '1155 Pine St, San Francisco')}
+          </div>
+          <div class="form-group margin-top-xs">
+            <label class="form-label-muted">Radius: <strong id="zn-radius-val" style="color:#a5b4fc;">100 m</strong> (50–1000 m)</label>
+            <input id="zn-radius" type="range" min="50" max="1000" step="10" value="100" style="width:100%;" oninput="document.getElementById('zn-radius-val').innerText=this.value+' m'">
+          </div>
+          <button class="btn btn-secondary" onclick="addZone()">+ Add safe zone</button>
+        </div>
+
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <div class="flex-between">
+            <strong style="color:#fff;">Protection hardware</strong>
+            <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="bleScan()">📶 Scan for BLE devices (SIMULATED)</button>
+          </div>
+          <div id="dev-list">
+          ${S.devices.map(d => `
+            <div class="flex-between margin-top-xs" style="font-size:0.82rem; padding:0.5rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+              <span style="color:#e2e8f0;">${esc(d.name)} <span class="text-muted" style="font-size:0.72rem;">${esc(d.type)}</span></span>
+              <span class="flex-row" style="gap:0.5rem; align-items:center;">${stateChip(d.state)}
+                <a style="cursor:pointer; color:#64748b;" onclick="S.devices=S.devices.filter(x=>x.id!=='${d.id}');Billi.save();render();">✕</a></span>
+            </div>`).join('') || '<p class="text-muted margin-top-xs" style="font-size:0.8rem;">No devices registered — scan or pick from the catalog.</p>'}
+          </div>
+          <div class="text-muted margin-top-xs" style="font-size:0.72rem;">Catalog (click to register — honest state labels):</div>
+          <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
+            ${DEVICE_CATALOG.map(([n, t, st]) => `<button class="btn btn-outline-nav" style="font-size:0.7rem;" onclick="registerDevice('${n.replace(/'/g, "\\'")}','${t.replace(/'/g, "\\'")}','${st}')">+ ${n}</button>`).join('')}
+          </div>
+        </div>`,
+
+      /* 9 — Readiness & activate */
+      () => {
+        const items = Billi.readiness();
+        const allOk = items.every(i => i.ok);
+        return `
+        <h2 class="panel-section-title">Test readiness & activate</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Billi reviews the complete Safety Contract before arming.</p>
+        <div class="grid grid-2 margin-top" style="gap:0.5rem;">
+          ${items.map(i => `<div class="ready-item">${i.ok ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'} <span style="color:${i.ok ? '#e2e8f0' : '#64748b'};">${i.label}</span></div>`).join('')}
+        </div>
+        <div class="card margin-top" style="padding:1.25rem; text-align:center; border:1px solid ${allOk ? 'rgba(16,185,129,0.45)' : 'rgba(245,158,11,0.4)'};">
+          ${allOk
+            ? `<h3 style="color:#34d399; font-size:1.3rem;">Billi is ready.</h3><p class="text-muted" style="font-size:0.82rem;">Activating arms continuous monitoring for ${esc((S.protectedPerson || {}).name || 'your protected person')}.</p>`
+            : `<h3 style="color:#fbbf24; font-size:1.1rem;">Not ready yet</h3><p class="text-muted" style="font-size:0.82rem;">Complete the unchecked items above — go back to the relevant step.</p>`}
+        </div>`;
+      }
+    ];
+
+    /* ---------- ACTIONS ---------- */
+    function val(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+    function saveStep() {
+      if (cur === 2) S.owner = { name: val('own-name'), role: val('own-role'), relationship: val('own-rel'), phone: val('own-phone') };
+      if (cur === 3) S.protectedPerson = { name: val('pp-name'), age: val('pp-age'), facility: val('pp-fac') };
+      if (cur === 4) S.medical = { conditions: val('md-cond'), allergies: val('md-alrg'), medications: val('md-meds'), equipment: val('md-meds'), physician: val('md-phys'), instructions: val('md-instr') };
+      if (cur === 7) {
+        const n = val('pin-norm'), d = val('pin-dur');
+        if (n && d && n === d) { document.getElementById('pin-warn').innerText = 'Duress PIN must be different from the normal PIN.'; return false; }
+        S.pins = { normal: n, duress: d };
+      }
+      Billi.save();
+      return true;
+    }
+
+    function validateStep() {
+      if (cur === 1 && !S.entityType) { Billi.toast('Choose an entity type to continue.', 'warn'); return false; }
+      if (cur === 2 && !val('own-name')) { Billi.toast('Enter the account owner name.', 'warn'); return false; }
+      if (cur === 3 && !val('pp-name')) { Billi.toast('Enter the protected person\'s name.', 'warn'); return false; }
+      return true;
+    }
+
+    function goStep(n) {
+      if (n < 1 || n > 9) return;
+      saveStep();
+      cur = n; S.setup.step = n; Billi.save(); render();
+    }
+
+    function nextStep() {
+      if (!validateStep() || !saveStep()) return;
+      if (cur === 9) {
+        if (!Billi.readiness().every(i => i.ok)) { Billi.toast('Readiness checklist incomplete — resolve the open items first.', 'warn'); return; }
+        Billi.activatePlatform();
+        Billi.toast('✓ Billi is ready. Safety ecosystem armed.', 'ok');
+        setTimeout(() => location.href = 'dashboard.html', 900);
+        return;
+      }
+      goStep(cur + 1);
+    }
+
+    function addContact() {
+      const name = val('tn-name');
+      if (!name) { Billi.toast('Enter a contact name.', 'warn'); return; }
+      S.contacts.push({
+        id: Billi.uid('c'), name, relationship: val('tn-rel'), role: document.getElementById('tn-role').value,
+        priority: parseInt(document.getElementById('tn-prio').value, 10), phone: val('tn-phone'),
+        channels: ['Push', 'SMS'],
+        notifyEnabled: document.getElementById('tn-notify').checked,
+        canAcknowledge: document.getElementById('tn-ack').checked, canResolve: document.getElementById('tn-res').checked,
+        medicalAccess: document.getElementById('tn-med').checked, evidenceAccess: false,
+        locationAccess: true, duressVisibility: document.getElementById('tn-dur').checked, availability: 'Available'
+      });
+      Billi.save(); render();
+      Billi.toast(`✓ ${name} added to Trusted Network.`, 'ok');
+    }
+
+    function addZone() {
+      const name = val('zn-name');
+      if (!name) { Billi.toast('Enter a zone name.', 'warn'); return; }
+      /* LOCAL INTERACTIVE — coordinates are fixture-based; live geocoding is a connected capability. */
+      S.zones.push({ id: Billi.uid('z'), name, address: val('zn-addr'), lat: 37.7749 + Math.random() * 0.01, lng: -122.4194 - Math.random() * 0.01, radius: parseInt(document.getElementById('zn-radius').value, 10), active: true });
+      Billi.save(); render();
+      Billi.toast(`✓ Safe zone "${name}" added.`, 'ok');
+    }
+
+    function registerDevice(name, type, st) {
+      if (S.devices.find(d => d.name === name)) { Billi.toast(`${name} is already registered.`, 'warn'); return; }
+      const cat = Billi.FIXTURE.devices.find(d => d.name === name);
+      S.devices.push(cat ? { ...cat, id: Billi.uid('d') } : { id: Billi.uid('d'), name, type, state: st, battery: 80, capabilities: [], triggers: [], lastSeen: 'now' });
+      Billi.save(); render();
+      Billi.toast(`✓ ${name} registered (${st}).`, 'ok');
+    }
+
+    function bleScan() {
+      Billi.toast('📶 SIMULATED BLE scan: 9 compatible devices found — register them from the catalog below.', 'ok');
+    }
+
+    function calibrateVoice() {
+      S.voice.state = 'Recording (3s)...'; Billi.save(); render();
+      setTimeout(() => { S.voice.state = 'Processing calibration...'; Billi.save(); render(); }, 1600);
+      setTimeout(() => { S.voice.state = 'Enrolled'; Billi.save(); render(); Billi.toast('✓ Voiceprint enrolled (SIMULATED acoustic calibration).', 'ok'); }, 3200);
+    }
+
+    function prefillDemo() {
+      Billi.applyFixturePrefill();
+      Billi.toast('⚡ Maya Johnson fixture loaded into every step. Review and activate.', 'ok');
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

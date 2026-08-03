@@ -12,7 +12,7 @@ class FirstFiveMinutesScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF0F0F12),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E1E24),
-        title: const Text('BILLI EMERGENCY COORDINATION PLATFORM',
+        title: const Text('BILLI DEMO SCENARIO SELECTOR',
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
         centerTitle: true,
       ),
@@ -21,19 +21,19 @@ class FirstFiveMinutesScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('FIRST FIVE MINUTES EXPERIENCE', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.0)),
+            const Text('CHOOSE A DEMONSTRATION', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.0)),
             const SizedBox(height: 4),
-            const Text('Helping someone get help faster.', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text('Experience Billi Platform', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            const Text('Select any scenario to experience end-to-end emergency coordination.', style: TextStyle(color: Colors.white54, fontSize: 13)),
+            const Text('The platform never changes—only the scenario changes. Select a demonstration story below:', style: TextStyle(color: Colors.white54, fontSize: 13)),
             const SizedBox(height: 24),
 
-            // 5 LARGE HUMAN CARDS
+            // 5 LARGE HUMAN DEMO CARDS
             _buildLargeHumanCard(
               context,
               title: 'Protect a Child',
               story: 'Story: Emma (Age 10)',
-              description: 'Manual SOS activation, tunnel dead-zone BLE mesh relay, mother notification and response.',
+              description: 'Manual SOS & Safe Word trigger on I-15 South, tunnel dead-zone BLE mesh relay, mother response.',
               icon: Icons.child_care,
               accentColor: Colors.redAccent,
               onTap: () {
@@ -49,7 +49,7 @@ class FirstFiveMinutesScreen extends StatelessWidget {
               context,
               title: 'Help After a Fall',
               story: 'Story: Robert (Age 78)',
-              description: 'Smartwatch hard fall detection, 15s unresponsive alert, family dashboard response.',
+              description: 'Smartwatch hard fall detection, 15s unresponsive alert, family response.',
               icon: Icons.elderly,
               accentColor: Colors.amberAccent,
               onTap: () {
@@ -70,8 +70,8 @@ class FirstFiveMinutesScreen extends StatelessWidget {
             _buildLargeHumanCard(
               context,
               title: 'Vehicle Crash',
-              story: 'Story: David (Connected Car)',
-              description: 'Automotive 8.5g impact sensor telemetry, airbag deployment, emergency contact alert.',
+              story: 'Story: David (Driver)',
+              description: 'Automotive 8.5g impact sensor telemetry, airbag deployment, spouse notification.',
               icon: Icons.directions_car,
               accentColor: Colors.blueAccent,
               onTap: () {
@@ -159,28 +159,47 @@ class FirstFiveMinutesScreen extends StatelessWidget {
             BoxShadow(color: accentColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))
           ],
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: accentColor.withOpacity(0.15), shape: BoxShape.circle),
-              child: Icon(icon, size: 28, color: accentColor),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: accentColor.withOpacity(0.15), shape: BoxShape.circle),
+                  child: Icon(icon, size: 28, color: accentColor),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 2),
+                      Text(story, style: TextStyle(color: accentColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      Text(description, style: const TextStyle(color: Colors.white60, fontSize: 13, height: 1.3)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 2),
-                  Text(story, style: TextStyle(color: accentColor, fontSize: 12, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  Text(description, style: const TextStyle(color: Colors.white60, fontSize: 13, height: 1.3)),
-                ],
+            const SizedBox(height: 14),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentColor.withOpacity(0.2),
+                  foregroundColor: accentColor,
+                  side: BorderSide(color: accentColor),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                onPressed: onTap,
+                icon: const Text('Start Demo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                label: const Icon(Icons.arrow_forward, size: 16),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white38, size: 16),
           ],
         ),
       ),

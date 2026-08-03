@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Protected Person</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:760px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <!-- FEIGN-CANCEL SCREEN (duress branch — deliberately calm and believable) -->
+  <div class="feign-cancel-screen" id="feign-screen" style="display:none;">
+    <div style="font-size:3rem;">✓</div>
+    <h2 style="color:#e2e8f0; font-weight:600;">Emergency cancelled</h2>
+    <p class="text-muted" style="font-size:0.9rem; max-width:320px;">Your alert has been dismissed. No contacts were notified.</p>
+    <button class="btn btn-secondary margin-top" onclick="closeFeign()">Done</button>
+  </div>
+
+  <script src="billi-adapters.js"></script>
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.requireSetup()) throw new Error('redirect');
+    Billi.renderNav('protected.html');
+
+    const S = Billi.state;
+    const p = S.protectedPerson || {};
+    let pinBuffer = '';
+    let holdTimer = null, holdStart = 0;
+
+    function render() {
+      const active = Billi.getActiveIncident();
+      const v = active ? Billi.incidentView(active) : null;
+      const c = S.contract || {};
+      const readyRow = (label, ok, note) => `
+        <div class="core-action-row margin-top-xs">
+          <span style="color:#e2e8f0; font-size:0.85rem;">${label}</span>
+          <span class="${ok === true ? 'state-ok' : ok === 'warn' ? 'state-wait' : 'state-unavail'}">${note}</span>
+        </div>`;
+
+      /* NOTE (duress rule): the protected person's screen NEVER shows the red
+         hazard treatment guardians see. If duress is active, this view keeps
+         pretending the incident was cancelled. */
+      const showAsCalm = active && active.duress;
+
+      document.getElementById('main-host').innerHTML = `
+        <section class="text-center margin-top">
+          <div class="person-avatar-circle" style="margin:0 auto;">${Billi.initials(p.name)}</div>
+          <h1 style="color:#fff; font-size:1.5rem; margin-top:0.5rem;">${p.name || 'Protected person'}</h1>
+          ${showAsCalm
+            ? `<span class="badge badge-green margin-top-xs">Billi is armed · Everything looks normal</span>`
+            : active
+              ? `<span class="badge badge-red margin-top-xs">EMERGENCY ACTIVE · ${Billi.LIFECYCLE.indexOf(v.lifecycle) >= 2 ? 'Help is aware' : 'Alerting your Trusted Network'}</span>`
+              : `<span class="armed-badge-green margin-top-xs">● BILLI ARMED · PROTECTING YOU</span>`}
+        </section>
+
+        ${active && !showAsCalm ? `
+        <section class="card margin-top" style="padding:1.1rem; border:1px solid rgba(99,102,241,0.4);">
+          <div class="panel-section-title" style="font-size:0.9rem;">What Billi is doing right now</div>
+          ${readyRow('📍 Location', true, v.core.gps)}
+          ${readyRow('🎙 Audio evidence', true, v.core.audio)}
+          ${readyRow('🎥 Video', false, v.core.video)}
+          ${readyRow('👥 Trusted Network', true, v.core.network)}
+          ${(c.spokenMode !== 'silent') ? `
+          <div class="card margin-top-xs" style="padding:0.7rem 0.9rem; background:rgba(99,102,241,0.08);">
+            <div class="text-muted" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;">Billi speaks (${c.spokenMode} mode)</div>
+            <div style="color:#e2e8f0; font-size:0.88rem; margin-top:0.2rem;">
+              ${c.spokenMode === 'deterrent'
+                ? '"Billi emergency protocol is active. Location and incident information are being transmitted."'
+                : v.contacts.some(x => /Responding/i.test(x.status))
+                  ? `"${(v.contacts.find(x => /Responding/i.test(x.status)) || {}).name || 'Your guardian'} is responding."`
+                  : v.core.network === 'DELIVERED' ? '"Your mother received your alert."' : '"Your alert is being sent."'}
+            </div>
+          </div>` : `<div class="text-muted margin-top-xs" style="font-size:0.72rem;">Silent mode — no outward audio. Your guardians continue receiving updates.</div>`}
+
+          ${v.contacts.filter(x => x.alertState === 'ACKNOWLEDGED' || /Responding/i.test(x.status)).map(x =>
+            `<div class="margin-top-xs" style="font-size:0.82rem; color:#34d399;">✓ ${x.name} — ${x.status}</div>`).join('')}
+        </section>
+
+        <!-- CANCELLATION (PIN pad) -->
+        <section class="card margin-top" style="padding:1.1rem; text-align:center;">
+          <div class="panel-section-title" style="font-size:0.9rem;">Cancel emergency</div>
+          <p class="text-muted" style="font-size:0.75rem;">Enter your cancellation PIN. This screen looks identical for both PINs.</p>
+          <div class="pin-dots">${[0,1,2,3].map(i => `<span class="pin-dot ${i < pinBuffer.length ? 'filled' : ''}"></span>`).join('')}</div>
+          <div class="pin-pad">
+            ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => k === '' ? '<span></span>' :
+              `<button class="pin-key" onclick="pinKey('${k}')">${k}</button>`).join('')}
+          </div>
+        </section>` : ''}
+
+        ${!active ? `
+        <section class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
+          <div class="card" style="padding:1.1rem;">
+            <div class="panel-section-title" style="font-size:0.9rem;">Billi is ready</div>
+            ${readyRow('📍 GPS', c.gps, c.gps ? 'READY' : 'NOT AUTHORIZED')}
+            ${readyRow('🎙 Audio', c.audio, c.audio ? 'READY' : 'NOT AUTHORIZED')}
+            ${readyRow('🎥 Video', false, 'UNAVAILABLE IN PROTOTYPE')}
+            ${readyRow('📶 BLE & communication', c.bleScanning, c.bleScanning ? 'READY (SIMULATED)' : 'OFF')}
+            ${readyRow('👥 Trusted Network sync', S.contacts.length >= 2, `${S.contacts.length} CONTACTS`)}
+            ${readyRow('🗣 Safe words', S.voice.state === 'Enrolled', S.voice.state === 'Enrolled' ? `${S.voice.safeWords.length} ENROLLED` : S.voice.state.toUpperCase())}
+            ${readyRow('📍 Safe zone', S.zones.length > 0, S.zones[0] ? `INSIDE "${S.zones[0].name.toUpperCase()}" (SIMULATED)` : 'NONE SET')}
+          </div>
+
+          <div class="card text-center" style="padding:1.1rem;">
+            <div class="panel-section-title" style="font-size:0.9rem;">Emergency SOS</div>
+            <p class="text-muted" style="font-size:0.72rem;">Hold for 2 seconds. Release early to cancel. One of ${Object.keys(Billi.TRIGGER_METHODS).length} activation paths.</p>
+            <div class="sos-hold-btn margin-top-xs" id="sos-btn"
+                 onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()"
+                 ontouchstart="startHold(event)" ontouchend="endHold()">
+              <div class="hold-fill" id="hold-fill"></div>
+              <span style="z-index:1;">SOS</span>
+              <span class="sos-hold-hint" style="z-index:1;">HOLD 2 SECONDS</span>
+            </div>
+            <button class="btn btn-outline-nav margin-top" style="font-size:0.72rem;" onclick="discreet()">🤫 Discreet activation (silent, no screen change)</button>
+            <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Also armed: spoken safe word · fall · crash · geofence · smart tag · accessibility shortcut · wearable gesture · acoustic distress</div>
+          </div>
+        </section>` : ''}
+
+        ${showAsCalm ? `
+        <section class="card margin-top" style="padding:1.1rem;">
+          <div class="panel-section-title" style="font-size:0.9rem;">Status</div>
+          <p style="color:#e2e8f0; font-size:0.88rem;">No active alerts. All protection layers armed and monitoring.</p>
+          <p class="text-muted" style="font-size:0.72rem;">Location sharing idle · audio idle · trusted network standing by</p>
+        </section>` : ''}
+
+        <!-- REAL DEVICE CAPABILITIES (Capability Adapter Layer) -->
+        <section class="card margin-top" style="padding:1.1rem; border:1px solid rgba(99,102,241,0.3);">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.9rem;">📡 Real device capabilities</span>
+            <button class="btn btn-secondary" style="font-size:0.7rem;" onclick="enableCapabilities()">Enable on this device</button>
+          </div>
+          <p class="text-muted" style="font-size:0.7rem;">This device's actual GPS, motion sensors, microphone, speech, and network feed the shared incident. States below are real, not simulated.</p>
+          <div class="grid grid-2 margin-top-xs" style="gap:0.4rem; font-size:0.75rem;" id="cap-grid">
+            ${capRow('📍 Location', BilliAdapters.Location.status, BilliAdapters.Location.mode)}
+            ${capRow('📳 Motion sensors', BilliAdapters.Motion.status, '')}
+            ${capRow('🎙 Audio evidence', BilliAdapters.AudioEvidence.status, BilliAdapters.AudioEvidence.segment ? BilliAdapters.AudioEvidence.segment + ' segments sealed' : '')}
+            ${capRow('🔊 Spoken output', BilliAdapters.Speech.status, BilliAdapters.Speech.lastSpoken ? '"' + BilliAdapters.Speech.lastSpoken.text + '"' : '')}
+            ${capRow('📶 Network', BilliAdapters.Network.status, '')}
+          </div>
+        </section>`;
+    }
+
+    function capRow(label, status, note) {
+      const good = ['ACQUIRED', 'ACTIVE', 'RECORDING', 'READY', 'ONLINE'].includes(status);
+      const bad = ['PERMISSION_DENIED', 'FAILED', 'UNSUPPORTED', 'OFFLINE'].includes(status);
+      return `<div class="ready-item" style="justify-content:space-between;">
+        <span style="color:#e2e8f0;">${label}</span>
+        <span style="text-align:right;"><span class="${good ? 'text-green' : bad ? 'text-red' : 'text-amber'}" style="font-weight:700;">${status}</span>
+        ${note ? `<br><span class="text-muted" style="font-size:0.62rem;">${note}</span>` : ''}</span></div>`;
+    }
+
+    async function enableCapabilities() {
+      BilliAdapters.Network.start();
+      const active = Billi.getActiveIncident();
+      if (active) {
+        const r = await BilliAdapters.startIncidentCapture(S.contract);
+        Billi.toast(`Capabilities engaged — GPS:${r.location ? 'on' : 'off'} motion:${r.motion ? 'on' : 'off'} audio:${r.audio ? 'on' : 'off'}`, 'ok');
+      } else {
+        BilliAdapters.Location.armLowPower();
+        await BilliAdapters.Motion.start();
+        Billi.toast('Armed low-power monitoring: single location fix + motion sensing enabled.', 'ok');
+      }
+      render();
+    }
+
+    /* ------- Spoken output driven by CONFIRMED shared state only -------
+       Spoken-once tracking derives from the incident's own telemetry, so a
+       page refresh or second device never repeats an announcement. */
+    const spoken = { sent: false, delivered: false, ackBy: null };
+    function alreadySpoken(active, fragment) {
+      return (active.telemetry || []).some(t => t.event_type === 'SPOKEN_OUTPUT' && (t.text || '').includes(fragment));
+    }
+    function speakOnConfirmedState() {
+      const active = Billi.getActiveIncident();
+      if (!active || active.duress) return; // duress: absolute silence, no reveal
+      const mode = (S.contract || {}).spokenMode || 'reassurance';
+      if (mode === 'silent') return;
+      if (!spoken.sent && alreadySpoken(active, 'being sent')) spoken.sent = true;
+      if (!spoken.sent && alreadySpoken(active, 'protocol is active')) spoken.sent = true;
+      if (!spoken.delivered && alreadySpoken(active, 'delivered')) spoken.delivered = true;
+      if (!spoken.delivered && alreadySpoken(active, 'have been notified')) spoken.delivered = true;
+      if (!spoken.ackBy && alreadySpoken(active, 'is responding')) {
+        const priorAck = (active.actions || []).find(a => a.type === 'GUARDIAN_ACKNOWLEDGED');
+        spoken.ackBy = priorAck ? priorAck.actor : 'replayed';
+      }
+      const v = Billi.incidentView(active);
+      if (!spoken.sent && (v.core.network === 'SENT' || v.core.network === 'DELIVERED')) {
+        spoken.sent = true;
+        BilliAdapters.Speech.speak(mode === 'deterrent' ? 'Billi emergency protocol is active. Location and incident information are being transmitted.' : 'Billi is active. Your alert is being sent.', mode);
+      }
+      if (!spoken.delivered && (v.core.network === 'DELIVERED' || v.core.network === 'ACKNOWLEDGED')) {
+        spoken.delivered = true;
+        BilliAdapters.Speech.speak(mode === 'deterrent' ? 'Trusted contacts have been notified.' : 'Your alert was delivered to your trusted network.', mode);
+      }
+      const ack = (active.actions || []).find(a => a.type === 'GUARDIAN_ACKNOWLEDGED');
+      if (ack && spoken.ackBy !== ack.actor) {
+        spoken.ackBy = ack.actor;
+        const c = (S.contacts || []).find(x => x.name === ack.actor);
+        const who = c && c.relationship === 'Mother' ? 'Your mother' : c && c.relationship === 'Father' ? 'Your father' : ack.actor;
+        BilliAdapters.Speech.speak(`${who} is responding.`, mode);
+      }
+    }
+    document.addEventListener('billi:shared', () => { speakOnConfirmedState(); const a = Billi.getActiveIncident(); if (!a || !a.duress) render(); });
+    document.addEventListener('billi:adapter', () => { const a = Billi.getActiveIncident(); if (!a || !a.duress) render(); });
+    setInterval(speakOnConfirmedState, 3000);
+
+    /* -------- Hold-to-activate SOS -------- */
+    function startHold(e) {
+      if (e) e.preventDefault();
+      holdStart = Date.now();
+      const fill = document.getElementById('hold-fill');
+      holdTimer = setInterval(() => {
+        const pct = Math.min(100, (Date.now() - holdStart) / 20);
+        fill.style.height = pct + '%';
+        if (pct >= 100) { clearInterval(holdTimer); holdTimer = null; fireSOS('sos_hold'); }
+      }, 40);
+    }
+    function endHold() {
+      if (holdTimer) {
+        clearInterval(holdTimer); holdTimer = null;
+        document.getElementById('hold-fill').style.height = '0%';
+        Billi.toast('Released early — activation cancelled.', 'warn');
+      }
+    }
+    function fireSOS(key) {
+      Billi.triggerIncident(key);
+      Billi.toast('Emergency activated. Billi is executing the four core actions.', 'danger');
+      /* User gesture context: engage real device capture for the incident. */
+      BilliAdapters.startIncidentCapture(S.contract).then(() => render());
+      render(); Billi.renderNav('protected.html');
+    }
+    function discreet() {
+      Billi.triggerIncident('accessibility');
+      Billi.toast('Discreet activation received. No outward indication shown.', 'ok');
+      render(); Billi.renderNav('protected.html');
+    }
+
+    /* -------- PIN pad / duress branch -------- */
+    function pinKey(k) {
+      if (k === '⌫') pinBuffer = pinBuffer.slice(0, -1);
+      else if (pinBuffer.length < 4) pinBuffer += k;
+      if (pinBuffer.length === 4) {
+        const res = Billi.enterDuress(pinBuffer);
+        pinBuffer = '';
+        if (res.mode === 'normal') {
+          Billi.toast('✓ Marked safe. Your Trusted Network has been told you are okay.', 'ok');
+          setTimeout(() => location.href = 'dashboard.html', 1000);
+        } else if (res.mode === 'duress') {
+          /* Covert: believable cancellation, no red border, no escalation hint. */
+          document.getElementById('feign-screen').style.display = 'flex';
+        } else {
+          Billi.toast('Incorrect PIN.', 'warn');
+        }
+      }
+      render();
+    }
+    function closeFeign() {
+      document.getElementById('feign-screen').style.display = 'none';
+      render(); Billi.renderNav('protected.html');
+    }
+
+    render();
+    setInterval(() => { const a = Billi.getActiveIncident(); if (a && !a.duress) render(); }, 4000);
+  </script>
+</body>
+</html>

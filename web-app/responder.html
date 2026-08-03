@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Responder Operations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:940px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    Billi.renderNav('responder.html');
+
+    const S = Billi.state;
+    const p = S.protectedPerson || Billi.FIXTURE.protectedPerson;
+    const m = S.medical || Billi.FIXTURE.medical;
+    const responder = S.contacts.find(c => c.role === 'Campus Safety') || Billi.FIXTURE.contacts[2];
+
+    function render() {
+      const inc = Billi.getActiveIncident();
+      const host = document.getElementById('main-host');
+
+      if (!inc) {
+        host.innerHTML = `
+          <section class="margin-top">
+            <div class="dash-greeting-title">Responder Console — ${responder.name}</div>
+            <div class="dash-greeting-sub">${responder.relationship} · <span class="sim-chip simulated">Simulated responder client — dedicated real responder app not yet built</span></div>
+          </section>
+          <section class="card text-center margin-top" style="padding:2.2rem;">
+            <h3 style="color:#fff;">No assigned incidents</h3>
+            <p class="text-muted margin-top-xs" style="font-size:0.85rem;">The incident queue is empty. Assigned emergencies appear here with priority, severity, and tactical context.</p>
+          </section>`;
+        return;
+      }
+
+      const v = Billi.incidentView(inc);
+      const myStatus = (inc.actions || []).filter(a => a.type === 'RESPONDER_STATUS' && a.actor === responder.name).pop();
+      const stage = myStatus ? myStatus.details : 'Not acknowledged';
+
+      host.innerHTML = `
+        <section class="margin-top">
+          <div class="dash-greeting-title">Responder Console — ${responder.name}</div>
+          <div class="dash-greeting-sub">${responder.relationship} · <span class="sim-chip simulated">Simulated responder actions — no real dispatch integration</span></div>
+        </section>
+
+        ${inc.duress ? `<section class="duress-banner margin-top"><strong style="color:#fca5a5;">🚨 CRITICAL DURESS ALERT</strong>
+          <div style="color:#fecaca; font-size:0.78rem;">Coerced cancellation suspected. Do not treat any "cancelled" signal from the protected device as genuine.</div></section>` : ''}
+
+        <!-- INCIDENT QUEUE -->
+        <section class="card margin-top" style="padding:1rem; border:1px solid rgba(239,68,68,0.35);">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <strong style="color:#fff;">ASSIGNED · ${inc.id}</strong>
+              <span class="badge badge-red" style="margin-left:0.4rem;">HIGH SEVERITY</span>
+              <span class="badge badge-blue" style="margin-left:0.25rem;">${v.lifecycle.replace(/_/g, ' ')}</span>
+              <div class="text-muted" style="font-size:0.76rem; margin-top:0.25rem;">
+                ${p.name} (Age ${p.age}) · ${inc.triggerMethod} · elapsed ${Math.floor(v.elapsed / 60)}m ${v.elapsed % 60}s · ⚕ medical flag: ${m.conditions}
+              </div>
+            </div>
+            <span class="badge ${/On scene|En route|Searching/i.test(stage) ? 'badge-green' : 'badge-amber'}">My status: ${stage}</span>
+          </div>
+        </section>
+
+        <div class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
+          <div>
+            <!-- TACTICAL MAP -->
+            <div class="dash-map-card">
+              <div class="dash-map-header flex-between">
+                <span class="map-header-title">Tactical map</span>
+                <span class="sim-chip simulated">Simulated telemetry</span>
+              </div>
+              <div class="mapbox-dark-canvas" style="height:220px;">
+                <div class="map-pulsing-pin" style="background:#ef4444; left:55%; top:40%;"></div>
+                <div class="trail-dot responder" style="left:25%; top:75%;"></div>
+                <div class="map-person-tag">${p.name} · ${v.loc.label} · ${v.loc.speed} mph</div>
+                <div class="map-person-tag" style="top:82%; left:12%; font-size:0.62rem;">🟢 Ground unit (you) · 0.6 mi · bearing NE</div>
+              </div>
+              <div class="text-muted margin-top-xs" style="font-size:0.72rem;">
+                Last update ${Billi.fmtAgo(inc.triggeredAt + (v.trail.length - 1) * 8000)} · distance 0.6 mi · nearest access: East Entrance, Pine St ·
+                safe zones: ${S.zones.map(z => z.name).join(', ') || '—'}
+              </div>
+            </div>
+
+            <!-- MEDICAL -->
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(239,68,68,0.25);">
+              <div class="panel-section-title" style="font-size:0.9rem;">⚕ Medical dossier (responder-authorized)</div>
+              <div style="font-size:0.82rem; color:#e2e8f0; margin-top:0.3rem;">
+                ${m.conditions} · Allergies: ${m.allergies}<br>
+                <span class="text-muted">${m.medications}</span><br>
+                <span style="color:#fbbf24;">${m.instructions}</span>
+              </div>
+            </div>
+
+            <!-- PACKET PREVIEW -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.9rem;">911-Ready Emergency Packet</span>
+                <button class="btn btn-secondary" style="font-size:0.7rem;" onclick="copyPacket()">📄 Copy packet</button>
+              </div>
+              <pre style="font-size:0.62rem; color:#94a3b8; max-height:170px; overflow:auto; margin-top:0.4rem; white-space:pre-wrap;">${Billi.buildPacket(inc).slice(0, 900)}…</pre>
+            </div>
+          </div>
+
+          <div>
+            <!-- RESPONDER ACTIONS -->
+            <div class="card" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.9rem;">Responder actions <span class="sim-chip simulated" style="margin-left:0.3rem;">All simulated</span></div>
+              <div class="grid grid-2 margin-top-xs" style="gap:0.45rem;">
+                <button class="btn btn-danger" onclick="act('Acknowledged — reviewing tactical picture')">✓ Acknowledge</button>
+                <button class="btn btn-secondary" onclick="act('Ground unit dispatched')">🚓 Dispatch ground unit</button>
+                <button class="btn btn-secondary" onclick="act('En route — ETA 4 min')">🧭 Mark en route</button>
+                <button class="btn btn-secondary" onclick="act('Searching — sweeping east perimeter')">🔍 Mark searching</button>
+                <button class="btn btn-secondary" onclick="act('On scene — visual contact pending')">📍 Mark on scene</button>
+                <button class="btn btn-secondary" onclick="act('Backup requested — second unit inbound')">📢 Request backup</button>
+                <button class="btn btn-secondary" onclick="contactGuardian()">📞 Contact guardian</button>
+                <button class="btn btn-secondary" onclick="addNote()">📝 Add note</button>
+                <button class="btn btn-primary" onclick="act('Stabilized — protected person in responder care'); Billi.recordAction('INCIDENT_STABILIZED', '${responder.name}', 'Responder confirmed protected person stabilized. Handoff to guardian pending.')">🛡 Stabilize & handoff</button>
+              </div>
+            </div>
+
+            <!-- NETWORK STATE -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.9rem;">Coordination picture</div>
+              ${v.contacts.sort((a,b)=>a.priority-b.priority).map(c => `
+                <div class="flex-between margin-top-xs" style="font-size:0.78rem; padding:0.4rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+                  <span style="color:#e2e8f0;">P${c.priority} ${c.name}</span>
+                  <span class="badge ${/Responding|En route|On scene|Acknowledged/i.test(c.status) ? 'badge-green' : 'badge-amber'}" style="font-size:0.62rem;">${c.status}</span>
+                </div>`).join('')}
+            </div>
+
+            <!-- TIMELINE -->
+            <div class="card margin-top-xs" style="padding:1rem;">
+              <div class="panel-section-title" style="font-size:0.9rem;">Live timeline</div>
+              <div style="max-height:200px; overflow-y:auto;">
+                ${v.events.slice(-10).map(e => `
+                  <div class="timeline-event-item margin-top-xs">
+                    <div class="event-time-text">${Billi.fmtClock(e.t)} · ${e.actor}</div>
+                    <div class="event-desc-text">${e.label}</div>
+                  </div>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function act(status) {
+      Billi.recordAction('RESPONDER_STATUS', responder.name, status);
+      Billi.toast(`✓ ${status} (SIMULATED responder action)`, 'ok');
+      render(); Billi.renderNav('responder.html');
+    }
+    function contactGuardian() {
+      Billi.recordAction('RESPONDER_CONTACT', responder.name, `Called ${(S.owner || {}).name || 'primary guardian'} with tactical update (SIMULATED voice).`);
+      Billi.toast('✓ Guardian contacted (SIMULATED).', 'ok');
+      render();
+    }
+    function addNote() {
+      const note = prompt('Responder note for the incident record:');
+      if (note) { Billi.recordAction('RESPONDER_NOTE', responder.name, note); render(); }
+    }
+    function copyPacket() {
+      navigator.clipboard.writeText(Billi.buildPacket(Billi.getActiveIncident())).then(() => Billi.toast('📄 Packet copied.', 'ok'));
+    }
+
+    render();
+    document.addEventListener('billi:shared', () => { render(); Billi.renderNav('responder.html'); });
+    setInterval(() => { if (Billi.getActiveIncident()) { render(); Billi.renderNav('responder.html'); } }, 2500);
+  </script>
+</body>
+</html>

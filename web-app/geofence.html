@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Standalone Geofence Command & Safe Zone Perimeters</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* STANDALONE GEOFENCE COMMAND SURFACE STYLING */
+    .geofence-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .geofence-hero {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(8, 9, 17, 0.98) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+
+    .geofence-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+      .geofence-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .map-canvas-large {
+      background: #06070d;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      height: 380px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    .zone-config-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .zone-config-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .zone-config-card.active-enforcing {
+      border-left: 4px solid #10b981;
+    }
+
+    .radius-slider {
+      width: 100%;
+      accent-color: #6366f1;
+      height: 6px;
+      background: #1e293b;
+      border-radius: 3px;
+      outline: none;
+    }
+  </style>
+</head>
+<body class="bg-root">
+
+  <div class="dashboard-full-wrapper">
+    
+    <!-- TOP NAVIGATION HEADER BAR -->
+    <header class="dashboard-top-bar flex-between">
+      <div class="flex-row" style="gap: 1rem;">
+        <div class="brand-mark" onclick="window.location.href='landing.html'">BILLI</div>
+        <span class="pill-badge-indigo" style="letter-spacing: 0.5px;">GEOFENCE COMMAND SURFACE — DEDICATED PERIMETER MANAGER</span>
+      </div>
+      <div class="flex-row" style="gap: 0.75rem;">
+        <button class="btn-dash-logout" onclick="window.location.href='dashboard.html'">🛡️ Command Dashboard</button>
+        <button class="btn-dash-logout" onclick="window.location.href='demo_30s.html'">🎥 30s Demo</button>
+        <button class="btn-dash-logout" onclick="window.location.href='landing.html'">← Exit</button>
+      </div>
+    </header>
+
+    <!-- MAIN GEOFENCE WORKSPACE CONTAINER -->
+    <main class="geofence-wrapper">
+      
+      <!-- HERO BANNER -->
+      <section class="geofence-hero flex-between">
+        <div>
+          <div class="flex-row" style="gap: 0.5rem; margin-bottom: 0.2rem;">
+            <span class="badge badge-indigo">DEDICATED GEOFENCE SPACE</span>
+            <span class="badge badge-green" id="active-zones-badge">3 SAFE ZONES ENFORCING</span>
+          </div>
+          <h1 style="color: #ffffff; font-size: 1.65rem; font-weight: 700; margin: 0;">Geofence Command & Safe Zone Boundaries</h1>
+          <p class="text-muted" style="font-size: 0.82rem; margin-top: 0.2rem;">
+            Configure high-precision perimeter boundaries (50m–1000m radius), street address anchors, exit breach rules, and curfew arrival alerts.
+          </p>
+        </div>
+
+        <div class="flex-row" style="gap: 0.75rem;">
+          <button class="btn-pill-next" onclick="openAddZoneModal()" style="padding: 0.65rem 1.25rem; font-size: 0.85rem;">
+            + Add Safe Zone Perimeter
+          </button>
+        </div>
+      </section>
+
+      <!-- GEOFENCE WORKSPACE GRID -->
+      <section class="geofence-grid">
+        
+        <!-- LEFT COLUMN: LIVE INTERACTIVE MAP CANVAS & SIMULATOR -->
+        <div class="flex-col" style="gap: 1rem;">
+          
+          <!-- MAP CANVAS CARD -->
+          <div class="card" style="background: #0b0d17; border: 1px solid rgba(255,255,255,0.1); padding: 1rem;">
+            <div class="flex-between margin-bottom-xs">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.9rem;">📍 Live Geofence Trajectory & Safe Zone Radar</span>
+              <span class="badge badge-green" id="map-target-status">● Maya is INSIDE Home Safe Zone (150m)</span>
+            </div>
+
+            <!-- MAP CANVAS DISPLAY -->
+            <div class="map-canvas-large">
+              <!-- PULSING MAP PIN -->
+              <div class="map-pulsing-pin" id="map-pin" style="background: #10b981; top: 45%; left: 48%;"></div>
+              <div class="map-person-tag" id="map-tag" style="top: 38%; left: 45%;">Maya Johnson · Stationary (Home Safe Zone)</div>
+              
+              <!-- VISUAL PERIMETER CIRCLE OVERLAYS -->
+              <div style="position: absolute; top: 35%; left: 38%; width: 140px; height: 140px; border: 2px dashed rgba(16, 185, 129, 0.6); border-radius: 50%; background: rgba(16, 185, 129, 0.05); pointer-events: none;">
+                <span style="font-size: 0.65rem; color: #10b981; position: absolute; top: 4px; left: 10px; font-weight: 700;">Home Zone (150m)</span>
+              </div>
+              <div style="position: absolute; top: 15%; left: 60%; width: 100px; height: 100px; border: 2px dashed rgba(99, 102, 241, 0.6); border-radius: 50%; background: rgba(99, 102, 241, 0.05); pointer-events: none;">
+                <span style="font-size: 0.65rem; color: #6366f1; position: absolute; top: 4px; left: 8px; font-weight: 700;">School (100m)</span>
+              </div>
+              <div style="position: absolute; top: 55%; left: 15%; width: 160px; height: 160px; border: 2px dashed rgba(245, 158, 11, 0.6); border-radius: 50%; background: rgba(245, 158, 11, 0.05); pointer-events: none;">
+                <span style="font-size: 0.65rem; color: #f59e0b; position: absolute; top: 4px; left: 10px; font-weight: 700;">Grandma's (200m)</span>
+              </div>
+            </div>
+
+            <!-- GEOFENCE SIMULATOR ACTION BAR -->
+            <div class="margin-top-xs">
+              <span class="text-muted" style="font-size: 0.75rem; font-weight: 600;">SIMULATE GEOFENCE EVENTS:</span>
+              <div class="grid grid-3 margin-top-xs" style="gap: 0.5rem;">
+                <button class="btn-pill-back" onclick="simulateGeofenceEvent('home')" style="font-size: 0.75rem;">
+                  🏠 Entrance (Home Zone)
+                </button>
+                <button class="btn-pill-back" onclick="simulateGeofenceEvent('school_breach')" style="font-size: 0.75rem; border-color: rgba(239, 68, 68, 0.5); color: #f87171;">
+                  🚨 Exit Breach (School Zone)
+                </button>
+                <button class="btn-pill-back" onclick="simulateGeofenceEvent('curfew')" style="font-size: 0.75rem; border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
+                  ⏰ Late Curfew Arrival
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GEOFENCE AUDIT STREAM TERMINAL -->
+          <div class="card" style="background: #0b0d17; border: 1px solid rgba(255,255,255,0.1); padding: 1rem;">
+            <div class="flex-between margin-bottom-xs">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.85rem;">📜 Real-Time Geofence Enforcement Audit Stream</span>
+              <span style="font-size: 0.7rem; color: #64748b;">SAFETY-PROTOCOL :8082</span>
+            </div>
+            
+            <div class="card" style="background: #040509; border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem; height: 130px; overflow-y: auto; font-family: monospace; font-size: 0.72rem;" id="geofence-audit-feed">
+              <div class="text-muted">[3:42:15 PM] GEOFENCE_ENFORCE: Home Safe Zone active (Radius 150m). Maya Johnson status: INSIDE.</div>
+              <div class="text-muted">[7:15:02 AM] GEOFENCE_ENTER: Maya entered Pine Middle School perimeter (100m).</div>
+              <div class="text-muted">[Yesterday] GEOFENCE_SYSTEM: All 3 geofence perimeters synchronized with Gateway ingress router (:8080).</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: DEDICATED ZONE PERIMETER CONFIGURATOR CARDS -->
+        <div class="flex-col">
+          
+          <div class="flex-between margin-bottom-xs">
+            <span style="color: #ffffff; font-weight: 700; font-size: 0.9rem;">Configured Safe Zone Perimeters</span>
+            <span class="text-muted" style="font-size: 0.75rem;">3 Zones Defined</span>
+          </div>
+
+          <!-- ZONE 1: PINE MIDDLE SCHOOL -->
+          <div class="zone-config-card active-enforcing">
+            <div class="flex-between">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem;">1. Pine Middle School</span>
+              <span class="badge badge-green">ENFORCING</span>
+            </div>
+            
+            <div class="margin-top-xs" style="font-size: 0.75rem;">
+              <span class="text-muted">Street Address:</span>
+              <div style="color: #cbd5e1; font-weight: 600;">1155 Pine St, San Francisco, CA</div>
+              <div class="text-muted" style="font-size: 0.68rem;">Coordinates: 37.7749° N, -122.4194° W</div>
+            </div>
+
+            <!-- RADIUS SLIDER -->
+            <div class="margin-top-xs">
+              <div class="flex-between" style="font-size: 0.72rem;">
+                <span class="text-muted">Geofence Radius:</span>
+                <span style="color: #6366f1; font-weight: 700;" id="radius-val-1">100 meters</span>
+              </div>
+              <input type="range" min="50" max="1000" step="25" value="100" class="radius-slider margin-top-xs" oninput="updateRadius(1, this.value)">
+              <div class="flex-between text-muted margin-top-xs" style="font-size: 0.65rem;">
+                <span>50m (Tight)</span>
+                <span>500m</span>
+                <span>1000m (Broad)</span>
+              </div>
+            </div>
+
+            <!-- ENFORCEMENT TOGGLES -->
+            <div class="margin-top-xs" style="font-size: 0.72rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.4rem;">
+              <label class="flex-row" style="gap: 0.5rem; color: #cbd5e1; cursor: pointer;">
+                <input type="checkbox" checked> Alert on unannounced exit breach
+              </label>
+              <label class="flex-row" style="gap: 0.5rem; color: #cbd5e1; cursor: pointer; margin-top: 0.25rem;">
+                <input type="checkbox" checked> School hours active enforcement (8:00 AM - 3:00 PM)
+              </label>
+            </div>
+          </div>
+
+          <!-- ZONE 2: HOME SAFE ZONE -->
+          <div class="zone-config-card active-enforcing">
+            <div class="flex-between">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem;">2. Home Safe Zone</span>
+              <span class="badge badge-green">ENFORCING</span>
+            </div>
+            
+            <div class="margin-top-xs" style="font-size: 0.75rem;">
+              <span class="text-muted">Street Address:</span>
+              <div style="color: #cbd5e1; font-weight: 600;">742 Evergreen Terrace, San Francisco, CA</div>
+              <div class="text-muted" style="font-size: 0.68rem;">Coordinates: 37.7712° N, -122.4210° W</div>
+            </div>
+
+            <!-- RADIUS SLIDER -->
+            <div class="margin-top-xs">
+              <div class="flex-between" style="font-size: 0.72rem;">
+                <span class="text-muted">Geofence Radius:</span>
+                <span style="color: #6366f1; font-weight: 700;" id="radius-val-2">150 meters</span>
+              </div>
+              <input type="range" min="50" max="1000" step="25" value="150" class="radius-slider margin-top-xs" oninput="updateRadius(2, this.value)">
+              <div class="flex-between text-muted margin-top-xs" style="font-size: 0.65rem;">
+                <span>50m (Tight)</span>
+                <span>500m</span>
+                <span>1000m (Broad)</span>
+              </div>
+            </div>
+
+            <!-- ENFORCEMENT TOGGLES -->
+            <div class="margin-top-xs" style="font-size: 0.72rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.4rem;">
+              <label class="flex-row" style="gap: 0.5rem; color: #cbd5e1; cursor: pointer;">
+                <input type="checkbox" checked> Alert on exit breach
+              </label>
+              <label class="flex-row" style="gap: 0.5rem; color: #cbd5e1; cursor: pointer; margin-top: 0.25rem;">
+                <input type="checkbox" checked> Curfew late arrival alert (4:30 PM)
+              </label>
+            </div>
+          </div>
+
+          <!-- ZONE 3: GRANDMA CLARA'S RESIDENCE -->
+          <div class="zone-config-card active-enforcing">
+            <div class="flex-between">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem;">3. Grandma Clara's House</span>
+              <span class="badge badge-green">ENFORCING</span>
+            </div>
+            
+            <div class="margin-top-xs" style="font-size: 0.75rem;">
+              <span class="text-muted">Street Address:</span>
+              <div style="color: #cbd5e1; font-weight: 600;">422 Elm St, San Francisco, CA</div>
+              <div class="text-muted" style="font-size: 0.68rem;">Coordinates: 37.7760° N, -122.4150° W</div>
+            </div>
+
+            <!-- RADIUS SLIDER -->
+            <div class="margin-top-xs">
+              <div class="flex-between" style="font-size: 0.72rem;">
+                <span class="text-muted">Geofence Radius:</span>
+                <span style="color: #6366f1; font-weight: 700;" id="radius-val-3">200 meters</span>
+              </div>
+              <input type="range" min="50" max="1000" step="25" value="200" class="radius-slider margin-top-xs" oninput="updateRadius(3, this.value)">
+              <div class="flex-between text-muted margin-top-xs" style="font-size: 0.65rem;">
+                <span>50m (Tight)</span>
+                <span>500m</span>
+                <span>1000m (Broad)</span>
+              </div>
+            </div>
+
+            <!-- ENFORCEMENT TOGGLES -->
+            <div class="margin-top-xs" style="font-size: 0.72rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.4rem;">
+              <label class="flex-row" style="gap: 0.5rem; color: #cbd5e1; cursor: pointer;">
+                <input type="checkbox" checked> Arrival & departure notifications
+              </label>
+            </div>
+          </div>
+
+          <!-- SAVE ALL PERIMETERS BUTTON -->
+          <button class="btn-pill-next margin-top-xs" onclick="saveAllGeofences()" style="width: 100%; padding: 0.75rem; font-size: 0.85rem;">
+            💾 Save All Safe Zone Perimeters
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function updateRadius(zoneId, val) {
+      document.getElementById(`radius-val-${zoneId}`).innerText = `${val} meters`;
+    }
+
+    function simulateGeofenceEvent(eventType) {
+      const pin = document.getElementById('map-pin');
+      const tag = document.getElementById('map-tag');
+      const badge = document.getElementById('map-target-status');
+      const feed = document.getElementById('geofence-audit-feed');
+      const timeStr = new Date().toLocaleTimeString();
+
+      if (eventType === 'home') {
+        pin.style.background = '#10b981';
+        pin.style.top = '45%';
+        pin.style.left = '48%';
+        tag.style.top = '38%';
+        tag.style.left = '45%';
+        tag.innerText = 'Maya Johnson · Stationary (Home Safe Zone)';
+        badge.innerText = '● Maya is INSIDE Home Safe Zone (150m)';
+        badge.className = 'badge badge-green';
+        appendAudit(`[${timeStr}] GEOFENCE_ENTER: Maya entered Home Safe Zone (Radius 150m).`);
+      } else if (eventType === 'school_breach') {
+        pin.style.background = '#ef4444';
+        pin.style.top = '10%';
+        pin.style.left = '75%';
+        tag.style.top = '3%';
+        tag.style.left = '68%';
+        tag.innerText = 'Maya Johnson · UNANNOUNCED EXIT BREACH (42.5 mph)';
+        badge.innerText = '🚨 UNANNOUNCED EXIT BREACH DETECTED';
+        badge.className = 'badge badge-red';
+        appendAudit(`[${timeStr}] GEOFENCE_BREACH_ALERT: Maya exited Pine Middle School zone without authorization. Speed: 42.5 mph Southbound.`);
+      } else if (eventType === 'curfew') {
+        pin.style.background = '#f59e0b';
+        pin.style.top = '30%';
+        pin.style.left = '20%';
+        tag.style.top = '23%';
+        tag.style.left = '15%';
+        tag.innerText = 'Maya Johnson · LATE CURFEW WARNING (Not at Home)';
+        badge.innerText = '⏰ LATE CURFEW ARRIVAL WARNING (Curfew 4:30 PM)';
+        badge.className = 'badge badge-amber';
+        appendAudit(`[${timeStr}] GEOFENCE_CURFEW_WARNING: Curfew time reached (4:30 PM). Maya is not inside Home Zone.`);
+      }
+    }
+
+    function appendAudit(msg) {
+      const feed = document.getElementById('geofence-audit-feed');
+      const div = document.createElement('div');
+      div.className = 'text-green margin-top-xs';
+      div.innerText = msg;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function saveAllGeofences() {
+      alert("✓ All 3 Safe Zone Perimeters saved and synchronized with Safety Protocol microservice (:8082)!");
+    }
+
+    function openAddZoneModal() {
+      const name = prompt("Enter New Safe Zone Name:", "Grandpa's Office");
+      if (name) {
+        alert(`✓ Safe Zone '${name}' added to geofence enforcement engine!`);
+      }
+    }
+  </script>
+</body>
+</html>

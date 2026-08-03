@@ -23,6 +23,905 @@
     },
     "correlationId": "corr_fs_1785604200039",
     "idempotencyKey": "idemp_fs_98001",
-    "updatedAt": "2026-08-01T17:10:00.042Z"
+    "updatedAt": "2026-08-01T17:10:00.042Z",
+    "humanStatus": "EMERGENCY_TRIGGERED"
+  },
+  {
+    "packetId": "pkt_1785693313037_x859sp",
+    "incidentNumber": 51259,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T17:55:13.037Z",
+    "activationSource": "SPOKEN_SAFE_WORD",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693313037",
+    "updatedAt": "2026-08-02T17:55:13.037Z"
+  },
+  {
+    "packetId": "pkt_1785693325398_uevt2n",
+    "incidentNumber": 53298,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T17:55:25.398Z",
+    "activationSource": "SPOKEN_SAFE_WORD",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693325398",
+    "updatedAt": "2026-08-02T17:55:25.398Z"
+  },
+  {
+    "packetId": "pkt_1785693565405_2nbhfs",
+    "incidentNumber": 82103,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T17:59:25.405Z",
+    "activationSource": "SPOKEN_SAFE_WORD",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693565405",
+    "updatedAt": "2026-08-02T17:59:25.406Z"
+  },
+  {
+    "packetId": "pkt_1785693592940_oh1vci",
+    "incidentNumber": 12837,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T17:59:52.940Z",
+    "activationSource": "DURESS_PIN",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693592940",
+    "updatedAt": "2026-08-02T17:59:52.940Z"
+  },
+  {
+    "packetId": "pkt_1785693673029_kv2ew8",
+    "incidentNumber": 99552,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T18:01:13.029Z",
+    "activationSource": "DURESS_PIN",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693673029",
+    "updatedAt": "2026-08-02T18:01:13.029Z"
+  },
+  {
+    "packetId": "pkt_1785693789805_0055w5",
+    "incidentNumber": 23135,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T18:03:09.805Z",
+    "activationSource": "ACOUSTIC_DISTRESS",
+    "identityLayerRef": "usr_evelyn_johnson_01",
+    "protocolRef": "proto_usr_evelyn_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7753,
+        "longitude": -122.4201,
+        "accuracy_meters": 8
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785693789805",
+    "updatedAt": "2026-08-02T18:03:09.805Z"
+  },
+  {
+    "packetId": "pkt_1785704196084_yrdnqo",
+    "incidentNumber": 98450,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T20:56:36.085Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785704196084",
+    "updatedAt": "2026-08-02T20:56:36.085Z"
+  },
+  {
+    "packetId": "pkt_1785704338700_e9dvwv",
+    "incidentNumber": 86532,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T20:58:58.700Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785704338700",
+    "updatedAt": "2026-08-02T20:58:58.700Z"
+  },
+  {
+    "packetId": "pkt_1785705818131_yf2989",
+    "incidentNumber": 32083,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:23:38.132Z",
+    "activationSource": "FALL",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Hard fall detection",
+      "protected_name": "Robert Ellis"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705818131",
+    "updatedAt": "2026-08-02T21:23:38.132Z"
+  },
+  {
+    "packetId": "pkt_1785705878662_qnazqj",
+    "incidentNumber": 27911,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:24:38.662Z",
+    "activationSource": "FALL",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Hard fall detection",
+      "protected_name": "Robert Ellis"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705878662",
+    "updatedAt": "2026-08-02T21:24:38.662Z"
+  },
+  {
+    "packetId": "pkt_1785705878707_0ktzym",
+    "incidentNumber": 68117,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:24:38.707Z",
+    "activationSource": "FALL",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Hard fall detection",
+      "protected_name": "Robert Ellis"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705878707",
+    "updatedAt": "2026-08-02T21:24:38.707Z"
+  },
+  {
+    "packetId": "pkt_1785705906018_8wimms",
+    "incidentNumber": 10836,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:25:06.018Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705906018",
+    "updatedAt": "2026-08-02T21:25:06.018Z"
+  },
+  {
+    "packetId": "pkt_1785705906068_pne0gb",
+    "incidentNumber": 91076,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:25:06.068Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705906068",
+    "updatedAt": "2026-08-02T21:25:06.068Z"
+  },
+  {
+    "packetId": "pkt_1785705919652_xyd8hu",
+    "incidentNumber": 77529,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:25:19.652Z",
+    "activationSource": "TAG",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Tactile button squeeze",
+      "protected_name": "Jasmine Cole"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705919652",
+    "updatedAt": "2026-08-02T21:25:19.652Z"
+  },
+  {
+    "packetId": "pkt_1785705919687_er5wvy",
+    "incidentNumber": 35718,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:25:19.687Z",
+    "activationSource": "TAG",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Tactile button squeeze",
+      "protected_name": "Jasmine Cole"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785705919687",
+    "updatedAt": "2026-08-02T21:25:19.687Z"
+  },
+  {
+    "packetId": "pkt_1785706965310_2l7a9y",
+    "incidentNumber": 83971,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:42:45.310Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785706965310",
+    "updatedAt": "2026-08-02T21:42:45.310Z"
+  },
+  {
+    "packetId": "pkt_1785707988006_iuicg9",
+    "incidentNumber": 13984,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:59:48.006Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785707988006",
+    "updatedAt": "2026-08-02T21:59:48.006Z"
+  },
+  {
+    "packetId": "pkt_1785707988102_ovie8p",
+    "incidentNumber": 28513,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T21:59:48.102Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785707988102",
+    "updatedAt": "2026-08-02T21:59:48.102Z"
+  },
+  {
+    "packetId": "pkt_1785709909759_y7ffb2",
+    "incidentNumber": 91598,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T22:31:49.759Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785709909759",
+    "updatedAt": "2026-08-02T22:31:49.759Z"
+  },
+  {
+    "packetId": "pkt_1785709909832_d7b6mp",
+    "incidentNumber": 13036,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T22:31:49.832Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785709909832",
+    "updatedAt": "2026-08-02T22:31:49.832Z"
+  },
+  {
+    "packetId": "pkt_1785710253557_3j4wp5",
+    "incidentNumber": 96640,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T22:37:33.557Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785710253557",
+    "updatedAt": "2026-08-02T22:37:33.557Z"
+  },
+  {
+    "packetId": "pkt_1785710253604_v304io",
+    "incidentNumber": 65601,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T22:37:33.604Z",
+    "activationSource": "CRASH",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "8.5g crash impact (simulated adapter)",
+      "protected_name": "David Reyes"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785710253604",
+    "updatedAt": "2026-08-02T22:37:33.604Z"
+  },
+  {
+    "packetId": "pkt_1785714453660_6a2qjr",
+    "incidentNumber": 53514,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-02T23:47:33.660Z",
+    "activationSource": "FALL",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Hard fall detection",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785714453660",
+    "updatedAt": "2026-08-02T23:47:33.660Z"
+  },
+  {
+    "packetId": "pkt_1785716862789_6rjk2p",
+    "incidentNumber": 91499,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:27:42.789Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785716862788",
+    "updatedAt": "2026-08-03T00:27:42.789Z"
+  },
+  {
+    "packetId": "pkt_1785716862801_2du281",
+    "incidentNumber": 62703,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:27:42.801Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785716862801",
+    "updatedAt": "2026-08-03T00:27:42.801Z"
+  },
+  {
+    "packetId": "pkt_1785717478884_kjkl9r",
+    "incidentNumber": 14164,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:37:58.884Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "mic_noise_db": 88,
+      "speed_mph": 42.5,
+      "detected_keyword": "HELP",
+      "gps_signal": 0,
+      "ble_peers_count": 2
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717478884",
+    "updatedAt": "2026-08-03T00:37:58.884Z"
+  },
+  {
+    "packetId": "pkt_1785717558258_2renm4",
+    "incidentNumber": 71287,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:39:18.258Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "mic_noise_db": 88,
+      "speed_mph": 42.5,
+      "detected_keyword": "HELP",
+      "gps_signal": 0,
+      "ble_peers_count": 2
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717558258",
+    "updatedAt": "2026-08-03T00:39:18.258Z"
+  },
+  {
+    "packetId": "pkt_1785717617498_hhyosb",
+    "incidentNumber": 84676,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:40:17.498Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717617498",
+    "updatedAt": "2026-08-03T00:40:17.498Z"
+  },
+  {
+    "packetId": "pkt_1785717617545_9cde2f",
+    "incidentNumber": 38770,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:40:17.545Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717617545",
+    "updatedAt": "2026-08-03T00:40:17.545Z"
+  },
+  {
+    "packetId": "pkt_1785717827588_o126ff",
+    "incidentNumber": 70342,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:43:47.588Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717827588",
+    "updatedAt": "2026-08-03T00:43:47.588Z"
+  },
+  {
+    "packetId": "pkt_1785717827640_gjc7bc",
+    "incidentNumber": 93548,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T00:43:47.640Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785717827640",
+    "updatedAt": "2026-08-03T00:43:47.640Z"
+  },
+  {
+    "packetId": "pkt_1785720396914_xftz62",
+    "incidentNumber": 52437,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T01:26:36.914Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785720396913",
+    "updatedAt": "2026-08-03T01:26:36.914Z"
+  },
+  {
+    "packetId": "pkt_1785720396952_915l96",
+    "incidentNumber": 17271,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T01:26:36.952Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785720396952",
+    "updatedAt": "2026-08-03T01:26:36.952Z"
+  },
+  {
+    "packetId": "pkt_1785720471645_e371f4",
+    "incidentNumber": 13843,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T01:27:51.645Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "speed_mph": 42.5,
+      "mic_noise_db": 88,
+      "detected_keyword": "HELP"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785720471645",
+    "updatedAt": "2026-08-03T01:27:51.645Z"
+  },
+  {
+    "packetId": "pkt_1785720700469_w1wqkp",
+    "incidentNumber": 37513,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T01:31:40.469Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785720700469",
+    "updatedAt": "2026-08-03T01:31:40.469Z"
+  },
+  {
+    "packetId": "pkt_1785728201822_xxxg01",
+    "incidentNumber": 84340,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T03:36:41.822Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785728201822",
+    "updatedAt": "2026-08-03T03:36:41.822Z"
+  },
+  {
+    "packetId": "pkt_1785728202090_wzpr9v",
+    "incidentNumber": 13337,
+    "status": "ACTIVE",
+    "humanStatus": "EMERGENCY_TRIGGERED",
+    "startTime": "2026-08-03T03:36:42.090Z",
+    "activationSource": "SAFE_WORD",
+    "identityLayerRef": "usr_maya_johnson_01",
+    "protocolRef": "proto_usr_maya_johnson_01",
+    "sensorSnapshot": {
+      "trigger_method": "Spoken safe word \"Blue Folder\"",
+      "protected_name": "Maya Johnson"
+    },
+    "contextSnapshot": {
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194,
+        "accuracy_meters": 6
+      }
+    },
+    "aiContext": null,
+    "correlationId": "corr_1785728202090",
+    "updatedAt": "2026-08-03T03:36:42.090Z"
   }
 ]

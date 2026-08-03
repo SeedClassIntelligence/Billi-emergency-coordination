@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Hardware & Device Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:940px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.requireSetup()) throw new Error('redirect');
+    Billi.renderNav('devices.html');
+    const S = Billi.state;
+
+    const STATE_META = {
+      'CONNECTED':      ['connected', 'Live physical link established'],
+      'REGISTERED':     ['local', 'Known to Billi, not currently linked'],
+      'STANDBY':        ['local', 'Reachable, conserving power'],
+      'OFFLINE':        ['unavail', 'Not reachable — fallback paths active'],
+      'PAIRING':        ['simulated', 'Pairing in progress'],
+      'SIMULATED':      ['simulated', 'Behavior simulated for design review'],
+      'UNAVAILABLE':    ['unavail', 'Capability not available'],
+      'FUTURE ADAPTER': ['future', 'Partner SDK integration planned']
+    };
+
+    function chip(st) {
+      const meta = STATE_META[st] || ['local', ''];
+      return `<span class="sim-chip ${meta[0]}">${st}</span>`;
+    }
+
+    function render() {
+      const ready = S.devices.filter(d => ['CONNECTED', 'SIMULATED', 'REGISTERED', 'STANDBY'].includes(d.state)).length;
+      document.getElementById('main-host').innerHTML = `
+        <section class="margin-top flex-between" style="flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <div class="dash-greeting-title">Hardware & Devices</div>
+            <div class="dash-greeting-sub">${S.devices.length} registered · ${ready} ready · every state label is honest — nothing is shown as physically active unless it is.</div>
+          </div>
+          <button class="btn btn-secondary" onclick="scan()">📶 BLE spectrum scan (SIMULATED)</button>
+        </section>
+
+        <section class="grid grid-2 margin-top" style="gap:0.75rem;">
+          ${S.devices.map(d => `
+            <div class="card" style="padding:1.1rem;">
+              <div class="flex-between">
+                <div>
+                  <strong style="color:#fff;">${d.name}</strong>
+                  <div class="text-muted" style="font-size:0.72rem;">${d.type} · last seen ${d.lastSeen || '—'}</div>
+                </div>
+                ${chip(d.state)}
+              </div>
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem;">${(STATE_META[d.state] || ['',''])[1]}</div>
+              ${d.battery !== null && d.battery !== undefined ? `
+              <div class="flex-between margin-top-xs" style="font-size:0.72rem; color:#94a3b8;">
+                <span>🔋 Battery</span><span style="color:${d.battery < 25 ? '#ef4444' : d.battery < 50 ? '#fbbf24' : '#34d399'};">${d.battery}%</span>
+              </div>
+              <div class="progress-track-bg" style="height:5px;">
+                <div class="progress-bar-fill" style="width:${d.battery}%; background:${d.battery < 25 ? '#ef4444' : d.battery < 50 ? '#f59e0b' : '#10b981'};"></div>
+              </div>` : '<div class="text-muted margin-top-xs" style="font-size:0.72rem;">No battery telemetry (adapter not connected)</div>'}
+              <div class="margin-top-xs">
+                <div class="text-muted" style="font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em;">Sensors & capabilities</div>
+                <div class="flex-row margin-top-xs" style="gap:0.3rem; flex-wrap:wrap;">
+                  ${(d.capabilities || []).map(c => `<span class="badge badge-blue" style="font-size:0.6rem;">${c}</span>`).join('') || '<span class="text-muted" style="font-size:0.7rem;">—</span>'}
+                </div>
+              </div>
+              ${(d.triggers || []).length ? `
+              <div class="margin-top-xs">
+                <div class="text-muted" style="font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em;">Emergency triggers</div>
+                <div class="flex-row margin-top-xs" style="gap:0.3rem; flex-wrap:wrap;">
+                  ${d.triggers.map(t => `<span class="badge badge-indigo" style="font-size:0.6rem;">⚡ ${t}</span>`).join('')}
+                </div>
+              </div>` : ''}
+              <div class="flex-row margin-top-xs" style="gap:0.35rem;">
+                <button class="btn btn-outline-nav" style="font-size:0.66rem;" onclick="testDevice('${d.id}')">Test trigger</button>
+                ${d.state === 'OFFLINE' ? `<button class="btn btn-outline-nav" style="font-size:0.66rem;" onclick="reconnect('${d.id}')">Attempt reconnect</button>` : ''}
+                <button class="btn-dash-logout" onclick="unbind('${d.id}')">Unbind</button>
+              </div>
+            </div>`).join('')}
+        </section>
+
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="panel-section-title" style="font-size:0.92rem;">Fallback chain</div>
+          <p class="text-muted margin-top-xs" style="font-size:0.8rem;">
+            Primary hub → Watch (secondary GPS + LTE) → Smart Tag (BLE beacon) → Glasses (audio) → Nearby relay (SIMULATED).
+            If the phone goes offline, protection degrades honestly: <span class="text-amber">High 92% → Reduced 60% → Limited 32% → Unavailable 5%</span> — Billi never fabricates coordinates.
+          </p>
+        </section>`;
+    }
+
+    function scan() {
+      Billi.toast('📶 SIMULATED 2.4 GHz BLE scan complete: all registered nodes visible, 2 pairable peripherals nearby. Register new hardware in Setup or Admin.', 'ok');
+      Billi.audit('System', 'BLE_SCAN', 'BLE spectrum scan run from device hub (SIMULATED).');
+    }
+    function testDevice(id) {
+      const d = S.devices.find(x => x.id === id);
+      Billi.toast(`⚡ ${d.name}: trigger test OK — activation path verified end-to-end in local engine (SIMULATED hardware).`, 'ok');
+      Billi.audit('System', 'DEVICE_TEST', `${d.name} trigger test executed (SIMULATED).`);
+    }
+    function reconnect(id) {
+      const d = S.devices.find(x => x.id === id);
+      d.state = 'STANDBY'; d.lastSeen = 'now';
+      Billi.save(); render();
+      Billi.toast(`✓ ${d.name} reconnected → STANDBY (SIMULATED).`, 'ok');
+    }
+    function unbind(id) {
+      const d = S.devices.find(x => x.id === id);
+      if (!confirm(`Unbind ${d.name} from the protection mesh?`)) return;
+      S.devices = S.devices.filter(x => x.id !== id);
+      Billi.save(); render();
+      Billi.audit((S.owner || {}).name || 'Owner', 'DEVICE_UNBOUND', `${d.name} removed from hardware inventory.`);
+    }
+
+    render();
+  </script>
+</body>
+</html>

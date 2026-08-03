@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — 15-Stage Master Emergency Coordination & Live Camera Video Demonstrator</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* MASTER 15-STAGE DEMO ENGINE STYLING WITH LIVE WEBCAM VIDEO STREAMS */
+    .demo-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    
+    .demo-hero {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(8, 9, 17, 0.98) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+
+    .demo-3col-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr 340px;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 1100px) {
+      .demo-3col-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .scenario-card-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .scenario-card-btn:hover {
+      background: rgba(99, 102, 241, 0.08);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .scenario-card-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: #6366f1;
+      box-shadow: inset 0 0 10px rgba(99, 102, 241, 0.25);
+    }
+
+    .storyline-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .viewport-canvas {
+      background: #06070d;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 1.25rem;
+      min-height: 500px;
+      position: relative;
+    }
+
+    .persona-tab {
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .persona-tab.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .timeline-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      cursor: pointer;
+    }
+
+    .timeline-node-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #334155;
+      border: 2px solid #0f172a;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-node.completed .timeline-node-dot {
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+
+    .timeline-node.active .timeline-node-dot {
+      background: #6366f1;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.8);
+      animation: pulse 1.5s infinite;
+    }
+
+    .log-feed-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      background: #040509;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.75rem;
+      height: 170px;
+      overflow-y: auto;
+    }
+
+    .simultaneous-quad-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .simultaneous-action-card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    /* LIVE CAMERA STREAM BOX */
+    .live-camera-box {
+      width: 100%;
+      height: 120px;
+      background: #000000;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .live-camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="bg-root">
+
+  <div class="dashboard-full-wrapper">
+    
+    <!-- TOP NAVIGATION HEADER BAR -->
+    <header class="dashboard-top-bar flex-between">
+      <div class="flex-row" style="gap: 1rem;">
+        <div class="brand-mark" onclick="window.location.href='landing.html'">BILLI</div>
+        <span class="pill-badge-indigo" style="letter-spacing: 0.5px;">MASTER DEMONSTRATOR WITH LIVE WEBCAM VIDEO FEED</span>
+      </div>
+      <div class="flex-row" style="gap: 0.75rem;">
+        <button class="btn-dash-logout" onclick="togglePresenterMode()" id="btn-presenter-mode">📹 Presenter Mode</button>
+        <button class="btn-dash-logout" onclick="window.location.href='landing.html'">← Exit Demo</button>
+      </div>
+    </header>
+
+    <!-- MAIN DEMO CONTAINER -->
+    <main class="demo-wrapper">
+      
+      <!-- HERO DEMO BANNER -->
+      <section class="demo-hero flex-between">
+        <div>
+          <div class="flex-row" style="gap: 0.5rem; margin-bottom: 0.2rem;">
+            <span class="badge badge-indigo">SCENARIO: MOVED WITHOUT CONSENT</span>
+            <span class="badge badge-green">4 SIMULTANEOUS ACTIONS AT 0s</span>
+          </div>
+          <h1 style="color: #ffffff; font-size: 1.6rem; font-weight: 700; margin: 0;" id="hero-scenario-title">Scenario 01: Child Moved Without Consent (Maya Johnson)</h1>
+          <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.2rem;" id="hero-scenario-subtitle">
+            Maya is forced into a vehicle leaving school. Spoken safe word 'Blue Folder' triggers instant 4-action ingress including live camera video feed.
+          </p>
+        </div>
+
+        <div class="flex-row" style="gap: 1rem;">
+          <div class="card text-center" style="background: rgba(0,0,0,0.5); padding: 0.4rem 1rem; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Timestamp Clock</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #6366f1; font-family: monospace;" id="clock-display">03:14:07 PM</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TIMELINE CONTROL TRACK (0s, 6s, 14s, 22s, 30s) -->
+      <section class="card margin-top-xs" style="background: rgba(15, 23, 42, 0.9); padding: 0.75rem 1.25rem;">
+        <div class="flex-between" style="margin-bottom: 0.4rem;">
+          <span style="font-weight: 700; font-size: 0.82rem; color: #ffffff;" id="stage-title-text">Stage 1: Emergency Incident Creation & 4 Simultaneous Actions (3:14:07 PM)</span>
+          <div class="flex-row" style="gap: 0.4rem;">
+            <button class="btn-dash-logout" onclick="setSpeed(1)" id="speed-1x-btn" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; background: #6366f1;">1x Speed</button>
+            <button class="btn-dash-logout" onclick="setSpeed(2)" id="speed-2x-btn" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">2x Fast</button>
+          </div>
+        </div>
+
+        <div class="progress-track-bg" style="height: 6px;">
+          <div class="progress-fill-indigo" id="progress-fill" style="width: 0%;"></div>
+        </div>
+
+        <div class="flex-between margin-top-xs">
+          <div class="timeline-node active" id="node-1" onclick="jumpToStage(1)">
+            <div class="timeline-node-dot"></div>
+            <span style="font-size: 0.7rem; font-weight: 600;">3:14:07 PM Ingress</span>
+          </div>
+          <div class="timeline-node" id="node-2" onclick="jumpToStage(2)">
+            <div class="timeline-node-dot"></div>
+            <span style="font-size: 0.7rem; font-weight: 600;">3:14:15 PM Speed 38mph</span>
+          </div>
+          <div class="timeline-node" id="node-3" onclick="jumpToStage(3)">
+            <div class="timeline-node-dot"></div>
+            <span style="font-size: 0.7rem; font-weight: 600;">3:15:35 PM Mesh Tunnel</span>
+          </div>
+          <div class="timeline-node" id="node-4" onclick="jumpToStage(4)">
+            <div class="timeline-node-dot"></div>
+            <span style="font-size: 0.7rem; font-weight: 600;">3:16:02 PM Officer Dispatch</span>
+          </div>
+          <div class="timeline-node" id="node-5" onclick="jumpToStage(5)">
+            <div class="timeline-node-dot"></div>
+            <span style="font-size: 0.7rem; font-weight: 600;">3:17:00 PM CAD Sealed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3-COLUMN WORKSPACE GRID -->
+      <section class="demo-3col-grid">
+        
+        <!-- COLUMN 1: CRISIS SCENARIOS & STORYLINE NARRATIVE -->
+        <div class="flex-col" id="col-scenarios-panel">
+          
+          <!-- PLAYBACK CONTROLS -->
+          <div class="card" style="background: #0b0d17; border: 1px solid rgba(255,255,255,0.1); padding: 0.85rem;">
+            <div class="flex-between margin-bottom-xs">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.85rem;">Playback Controls</span>
+              <span class="badge badge-green" id="status-pill">READY</span>
+            </div>
+            <div class="grid grid-2" style="gap: 0.4rem;">
+              <button class="btn-pill-next" id="btn-play-pause" onclick="togglePlayPause()" style="width: 100%; padding: 0.6rem; font-size: 0.8rem;">
+                ▶ START LIFECYCLE
+              </button>
+              <button class="btn-pill-back" onclick="resetDemo()" style="width: 100%; padding: 0.6rem; font-size: 0.8rem;">
+                🔄 RESET
+              </button>
+            </div>
+          </div>
+
+          <!-- SCENARIOS LIST -->
+          <div class="card" style="background: #0b0d17; border: 1px solid rgba(255,255,255,0.1); padding: 0.85rem; max-height: 220px; overflow-y: auto;">
+            <div class="flex-between margin-bottom-xs">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.85rem;">Emergency Scenarios</span>
+            </div>
+            <div class="flex-col" style="gap: 0.35rem;" id="scenario-buttons-list">
+              <!-- RENDERED BY JS -->
+            </div>
+          </div>
+
+          <!-- REAL CRISIS NARRATIVE BOX -->
+          <div class="storyline-box">
+            <div class="flex-between" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.3rem;">
+              <span style="color: #6366f1; font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">📖 15-STAGE MASTER CRISIS NARRATIVE</span>
+            </div>
+            
+            <div style="margin-top: 0.5rem; font-size: 0.78rem;" id="storyline-content">
+              <!-- DYNAMICALLY RENDERED BY JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLUMN 2: LIVE PERSONA VIEWPORT (REAL BILLI SURFACES) -->
+        <div class="flex-col">
+          
+          <div class="viewport-canvas" id="viewport-canvas">
+            
+            <!-- VIEWPORT HEADER & TABS -->
+            <div class="flex-between margin-bottom-sm" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem;">
+              <div class="flex-row" style="gap: 0.35rem;">
+                <span class="persona-tab active" id="tab-child" onclick="switchPersona('child')">📱 Target View</span>
+                <span class="persona-tab" id="tab-guardian" onclick="switchPersona('guardian')">🛡️ Evelyn's Command</span>
+                <span class="persona-tab" id="tab-mesh" onclick="switchPersona('mesh')">📡 Mesh Telemetry</span>
+                <span class="persona-tab" id="tab-responder" onclick="switchPersona('responder')">👮 Officer Dispatch</span>
+                <span class="persona-tab" id="tab-cad" onclick="switchPersona('cad')">📄 NENA CAD</span>
+              </div>
+              <span class="badge badge-indigo" id="viewport-stage-badge">STAGE 1: 4 SIMULTANEOUS ACTIONS</span>
+            </div>
+
+            <!-- DYNAMIC CANVAS BODY -->
+            <div id="viewport-body">
+              <!-- RENDERED BY JS -->
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- COLUMN 3: REAL-TIME TRAJECTORY RADAR & CAD PACKET EXPORTER -->
+        <div class="flex-col" style="gap: 0.75rem;">
+          
+          <!-- REAL-TIME TRAJECTORY VECTOR RADAR PANEL -->
+          <div class="card" style="background: #0b0d17; border: 1px solid rgba(255,255,255,0.1); padding: 0.85rem;">
+            <div class="flex-between margin-bottom-xs">
+              <span style="color: #ffffff; font-weight: 700; font-size: 0.85rem;">📍 Live Trajectory Vector Radar</span>
+              <span class="badge badge-green" id="vector-status-badge">TRACKING LIVE</span>
+            </div>
+            
+            <div class="flex-col" style="gap: 0.4rem; font-size: 0.75rem;">
+              <div class="card" style="background: #06070d; padding: 0.45rem;">
+                <span class="text-muted" style="font-size: 0.68rem;">WHERE (EVOLVING ROUTE CORRIDOR)</span>
+                <div style="color: #10b981; font-weight: 700; margin-top: 0.1rem;" id="vector-where">Pine Middle School ➔ I-15 South</div>
+              </div>
+
+              <div class="grid grid-3" style="gap: 0.35rem;">
+                <div class="card" style="background: #06070d; padding: 0.4rem;">
+                  <span class="text-muted" style="font-size: 0.65rem;">HEADING</span>
+                  <div style="color: #6366f1; font-weight: 700;" id="vector-direction">Southbound (180° SB)</div>
+                </div>
+                <div class="card" style="background: #06070d; padding: 0.4rem;">
+                  <span class="text-muted" style="font-size: 0.65rem;">SPEED</span>
+                  <div style="color: #f59e0b; font-weight: 700;" id="vector-speed">42.5 mph</div>
+                </div>
+                <div class="card" style="background: #06070d; padding: 0.4rem;">
+                  <span class="text-muted" style="font-size: 0.65rem;">PROXIMITY</span>
+                  <div style="color: #10b981; font-weight: 700;" id="vector-distance">2.4 miles away</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EVENT LOG TERMINAL FEED -->
+          <div class="log-feed-box">
+            <div class="flex-between text-muted margin-bottom-xs" style="font-size: 0.65rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.2rem;">
+              <span>CHRONOLOGICAL AUDIT STREAM</span>
+              <span>● GATEWAY :8080</span>
+            </div>
+            <div id="demo-log-feed">
+              <div class="text-muted">[03:14:07 PM] System baseline armed. Select scenario and click ▶ START...</div>
+            </div>
+          </div>
+
+          <!-- COPY CAD PACKET BUTTON -->
+          <button class="btn-pill-next" id="btn-copy-cad" onclick="copyDemoCad()" style="width: 100%; padding: 0.75rem; font-size: 0.85rem; display: none; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            📄 COPY OFFICIAL NENA 911 CAD PACKET
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // MASTER 15-STAGE CRISIS SCENARIO DEFINITIONS
+    const MASTER_SCENARIOS = [
+      {
+        id: 1,
+        title: "01. Child Moved Without Consent (Maya Johnson)",
+        subject: "Maya Johnson (Age 11 — Grade 6)",
+        hazard: "Forced into vehicle leaving school; unable to call 911 or speak safely.",
+        billiRole: "Spoken safe word 'Blue Folder' enters Gateway (:8080). Instantly fires 4 simultaneous actions: GPS pinpoint, 4-contact network alert, live mic audio buffer, live camera video capture stream.",
+        activationMethod: "SPOKEN_SAFE_WORD",
+        phraseMatched: "Blue Folder",
+        device: "Maya's iPhone 15 Pro",
+        where: "Pine Middle School ➔ I-15 South Corridor",
+        direction: "Southbound (180° SB)",
+        speed: "42.5 mph (Vehicle speed)",
+        distance: "2.4 miles from Home Safe Zone",
+        medicalNote: "Mild Asthma (Albuterol inhaler in backpack zip pocket) · Severe Peanut Allergy",
+        reassurancePrompt: "Billi is active. Your alert is being sent to your mother.",
+        videoStatus: "LIVE WEBCAM / CAMERA STREAM ACTIVE (1080p @ 30fps)"
+      },
+      {
+        id: 2,
+        title: "02. Fallen Elder (Robert Johnson, Age 78)",
+        subject: "Robert Johnson (Age 78 — Senior)",
+        hazard: "High-impact fall in home hallway resulting in loss of consciousness.",
+        billiRole: "Inertial sensors detect 4.2G shock vector ➔ 15s unresponsive countdown ➔ instant 4 simultaneous actions: GPS pinpoint, son notification, mic check, medical dossier dispatch.",
+        activationMethod: "WATCH_FALL_IMPACT",
+        phraseMatched: "N/A (Wear OS High-G Sensor)",
+        device: "Galaxy Watch 7 (Wear OS)",
+        where: "Evergreen Residence — Hallway Floor",
+        direction: "Zero Motion (Stationary)",
+        speed: "0.0 mph",
+        distance: "0.0 miles (Home Base)",
+        medicalNote: "Pacemaker Active · Cardiac Monitoring History · Blood Type A+",
+        reassurancePrompt: "Billi is active. Emergency medical services notified.",
+        videoStatus: "CAMERA STREAM INITIALIZED (Front View)"
+      },
+      {
+        id: 3,
+        title: "03. Vehicle Crash Collision Telematics",
+        subject: "David Johnson (Driver)",
+        hazard: "High-speed highway collision resulting in rapid trajectory deceleration.",
+        billiRole: "OBD-II telematics detects 8.5G impact and 78mph to 0mph drop, instant 4 actions: crash GPS, spouse alert, cabin audio, and Highway Patrol dispatch.",
+        activationMethod: "VEHICLE_CRASH_TELEMATICS",
+        phraseMatched: "N/A (8.5G Airbag Sensor)",
+        device: "Vehicle OBD-II Telematics Unit",
+        where: "Interstate 15 SB Mile Marker 42",
+        direction: "Southbound (180° SB)",
+        speed: "78.0 mph ➔ 0.0 mph",
+        distance: "14.2 miles from Home Base",
+        medicalNote: "No known allergies · Emergency contact: Evelyn Johnson",
+        reassurancePrompt: "Billi crash protocol active. Location transmitted.",
+        videoStatus: "CABIN DASHCAM FEED ACTIVE"
+      },
+      {
+        id: 4,
+        title: "04. Dropped & Unresponsive Phone",
+        subject: "Maya Johnson",
+        hazard: "Phone accidentally dropped during transit; zero movement for 45 seconds.",
+        billiRole: "Billi Aware Engine detects zero accelerometer motion ➔ instant 4 actions: GPS check, Wear OS watch heartbeat ping, ambient audio analysis, and guardian ping.",
+        activationMethod: "WATCH_LINK_ZERO_MOTION",
+        phraseMatched: "N/A (Zero Motion Timeout)",
+        device: "Google Pixel 9 Pro & Galaxy Watch 7",
+        where: "East Campus Walkway",
+        direction: "Zero Motion",
+        speed: "0.0 mph",
+        distance: "0.8 miles from Home Zone",
+        medicalNote: "Mild Asthma",
+        reassurancePrompt: "Billi motion check active.",
+        videoStatus: "CAMERA FRAME CAPTURE ACTIVE"
+      },
+      {
+        id: 5,
+        title: "05. Opposite Trajectory & Route Deviation",
+        subject: "Maya Johnson",
+        hazard: "Phone moving in opposite direction away from Home Safe Zone after school.",
+        billiRole: "Geofence Engine detects reverse velocity vectoring (18.5 mph away) ➔ instant 4 actions: reverse GPS vector, guardian alert, mic stream, and route tracking.",
+        activationMethod: "GEOFENCE_EXIT_REVERSE_VECTOR",
+        phraseMatched: "N/A (Route Deviation)",
+        device: "Google Pixel 9 Pro",
+        where: "Transit Center North Corridor",
+        direction: "Northbound (0° NB — Reverse Route)",
+        speed: "18.5 mph",
+        distance: "3.1 miles from Home Zone",
+        medicalNote: "Mild Asthma",
+        reassurancePrompt: "Billi geofence tracking active.",
+        videoStatus: "CAMERA FRAME CAPTURE ACTIVE"
+      },
+      {
+        id: 6,
+        title: "06. Coercive Duress Defense (PIN 9999)",
+        subject: "Maya Johnson (Under Coercion)",
+        hazard: "Hostile party forces user to unlock phone and cancel emergency alert.",
+        billiRole: "User enters PIN 9999 ➔ Maya's screen displays 'Alert canceled' (NO warning border to protect her from coercer) while silently executing 4 actions: duress GPS, silent 911 alert, mic buffer, and Evelyn's CRITICAL DURESS ALERT.",
+        activationMethod: "COERCIVE_DURESS_PIN_9999",
+        phraseMatched: "N/A (PIN 9999)",
+        device: "Billi Slate Core Unit",
+        where: "Downtown Transit Station",
+        direction: "Eastbound (90° EB)",
+        speed: "12.0 mph",
+        distance: "4.5 miles from Home Zone",
+        medicalNote: "Mild Asthma",
+        reassurancePrompt: "Alert canceled.",
+        videoStatus: "COVERT CAMERA RECORDING (Background)"
+      },
+      {
+        id: 7,
+        title: "07. Subterranean Signal Loss Failover",
+        subject: "Student Transit Group",
+        hazard: "Emergency occurs inside a subway tunnel with zero cellular coverage.",
+        billiRole: "Cellular link drops to 0 bars ➔ BILLI automatically switches to Ad-Hoc P2P BLE Mesh, hopping encrypted 4-action telemetry across peer phones.",
+        activationMethod: "P2P_BLE_MESH_FAILOVER",
+        phraseMatched: "N/A (Cellular Outage)",
+        device: "Ad-Hoc BLE Mesh Relay Node",
+        where: "Metro Tunnel Segment B Subterranean",
+        direction: "Westbound (270° WB)",
+        speed: "25.0 mph",
+        distance: "5.8 miles from Home Zone",
+        medicalNote: "Standard Dossier",
+        reassurancePrompt: "Billi mesh relay active.",
+        videoStatus: "CAMERA STREAM BUFFERED FOR UPLINK"
+      },
+      {
+        id: 8,
+        title: "08. Primary Phone Power-Off Event",
+        subject: "Maya Johnson",
+        hazard: "Primary phone battery dies (0%) during active emergency tracking.",
+        billiRole: "Hardware Registry detects phone battery death ➔ seamlessly shifts 4-action primary tracking bridge to Apple Watch Ultra LTE & Billi Tag.",
+        activationMethod: "PHONE_POWER_OFF_FALLBACK",
+        phraseMatched: "N/A (Battery Exhaustion)",
+        device: "Apple Watch Ultra 2 LTE & Billi Tag",
+        where: "North Park Perimeter Walkway",
+        direction: "Northbound (0° NB)",
+        speed: "3.5 mph",
+        distance: "1.2 miles from Home Zone",
+        medicalNote: "Mild Asthma",
+        reassurancePrompt: "Billi smartwatch bridge active.",
+        videoStatus: "SMARTWATCH STILL SNAPSHOT MODE"
+      },
+      {
+        id: 9,
+        title: "09. 45s Progressive Escalation Failsafe",
+        subject: "Maya Johnson (Unacknowledged)",
+        hazard: "SOS alert triggered, but no guardian acknowledges within 45 seconds.",
+        billiRole: "45s timer expires ➔ Orchestration Engine auto-escalates from Tier 1 Guardians to Tier 2 Campus Security to Tier 3 E911 PSAP Dispatch.",
+        activationMethod: "PROGRESSIVE_ESCALATION_45S",
+        phraseMatched: "N/A (Unacknowledged Expiry)",
+        device: "Billi Multi-Node Hub",
+        where: "Campus East Gate",
+        direction: "Southbound (180° SB)",
+        speed: "8.0 mph",
+        distance: "2.1 miles from Home Zone",
+        medicalNote: "Mild Asthma",
+        reassurancePrompt: "Billi escalating to emergency services.",
+        videoStatus: "CAMERA STREAM ACTIVE"
+      }
+    ];
+
+    let currentScenarioId = 1;
+    let isPlaying = false;
+    let currentMs = 0;
+    let playbackSpeed = 1;
+    let timer = null;
+    let currentPersona = 'child';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderButtons();
+      loadScenario(1);
+    });
+
+    function renderButtons() {
+      const container = document.getElementById('scenario-buttons-list');
+      container.innerHTML = MASTER_SCENARIOS.map(sc => `
+        <button class="scenario-card-btn ${sc.id === currentScenarioId ? 'active' : ''}" onclick="selectScenario(${sc.id})">
+          <div style="font-weight: 700; font-size: 0.78rem; color: #ffffff;">${sc.title}</div>
+          <div class="text-muted" style="font-size: 0.68rem; margin-top: 0.1rem;">${sc.subject}</div>
+        </button>
+      `).join('');
+    }
+
+    function selectScenario(id) {
+      currentScenarioId = id;
+      renderButtons();
+      loadScenario(id);
+    }
+
+    function loadScenario(id) {
+      resetDemo();
+      const sc = MASTER_SCENARIOS.find(s => s.id === id);
+      document.getElementById('hero-scenario-title').innerText = sc.title;
+      document.getElementById('hero-scenario-subtitle').innerText = sc.billiRole;
+      
+      // UPDATE VECTOR RADAR DISPLAY
+      document.getElementById('vector-where').innerText = sc.where;
+      document.getElementById('vector-direction').innerText = sc.direction;
+      document.getElementById('vector-speed').innerText = sc.speed;
+      document.getElementById('vector-distance').innerText = sc.distance;
+
+      // RENDER STORYLINE NARRATIVE SIDEBAR
+      document.getElementById('storyline-content').innerHTML = `
+        <div style="margin-bottom: 0.4rem;">
+          <span style="color: #94a3b8; font-weight: 600;">👤 SUBJECT:</span>
+          <span style="color: #ffffff;">${sc.subject}</span>
+        </div>
+        <div style="margin-bottom: 0.4rem;">
+          <span style="color: #ef4444; font-weight: 600;">⚠️ HAZARD:</span>
+          <span style="color: #f87171;">${sc.hazard}</span>
+        </div>
+        <div style="margin-bottom: 0.4rem;">
+          <span style="color: #10b981; font-weight: 600;">⚡ BILLI PREMISE:</span>
+          <span style="color: #e2e8f0;">${sc.billiRole}</span>
+        </div>
+        <div>
+          <span style="color: #6366f1; font-weight: 600;">📱 HARDWARE NODE:</span>
+          <span style="color: #cbd5e1;">${sc.device}</span>
+        </div>
+      `;
+
+      renderViewportContent();
+    }
+
+    function togglePlayPause() {
+      if (isPlaying) {
+        pauseDemo();
+      } else {
+        startDemo();
+      }
+    }
+
+    function startDemo() {
+      isPlaying = true;
+      document.getElementById('btn-play-pause').innerText = "⏸ PAUSE LIFECYCLE";
+      document.getElementById('btn-play-pause').className = "btn-pill-back";
+      document.getElementById('status-pill').innerText = "RUNNING";
+      document.getElementById('status-pill').className = "badge badge-amber";
+
+      const intervalMs = 100 / playbackSpeed;
+      timer = setInterval(() => {
+        currentMs += 100;
+        updateState();
+      }, intervalMs);
+    }
+
+    function pauseDemo() {
+      isPlaying = false;
+      if (timer) clearInterval(timer);
+      document.getElementById('btn-play-pause').innerText = "▶ RESUME LIFECYCLE";
+      document.getElementById('btn-play-pause').className = "btn-pill-next";
+      document.getElementById('status-pill').innerText = "PAUSED";
+      document.getElementById('status-pill').className = "badge badge-indigo";
+    }
+
+    function resetDemo() {
+      pauseDemo();
+      currentMs = 0;
+      document.getElementById('btn-play-pause').innerText = "▶ START LIFECYCLE";
+      document.getElementById('status-pill').innerText = "READY";
+      document.getElementById('status-pill').className = "badge badge-green";
+      document.getElementById('btn-copy-cad').style.display = "none";
+      document.getElementById('demo-log-feed').innerHTML = '<div class="text-muted">[03:14:07 PM] System baseline armed. Select scenario and click ▶ START...</div>';
+      updateState();
+    }
+
+    function setSpeed(speed) {
+      playbackSpeed = speed;
+      document.getElementById('speed-1x-btn').style.background = speed === 1 ? '#6366f1' : 'rgba(255,255,255,0.04)';
+      document.getElementById('speed-2x-btn').style.background = speed === 2 ? '#6366f1' : 'rgba(255,255,255,0.04)';
+      if (isPlaying) {
+        pauseDemo();
+        startDemo();
+      }
+    }
+
+    function jumpToStage(stageNum) {
+      const times = [0, 0, 6000, 14000, 22000, 30000];
+      currentMs = times[stageNum];
+      updateState();
+    }
+
+    function updateState() {
+      if (currentMs >= 30000) {
+        currentMs = 30000;
+        pauseDemo();
+        document.getElementById('status-pill').innerText = "COMPLETED";
+        document.getElementById('status-pill').className = "badge badge-green";
+        document.getElementById('btn-play-pause').innerText = "▶ REPLAY LIFECYCLE";
+        document.getElementById('btn-copy-cad').style.display = "block";
+      }
+
+      // TIMESTAMP DISPLAY
+      const baseSec = 7; // 3:14:07 PM base
+      const elapsedSec = Math.floor(currentMs / 1000);
+      const totalSec = baseSec + elapsedSec;
+      const minStr = totalSec >= 60 ? "15" : "14";
+      const displaySec = totalSec % 60;
+      const secStr = displaySec < 10 ? `0${displaySec}` : `${displaySec}`;
+      document.getElementById('clock-display').innerText = `03:${minStr}:${secStr} PM`;
+
+      // PROGRESS BAR
+      const pct = (currentMs / 30000) * 100;
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+
+      const sc = MASTER_SCENARIOS.find(s => s.id === currentScenarioId);
+
+      // AUTOMATIC STAGE & PERSONA SWITCHING
+      if (currentMs < 6000) {
+        setStageHighlight(1, `Stage 1: Emergency Incident Creation & 4 Actions (3:${minStr}:${secStr} PM)`);
+        if (currentPersona !== 'child') switchPersona('child');
+        if (currentMs === 100) appendLog(`[03:${minStr}:${secStr} PM] 🚨 EMERGENCY_TRIGGERED: Gateway created pkt_nena_30s_${Date.now()}. Method: ${sc.activationMethod}.`);
+      } else if (currentMs < 14000) {
+        setStageHighlight(2, `Stage 2: Evelyn's Command Sync & 45s Escalation (3:${minStr}:${secStr} PM)`);
+        if (currentPersona !== 'guardian') switchPersona('guardian');
+        if (currentMs === 6000) appendLog(`[03:${minStr}:${secStr} PM] 🛡️ GUARDIAN SYNC: Evelyn Johnson alerted via push. Evelyn clicked 'I AM RESPONDING'.`);
+      } else if (currentMs < 22000) {
+        setStageHighlight(3, `Stage 3: Cellular Outage & P2P BLE Mesh Relay (3:${minStr}:${secStr} PM)`);
+        if (currentPersona !== 'mesh') switchPersona('mesh');
+        if (currentMs === 14000) appendLog(`[03:${minStr}:${secStr} PM] 📡 MESH FAILOVER: Cellular path unavailable. Selected Ad-Hoc P2P BLE Mesh (4-node hop).`);
+      } else if (currentMs < 30000) {
+        setStageHighlight(4, `Stage 4: First Responder Ground Dispatch (3:${minStr}:${secStr} PM)`);
+        if (currentPersona !== 'responder') switchPersona('responder');
+        if (currentMs === 22000) appendLog(`[03:${minStr}:${secStr} PM] 👮 RESPONDER DISPATCH: Officer Davis (#402) deployed cruiser. Medical dossier linked.`);
+      } else {
+        setStageHighlight(5, `Stage 5: Official NENA 911 CAD Packet Sealed (3:${minStr}:${secStr} PM)`);
+        if (currentPersona !== 'cad') switchPersona('cad');
+        if (currentMs === 30000) appendLog(`[03:${minStr}:${secStr} PM] 📄 COMPLETE: Sealed NENA 911 CAD Packet serialized for ${sc.cadType}.`);
+      }
+    }
+
+    function setStageHighlight(num, text) {
+      document.getElementById('stage-title-text').innerText = text;
+      for (let i = 1; i <= 5; i++) {
+        const node = document.getElementById(`node-${i}`);
+        node.classList.remove('active', 'completed');
+        if (i < num) node.classList.add('completed');
+        if (i === num) node.classList.add('active');
+      }
+    }
+
+    function switchPersona(persona) {
+      currentPersona = persona;
+      document.querySelectorAll('.persona-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${persona}`).classList.add('active');
+      renderViewportContent();
+    }
+
+    // REAL HTML5 WEBCAM VIDEO STREAMING ENGINE
+    async function startWebcamStream() {
+      try {
+        const video = document.getElementById('demo-webcam-video');
+        if (!video) return;
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        video.play();
+        const placeholder = document.getElementById('webcam-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+      } catch (err) {
+        console.log("Webcam stream using simulated video frame buffer:", err);
+      }
+    }
+
+    function renderViewportContent() {
+      const sc = MASTER_SCENARIOS.find(s => s.id === currentScenarioId);
+      const container = document.getElementById('viewport-body');
+      const badge = document.getElementById('viewport-stage-badge');
+
+      if (currentPersona === 'child') {
+        badge.innerText = `STAGE 1: 4 SIMULTANEOUS ACTIONS (3:14:07 PM INGRESS)`;
+        
+        let duressWarning = '';
+        if (sc.id === 6) {
+          duressWarning = `
+            <div class="card margin-top-xs" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 0.75rem;">
+              <div style="color: #10b981; font-weight: 700; text-align: center;">Alert canceled</div>
+              <div class="text-muted text-center" style="font-size: 0.7rem; margin-top: 0.2rem;">(Interface appears normal to coercer — Silent 911 Duress Active in Background)</div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="card" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); padding: 1rem;">
+            <div class="flex-between">
+              <span class="badge badge-red" style="animation: pulse 1s infinite;">🔴 BILLI ACTIVATED — STATE: EMERGENCY_TRIGGERED</span>
+              <span class="text-muted" style="font-size: 0.75rem;">Ingress: ${sc.activationMethod}</span>
+            </div>
+            <h2 style="color: #ffffff; margin-top: 0.4rem; font-size: 1.25rem;">${sc.subject}</h2>
+            
+            ${duressWarning}
+
+            <!-- THE 4 SIMULTANEOUS ACTIONS QUAD GRID WITH LIVE VIDEO STREAM -->
+            <div class="simultaneous-quad-grid">
+              <div class="simultaneous-action-card">
+                <div style="color: #10b981; font-weight: 700;">📍 1. LOCATION ACQUISITION</div>
+                <div class="text-muted" style="font-size: 0.7rem; margin-top: 0.1rem;">${sc.where} (3.2m accuracy)</div>
+              </div>
+              <div class="simultaneous-action-card">
+                <div style="color: #6366f1; font-weight: 700;">💬 2. TRUSTED NETWORK ALERTED</div>
+                <div class="text-muted" style="font-size: 0.7rem; margin-top: 0.1rem;">Evelyn, Marcus, Officer Davis, Clara</div>
+              </div>
+              <div class="simultaneous-action-card">
+                <div style="color: #f59e0b; font-weight: 700;">🎙️ 3. AUDIO STREAMING ACTIVE</div>
+                <div class="text-muted" style="font-size: 0.7rem; margin-top: 0.1rem;">72 dB mic buffer · Fear/panic index</div>
+              </div>
+              <div class="simultaneous-action-card" style="border-color: #06b6d4;">
+                <div class="flex-between">
+                  <span style="color: #06b6d4; font-weight: 700;">📷 4. LIVE WEBCAM / VIDEO CAPTURE</span>
+                  <button onclick="startWebcamStream()" style="font-size: 0.65rem; padding: 0.1rem 0.3rem; background: #06b6d4; border: none; border-radius: 3px; color: #fff; cursor: pointer;">Enable Webcam</button>
+                </div>
+                <div class="live-camera-box margin-top-xs">
+                  <video id="demo-webcam-video" class="live-camera-video" autoplay playsinline muted></video>
+                  <div id="webcam-placeholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 182, 212, 0.1); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <span style="font-size: 0.7rem; color: #06b6d4; font-weight: 700;">📷 CAMERA STREAM 01 ACTIVE</span>
+                    <span style="font-size: 0.62rem; color: #94a3b8; font-family: monospace;">1080p @ 30fps · AES-256 Encrypted</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- REASSURANCE VOICE PROMPT BAR -->
+            <div class="card margin-top-xs" style="background: #0f172a; padding: 0.6rem; font-size: 0.78rem;">
+              <div class="flex-between">
+                <div>
+                  <span class="text-muted">REASSURANCE PROMPT:</span>
+                  <span style="color: #10b981; font-weight: 700; margin-left: 0.25rem;">"${sc.reassurancePrompt}"</span>
+                </div>
+                <span style="color: #6366f1; font-weight: 700;">TRAJECTORY: ${sc.speed}</span>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        setTimeout(startWebcamStream, 300);
+      } else if (currentPersona === 'guardian') {
+        badge.innerText = "STAGE 2: EVELYN'S GUARDIAN COMMAND CENTER";
+
+        let duressNotice = '';
+        if (sc.id === 6) {
+          duressNotice = `
+            <div class="card margin-top-xs" style="background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; padding: 0.75rem;">
+              <div style="color: #ef4444; font-weight: 800; font-size: 0.9rem;">⚠️ CRITICAL DURESS ALERT — COERCED CANCELLATION DETECTED</div>
+              <div style="color: #f87171; font-size: 0.75rem; margin-top: 0.2rem;">Maya entered Duress PIN 9999. Her phone screen is displaying a safe-looking cancellation. Emergency tracking and 911 dispatch remain 100% ACTIVE.</div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="card" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); padding: 1rem;">
+            <div class="flex-between">
+              <span class="badge badge-indigo">🛡️ EVELYN'S GUARDIAN COMMAND CENTER</span>
+              <span class="badge badge-amber" style="animation: pulse 1s infinite;">45s ESCALATION TIMER: 00:39</span>
+            </div>
+            <h2 style="color: #ffffff; margin-top: 0.4rem; font-size: 1.15rem;">Maya Johnson · ACTIVE EMERGENCY</h2>
+            <div class="text-muted" style="font-size: 0.78rem;">Moving ${sc.direction} at ${sc.speed} · Last update: 3 seconds ago</div>
+
+            ${duressNotice}
+            
+            <div class="card margin-top-xs" style="background: #0f172a; padding: 0.75rem;">
+              <div class="flex-between">
+                <div>
+                  <div style="color: #10b981; font-weight: 700;">✓ Evelyn Johnson (Mother) Pressed 'I AM RESPONDING'</div>
+                  <div class="text-muted" style="font-size: 0.75rem;">Timeline updated · Maya notified: "Your mother is responding"</div>
+                </div>
+                <span class="badge badge-green">STATUS: RESPONDING (ETA 6m)</span>
+              </div>
+            </div>
+
+            <!-- NETWORK COORDINATION MATRIX -->
+            <div class="grid grid-2 margin-top-xs" style="gap: 0.4rem; font-size: 0.72rem;">
+              <div class="card" style="background: #06070d; padding: 0.4rem;">
+                <span style="color: #10b981; font-weight: 700;">Evelyn (Mom):</span> Responding (Driving, ETA 6m)
+              </div>
+              <div class="card" style="background: #06070d; padding: 0.4rem;">
+                <span style="color: #6366f1; font-weight: 700;">Marcus (Dad):</span> Calling Pine Middle School
+              </div>
+              <div class="card" style="background: #06070d; padding: 0.4rem;">
+                <span style="color: #f59e0b; font-weight: 700;">Officer Davis:</span> Checking south exit cameras
+              </div>
+              <div class="card" style="background: #06070d; padding: 0.4rem;">
+                <span style="color: #94a3b8; font-weight: 700;">Grandma Clara:</span> Alert delivered (Standing by)
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (currentPersona === 'mesh') {
+        badge.innerText = "STAGE 3: CONNECTIVITY LOSS & P2P MESH FAILOVER";
+        container.innerHTML = `
+          <div class="card" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 1rem;">
+            <div class="flex-between">
+              <span class="badge badge-amber">📡 PRIMARY CELLULAR PATH UNAVAILABLE</span>
+              <span class="badge badge-indigo">4-NODE MESH RELAY SELECTED</span>
+            </div>
+            <h3 style="color: #ffffff; margin-top: 0.4rem; font-size: 1.05rem;">Ad-Hoc Peer-to-Peer Encrypted Beacon Pathway</h3>
+            <div class="text-muted" style="font-size: 0.75rem;">Last confirmed heading: ${sc.direction} @ ${sc.speed}</div>
+            
+            <div class="grid margin-top-xs" style="grid-template-columns: repeat(4, 1fr); gap: 0.4rem; text-align: center; font-size: 0.72rem;">
+              <div class="card" style="background: #0f172a; border-color: #6366f1; padding: 0.4rem;">
+                <div style="color: #6366f1; font-weight: 700;">Node 1</div>
+                <div class="text-muted">${sc.subject}</div>
+              </div>
+              <div class="card" style="background: #0f172a; border-color: #f59e0b; padding: 0.4rem;">
+                <div style="color: #f59e0b; font-weight: 700;">Hop 2</div>
+                <div class="text-muted">Peer Galaxy S24</div>
+              </div>
+              <div class="card" style="background: #0f172a; border-color: #10b981; padding: 0.4rem;">
+                <div style="color: #10b981; font-weight: 700;">Hop 3</div>
+                <div class="text-muted">Admin Campus Hub</div>
+              </div>
+              <div class="card" style="background: #0f172a; border-color: #06b6d4; padding: 0.4rem;">
+                <div style="color: #06b6d4; font-weight: 700;">Hop 4</div>
+                <div class="text-muted">Fiber Uplink</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (currentPersona === 'responder') {
+        badge.innerText = "STAGE 4: FIRST RESPONDER CONSOLE";
+        container.innerHTML = `
+          <div class="card" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem;">
+            <div class="flex-between">
+              <span class="badge badge-green">👮 FIRST RESPONDER CONSOLE</span>
+              <span class="badge badge-indigo">DISPATCH CLEARANCE: LEVEL 2</span>
+            </div>
+            <h2 style="color: #ffffff; margin-top: 0.4rem; font-size: 1.15rem;">Campus Security Officer Davis (#402)</h2>
+            <div class="text-muted" style="font-size: 0.78rem;">Deployed Ground Cruiser · Locking Live Trajectory Stream</div>
+            
+            <div class="card margin-top-xs" style="background: #0f172a; padding: 0.65rem; font-family: monospace; font-size: 0.72rem; color: #10b981;">
+              [RADIO CH.3] Dispatcher: Ground cruiser #402 deployed to ${sc.where}. Vector: ${sc.direction} @ ${sc.speed}. Medical dossier linked: ${sc.medicalNote}.
+            </div>
+          </div>
+        `;
+      } else if (currentPersona === 'cad') {
+        badge.innerText = "STAGE 5: NENA 911 CAD DISPATCH PACKET";
+        container.innerHTML = `
+          <div class="card" style="background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; padding: 1rem;">
+            <div class="flex-between">
+              <span class="badge badge-green">📄 OFFICIAL NENA 911 CAD PACKET SEALED</span>
+              <span class="badge badge-indigo">AES-GCM 256 ENCRYPTED</span>
+            </div>
+            <h3 style="color: #ffffff; margin-top: 0.4rem; font-size: 1.05rem;">Pre-Authorized CAD Packet Serialization Complete</h3>
+            
+            <div class="card margin-top-xs" style="background: #040509; border: 1px solid rgba(255,255,255,0.1); padding: 0.65rem; font-family: monospace; font-size: 0.72rem; color: #e2e8f0; max-height: 150px; overflow-y: auto;">
+              ====================================================<br>
+              BILLI OFFICIAL 911 CAD DISPATCH PACKET<br>
+              ====================================================<br>
+              PACKET ID: pkt_nena_30s_${Date.now()}<br>
+              SUBJECT: ${sc.subject}<br>
+              ACTIVATION METHOD: ${sc.activationMethod}<br>
+              LOCATION & TRAJECTORY: ${sc.where} (${sc.direction} @ ${sc.speed})<br>
+              HARDWARE NODE: ${sc.device}<br>
+              CRITICAL MEDICAL DOSSIER: ${sc.medicalNote}<br>
+              VIDEO CAPTURE STATUS: ${sc.videoStatus}<br>
+              CO-DISPATCH STATUS: GUARDIAN RESPONDING / RESPONDER ON-SCENE<br>
+              ====================================================
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function appendLog(msg) {
+      const feed = document.getElementById('demo-log-feed');
+      const div = document.createElement('div');
+      div.style.color = '#10b981';
+      div.style.marginTop = '0.15rem';
+      div.innerText = msg;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function copyDemoCad() {
+      const sc = MASTER_SCENARIOS.find(s => s.id === currentScenarioId);
+      const cad = `====================================================
+BILLI 30-SECOND DEMO — OFFICIAL 911 CAD DIGITAL PACKET
+====================================================
+PACKET ID: pkt_demo_30s_${Date.now()}
+TIMESTAMP: ${new Date().toISOString()}
+SUBJECT: ${sc.subject}
+ACTIVATION METHOD: ${sc.activationMethod}
+TRAJECTORY: ${sc.where} (${sc.direction} @ ${sc.speed})
+PROXIMITY: ${sc.distance}
+HARDWARE NODE: ${sc.device}
+CRITICAL MEDICAL DOSSIER: ${sc.medicalNote}
+VIDEO CAPTURE STATUS: ${sc.videoStatus}
+AES-256 SEAL: 0x8F927A88EF412B9802AA4C371B9EE40
+====================================================`;
+      navigator.clipboard.writeText(cad);
+      alert("✓ Official NENA 911 CAD Digital Packet copied to clipboard!");
+    }
+
+    function togglePresenterMode() {
+      const btn = document.getElementById('btn-presenter-mode');
+      const panel = document.getElementById('col-scenarios-panel');
+      if (panel.style.display === 'none') {
+        panel.style.display = 'flex';
+        btn.innerText = "📹 Presenter Mode";
+      } else {
+        panel.style.display = 'none';
+        btn.innerText = "📺 Exit Presenter Mode";
+      }
+    }
+  </script>
+</body>
+</html>

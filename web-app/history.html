@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Incident History & Analytics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:940px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    Billi.renderNav('history.html');
+    const S = Billi.state;
+    let expanded = null;
+
+    function render() {
+      const resolved = S.incidents.filter(i => i.resolved);
+      const active = S.incidents.filter(i => !i.resolved);
+      const avgAck = (() => {
+        const times = resolved.map(i => { const a = (i.actions || []).find(x => x.type === 'GUARDIAN_ACKNOWLEDGED'); return a ? (a.t - i.triggeredAt) / 1000 : null; }).filter(Boolean);
+        return times.length ? Math.round(times.reduce((s, x) => s + x, 0) / times.length) : null;
+      })();
+
+      document.getElementById('main-host').innerHTML = `
+        <section class="margin-top">
+          <div class="dash-greeting-title">Incident History & Analytics</div>
+          <div class="dash-greeting-sub">Complete emergency records, post-incident review, and platform health.</div>
+        </section>
+
+        <!-- METRICS -->
+        <div class="grid grid-4 margin-top" style="gap:0.6rem;">
+          <div class="metric-card"><div class="metric-card-header">Active incidents</div>
+            <div class="metric-card-val" style="color:${active.length ? '#ef4444' : '#34d399'};">${active.length}</div></div>
+          <div class="metric-card"><div class="metric-card-header">Resolved incidents</div>
+            <div class="metric-card-val">${resolved.length}</div></div>
+          <div class="metric-card"><div class="metric-card-header">Avg guardian ack</div>
+            <div class="metric-card-val">${avgAck !== null ? avgAck + 's' : '—'}</div>
+            <div class="metric-card-desc">45s window target</div></div>
+          <div class="metric-card"><div class="metric-card-header">Audit events</div>
+            <div class="metric-card-val">${S.audit.length}</div>
+            <div class="metric-card-desc">Append-only local log</div></div>
+        </div>
+
+        <!-- INCIDENT ARCHIVE -->
+        <section class="margin-top">
+          <div class="panel-section-title">Incident archive</div>
+          ${S.incidents.length === 0 ? '<p class="text-muted margin-top-xs" style="font-size:0.85rem;">No incidents recorded. Billi has been quietly protecting.</p>' : ''}
+          ${S.incidents.map(inc => {
+            const v = Billi.incidentView(inc);
+            const dur = inc.resolvedAt ? Math.round((inc.resolvedAt - inc.triggeredAt) / 1000) : null;
+            const open = expanded === inc.id;
+            return `
+            <div class="card margin-top-xs" style="padding:1rem; ${inc.duress ? 'border-color:rgba(239,68,68,0.4);' : ''}">
+              <div class="flex-between" style="cursor:pointer; flex-wrap:wrap; gap:0.5rem;" onclick="toggle('${inc.id}')">
+                <div>
+                  <strong style="color:#fff;">${inc.id}</strong>
+                  ${inc.resolved ? '<span class="badge badge-green" style="margin-left:0.4rem;">RESOLVED</span>' : '<span class="badge badge-red" style="margin-left:0.4rem;">ACTIVE</span>'}
+                  ${inc.duress ? '<span class="badge badge-red" style="margin-left:0.25rem;">DURESS</span>' : ''}
+                  ${inc.scenario ? `<span class="badge badge-indigo" style="margin-left:0.25rem;">${inc.scenario}</span>` : ''}
+                  <div class="text-muted" style="font-size:0.74rem; margin-top:0.2rem;">
+                    ${new Date(inc.triggeredAt).toLocaleString()} · ${inc.triggerMethod} · ${dur !== null ? `duration ${Math.floor(dur / 60)}m ${dur % 60}s` : 'ongoing'}
+                    ${inc.resolution ? ` · resolved by ${inc.resolution.by}: ${inc.resolution.reason}` : ''}
+                  </div>
+                </div>
+                <span class="text-muted">${open ? '▲ Collapse' : '▼ Review'}</span>
+              </div>
+              ${open ? `
+              <div class="margin-top" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
+                <div class="grid grid-2" style="gap:0.75rem;">
+                  <div>
+                    <div class="text-muted" style="font-size:0.68rem; text-transform:uppercase;">Full timeline</div>
+                    <div style="max-height:220px; overflow-y:auto;">
+                      ${v.events.map(e => `<div class="timeline-event-item margin-top-xs">
+                        <div class="event-time-text">${Billi.fmtClock(e.t)} · ${e.actor}</div>
+                        <div class="event-desc-text">${e.label}</div></div>`).join('')}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-muted" style="font-size:0.68rem; text-transform:uppercase;">Post-incident review</div>
+                    <div class="card margin-top-xs" style="padding:0.7rem; font-size:0.78rem; color:#e2e8f0;">
+                      ${inc.resolution ? `<strong>Resolution:</strong> ${inc.resolution.reason}<br><span class="text-muted">${inc.resolution.notes}</span>` : '<span class="text-muted">Open — resolve from the Command Center.</span>'}
+                    </div>
+                    <div class="card margin-top-xs" style="padding:0.7rem; font-size:0.76rem;">
+                      <strong style="color:#a5b4fc;">Safety Contract recommendations</strong>
+                      <ul style="margin:0.35rem 0 0 1rem; color:#94a3b8; font-size:0.72rem;">
+                        ${v.escalation.escalated ? '<li>Escalation ladder completed — consider adding an additional Priority-2 responder for faster acknowledgment.</li>' : '<li>Guardian acknowledgment inside the window — escalation order performing well.</li>'}
+                        ${inc.duress ? '<li>Duress branch exercised — review who has duress visibility in the Trusted Network.</li>' : ''}
+                        ${v.degraded ? '<li>Communication degraded during incident — verify wearable battery routines and BLE fallback readiness.</li>' : '<li>Communication path remained stable throughout.</li>'}
+                      </ul>
+                    </div>
+                    <div class="flex-row margin-top-xs" style="gap:0.4rem;">
+                      <button class="btn btn-secondary" style="font-size:0.7rem;" onclick="exportPacket('${inc.id}')">📄 Export archived packet</button>
+                      ${!inc.resolved ? `<button class="btn btn-primary" style="font-size:0.7rem;" onclick="location.href='incident.html'">Open live →</button>` : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>` : ''}
+            </div>`;
+          }).join('')}
+        </section>
+
+        <!-- AUDIT LOG -->
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.92rem;">Audit events</span>
+            <span class="sim-chip local">Append-only · local persistence</span>
+          </div>
+          <div style="max-height:240px; overflow-y:auto;">
+            ${S.audit.slice(0, 40).map(a => `
+              <div class="timeline-event-item margin-top-xs">
+                <div class="event-time-text">${new Date(a.t).toLocaleString()} · ${a.actor}</div>
+                <div class="event-desc-text">${a.action.replace(/_/g, ' ')} — ${a.details}</div>
+              </div>`).join('')}
+          </div>
+        </section>
+
+        <!-- PLATFORM HEALTH -->
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.92rem;">Platform health</span>
+            <span id="ph-chip">${Billi.link.connected ? `<span class="sim-chip connected">LIVE · ${Billi.link.count}/${Billi.link.total} services</span>` : '<span class="sim-chip local">LOCAL MODE — backend offline</span>'}</span>
+          </div>
+          <div class="grid grid-3 margin-top-xs" style="gap:0.5rem; font-size:0.76rem;" id="ph-grid">
+            <div class="ready-item"><span class="mark-ok">✓</span> Local state engine — LOCAL INTERACTIVE</div>
+            <div class="ready-item"><span class="mark-ok">✓</span> Incident simulation — SIMULATED</div>
+            <div class="ready-item"><span class="mark-ok">✓</span> Duress branch — LOCAL INTERACTIVE</div>
+            <div class="ready-item"><span class="mark-no">○</span> Push / SMS / voice — EXTERNAL INTEGRATION MISSING</div>
+            <div class="ready-item"><span class="mark-no">○</span> Live 911 / CAD — UNAVAILABLE (labelled honestly)</div>
+          </div>
+        </section>`;
+      loadServiceHealth();
+    }
+
+    async function loadServiceHealth() {
+      try {
+        const ctl = new AbortController(); setTimeout(() => ctl.abort(), 2500);
+        const gw = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
+        const resp = await fetch(gw + '/api/v1/health/all', { signal: ctl.signal });
+        if (!resp.ok) return;
+        const h = await resp.json();
+        const grid = document.getElementById('ph-grid');
+        if (!grid) return;
+        grid.innerHTML += `<div class="ready-item"><span class="mark-ok">✓</span> gateway — CONNECTED :8080</div>` +
+          Object.entries(h.services).map(([name, st]) => `
+            <div class="ready-item">${st === 'CONNECTED' ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'} ${name} — ${st}</div>`).join('');
+      } catch (e) { /* backend offline — static rows already shown */ }
+    }
+
+    function toggle(id) { expanded = expanded === id ? null : id; render(); }
+    function exportPacket(id) {
+      const inc = S.incidents.find(i => i.id === id);
+      navigator.clipboard.writeText(Billi.buildPacket(inc)).then(() => Billi.toast('📄 Archived packet copied to clipboard.', 'ok'));
+    }
+
+    render();
+  </script>
+</body>
+</html>

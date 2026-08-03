@@ -1,9 +1,18 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
 const app = express();
 app.use(express.json());
+
+// Browser CORS support for the web-app frontend
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 const PORT = process.env.PORT || 8082;
 const DATA_DIR = path.join(__dirname, "../.data");
