@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Live Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Single-viewport demo player — deliberately compact, not the full
+       Guardian Command Center. No page-wide nav header, tight spacing,
+       everything that matters fits without scrolling on a phone. */
+    body { overflow-x: hidden; }
+    .demo-wrap { max-width: 480px; margin: 0 auto; padding: 0.75rem 0.85rem 1.5rem; }
+    .demo-top { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
+    .demo-stage-pills { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .demo-stage-pill { font-size: 0.58rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1); color: #64748b; background: rgba(255,255,255,0.03); white-space: nowrap; }
+    .demo-stage-pill.done { color: #34d399; border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+    .demo-stage-pill.current { color: #fff; border-color: rgba(99,102,241,0.6); background: rgba(99,102,241,0.25); animation: pulse-red 1.8s infinite; }
+    .demo-fact { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 0.5rem 0.6rem; }
+    .demo-fact-label { font-size: 0.58rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+    .demo-fact-val { font-size: 0.82rem; color: #e2e8f0; font-weight: 600; margin-top: 0.1rem; }
+    .demo-facts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  </style>
+</head>
+<body class="bg-root">
+  <div class="demo-wrap" id="main-host"></div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    const S = Billi.state;
+    const p = S.protectedPerson || Billi.FIXTURE.protectedPerson;
+
+    function render() {
+      const host = document.getElementById('main-host');
+      const inc = Billi.getActiveIncident() || S.incidents[0];
+      if (!inc) {
+        host.innerHTML = `<div class="text-center margin-top"><h2 style="color:#fff;">No demo running</h2>
+          <button class="btn btn-secondary margin-top" onclick="location.href='landing.html'">← Back to demos</button></div>`;
+        return;
+      }
+      const v = Billi.incidentView(inc);
+      const resolved = inc.resolved;
+      const escLabel = v.escalation.acknowledged ? 'HALTED' : v.escalation.remaining > 0 ? `T-${v.escalation.remaining}s` : 'LADDER COMPLETE';
+      const notified = v.contacts.filter(c => c.notifyEnabled !== false);
+      const responding = v.contacts.filter(c => /Responding|En route|On scene|Acknowledged/i.test(c.status));
+
+      host.innerHTML = `
+        <div class="demo-top">
+          <span class="brand-mark" style="font-size:1.05rem;">BILLI</span>
+          <div class="flex-row" style="gap:0.4rem;">
+            <span class="sim-chip local" style="font-size:0.55rem;">EVALUATOR DEMO</span>
+            <button class="btn-dash-logout" style="font-size:0.65rem; padding:0.3rem 0.55rem;" onclick="location.href='landing.html'">✕ Exit</button>
+          </div>
+        </div>
+
+        ${inc.duress ? `
+        <div class="duress-banner" style="padding:0.6rem 0.8rem; margin-bottom:0.5rem;">
+          <strong style="color:#fca5a5; font-size:0.78rem;">🚨 CRITICAL DURESS — coerced cancellation suspected</strong>
+        </div>` : ''}
+
+        <!-- IDENTITY -->
+        <div class="flex-row" style="gap:0.6rem; align-items:center; margin-top:0.3rem;">
+          <div class="person-avatar-circle" style="width:44px; height:44px; font-size:0.9rem; ${resolved ? '' : 'border-color:#ef4444;'}">${Billi.initials(p.name)}</div>
+          <div>
+            <div style="color:#fff; font-weight:700; font-size:0.95rem;">${p.name} <span class="badge ${resolved ? 'badge-green' : 'badge-red'}" style="font-size:0.58rem; margin-left:0.25rem;">${resolved ? 'RESOLVED' : 'LIVE'}</span></div>
+            <div class="text-muted" style="font-size:0.68rem;">${inc.scenario || inc.triggerMethod}</div>
+          </div>
+        </div>
+
+        <!-- STAGE PROGRESS -->
+        <div class="demo-stage-pills margin-top-xs">
+          ${Billi.LIFECYCLE.map(st => {
+            const idx = Billi.LIFECYCLE.indexOf(st), cur = Billi.LIFECYCLE.indexOf(v.lifecycle);
+            return `<span class="demo-stage-pill ${idx < cur ? 'done' : idx === cur ? 'current' : ''}">${st.replace(/_/g, ' ')}</span>`;
+          }).join('')}
+        </div>
+
+        <!-- KEY LIVE FACTS -->
+        <div class="demo-facts-grid margin-top-xs">
+          <div class="demo-fact"><div class="demo-fact-label">📍 Location</div><div class="demo-fact-val">${v.loc.label.length > 26 ? v.loc.label.slice(0, 24) + '…' : v.loc.label}</div></div>
+          <div class="demo-fact"><div class="demo-fact-label">Speed / Comm</div><div class="demo-fact-val">${v.loc.speed} mph · ${v.degraded ? 'DEGRADED' : 'OK'}</div></div>
+          <div class="demo-fact"><div class="demo-fact-label">📍🎙👥 Core actions</div><div class="demo-fact-val" style="font-size:0.7rem;">GPS ${v.core.gps === 'ACQUIRED' ? '✓' : '…'} · Audio ${v.core.audio === 'ACTIVE' ? '✓' : '…'} · Net ${v.core.network === 'DELIVERED' ? '✓' : '…'}</div></div>
+          <div class="demo-fact"><div class="demo-fact-label">⏱ Escalation</div><div class="demo-fact-val" style="color:${v.escalation.acknowledged ? '#34d399' : v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'};">${escLabel}</div></div>
+        </div>
+
+        <!-- NETWORK SNAPSHOT -->
+        <div class="demo-fact margin-top-xs">
+          <div class="demo-fact-label">👥 Trusted Network</div>
+          <div class="demo-fact-val" style="font-size:0.72rem;">${notified.length} notified · ${responding.length} responding${responding[0] ? ' — ' + responding[0].name.split(' ')[0] + ' first' : ''}</div>
+        </div>
+
+        <!-- AI SUMMARY (one line) -->
+        <div class="demo-fact margin-top-xs" style="border-color:rgba(99,102,241,0.3);">
+          <div class="demo-fact-label">🧠 AI summary</div>
+          <div style="font-size:0.72rem; color:#c7d2fe; margin-top:0.15rem; line-height:1.35;">${v.aiSummary.length > 130 ? v.aiSummary.slice(0, 128) + '…' : v.aiSummary}</div>
+        </div>
+
+        ${resolved ? `
+        <div class="card text-center margin-top-xs" style="padding:0.7rem; border-color:rgba(16,185,129,0.4);">
+          <strong style="color:#34d399; font-size:0.8rem;">✓ ${inc.resolution.reason}</strong>
+        </div>` : ''}
+
+        <!-- ACTIONS -->
+        <div class="flex-row margin-top-xs" style="gap:0.4rem;">
+          <button class="btn btn-secondary" style="flex:1; font-size:0.72rem; padding:0.55rem;" onclick="location.href='incident.html'">Full Command Center →</button>
+          ${!resolved ? `<button class="btn btn-primary" style="flex:1; font-size:0.72rem; padding:0.55rem;" onclick="ackNow()">✓ I am responding</button>` : `<button class="btn btn-outline-nav" style="flex:1; font-size:0.72rem; padding:0.55rem;" onclick="location.href='landing.html'">← More demos</button>`}
+        </div>`;
+    }
+
+    function ackNow() {
+      const inc = Billi.getActiveIncident();
+      if (!inc) return;
+      const guardian = (S.owner || {}).name || 'Guardian';
+      Billi.recordAction('GUARDIAN_ACKNOWLEDGED', guardian, 'Acknowledged from the compact demo view.');
+      Billi.toast('✓ Marked responding.', 'ok');
+      render();
+    }
+
+    render();
+    document.addEventListener('billi:shared', render);
+    setInterval(() => { if (Billi.getActiveIncident()) render(); }, 1500);
+  </script>
+</body>
+</html>

@@ -52,12 +52,33 @@
           <h1 style="color:#fff; font-size:1.5rem; margin-top:0.5rem;">${p.name || 'Protected person'}</h1>
           ${showAsCalm
             ? `<span class="badge badge-green margin-top-xs">Billi is armed · Everything looks normal</span>`
-            : active
+            : active && v.pendingConfirmation
+              ? `<span class="badge badge-amber margin-top-xs">CONFIRMING · Trusted Network not yet told</span>`
+              : active
               ? `<span class="badge badge-red margin-top-xs">EMERGENCY ACTIVE · ${Billi.LIFECYCLE.indexOf(v.lifecycle) >= 2 ? 'Help is aware' : 'Alerting your Trusted Network'}</span>`
               : `<span class="armed-badge-green margin-top-xs">● BILLI ARMED · PROTECTING YOU</span>`}
         </section>
 
-        ${active && !showAsCalm ? `
+        ${active && !showAsCalm && v.pendingConfirmation ? `
+        <!-- ACCIDENTAL-TRIGGER SAFE-FAIL: sensor-inferred triggers (fall, crash,
+             geofence exit, acoustic distress) can false-positive — a phone in a
+             backpack most commonly. Location + audio capture already started
+             locally; nothing has gone to the Trusted Network yet. Silence here
+             fails safe TOWARD escalation, matching how the 45s guardian window
+             already behaves — it never fails safe toward cancellation. -->
+        <section class="card margin-top text-center" style="padding:1.3rem; border:2px solid rgba(245,158,11,0.6); background:rgba(245,158,11,0.06);">
+          <div style="font-size:2.2rem;">⏳</div>
+          <div style="color:#fbbf24; font-weight:700; font-size:1rem; margin-top:0.3rem;">${v.inc.triggerMethod} detected on ${v.inc.triggerDevice}</div>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.3rem;">This is a sensor-inferred trigger, not a deliberate one — it can be wrong (dropped in a bag, a hard bump, background noise). Your Trusted Network has <strong style="color:#e2e8f0;">not</strong> been told anything yet. Location and audio are already recording as evidence either way.</p>
+          <div style="font-size:2rem; font-weight:800; color:#fbbf24; margin-top:0.5rem;">${v.confirmSecondsLeft}s</div>
+          <p class="text-muted" style="font-size:0.7rem;">If nothing is tapped, Billi treats this as real and alerts your network when the countdown ends — silence escalates, it never cancels.</p>
+          <div class="grid grid-2 margin-top" style="gap:0.6rem;">
+            <button class="btn btn-danger" style="padding:0.9rem; font-size:0.85rem;" onclick="confirmReal()">🚨 Yes, I need help</button>
+            <button class="btn btn-secondary" style="padding:0.9rem; font-size:0.85rem;" onclick="dismissFalse()">✓ False alarm — cancel now</button>
+          </div>
+        </section>` : ''}
+
+        ${active && !showAsCalm && !v.pendingConfirmation ? `
         <section class="card margin-top" style="padding:1.1rem; border:1px solid rgba(99,102,241,0.4);">
           <div class="panel-section-title" style="font-size:0.9rem;">What Billi is doing right now</div>
           ${readyRow('📍 Location', true, v.core.gps)}
@@ -80,15 +101,18 @@
             `<div class="margin-top-xs" style="font-size:0.82rem; color:#34d399;">✓ ${x.name} — ${x.status}</div>`).join('')}
         </section>
 
-        <!-- CANCELLATION (PIN pad) -->
+        <!-- CANCELLATION (PIN pad, or a plain fallback if no PIN was set) -->
         <section class="card margin-top" style="padding:1.1rem; text-align:center;">
           <div class="panel-section-title" style="font-size:0.9rem;">Cancel emergency</div>
+          ${S.pins.normal ? `
           <p class="text-muted" style="font-size:0.75rem;">Enter your cancellation PIN. This screen looks identical for both PINs.</p>
           <div class="pin-dots">${[0,1,2,3].map(i => `<span class="pin-dot ${i < pinBuffer.length ? 'filled' : ''}"></span>`).join('')}</div>
           <div class="pin-pad">
             ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => k === '' ? '<span></span>' :
               `<button class="pin-key" onclick="pinKey('${k}')">${k}</button>`).join('')}
-          </div>
+          </div>` : `
+          <p class="text-muted" style="font-size:0.78rem;">No cancellation PIN was set up for this account, so tap below to mark this safe. <a href="admin.html" style="color:#a5b4fc;">Add a PIN in Settings</a> for coercion-safe cancellation.</p>
+          <button class="btn btn-primary margin-top-xs" style="width:100%; padding:0.85rem;" onclick="cancelNoPin()">✓ This was a false alarm — I'm safe</button>`}
         </section>` : ''}
 
         ${!active ? `
@@ -116,6 +140,17 @@
             </div>
             <button class="btn btn-outline-nav margin-top" style="font-size:0.72rem;" onclick="discreet()">🤫 Discreet activation (silent, no screen change)</button>
             <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Also armed: spoken safe word · fall · crash · geofence · smart tag · accessibility shortcut · wearable gesture · acoustic distress</div>
+          </div>
+        </section>
+
+        <section class="card margin-top" style="padding:1rem;">
+          <div class="panel-section-title" style="font-size:0.85rem;">🧪 Test the accidental-trigger safe-fail</div>
+          <p class="text-muted" style="font-size:0.72rem;">Fall, crash, geofence, and acoustic triggers are sensor-inferred, not deliberate — they open a 10-second confirmation window before your Trusted Network is told anything, instead of firing instantly like SOS. Simulate one of these ambiguous sensor events (SIMULATED hardware):</p>
+          <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
+            <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('fall')">📉 Simulate fall</button>
+            <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('crash')">💥 Simulate crash</button>
+            <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('geofence')">📍 Simulate safe-zone exit</button>
+            <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('acoustic')">🔊 Simulate acoustic distress</button>
           </div>
         </section>` : ''}
 
@@ -238,6 +273,59 @@
       render(); Billi.renderNav('protected.html');
     }
 
+    /* -------- Sensor-inferred (passive) triggers — accidental-trigger safe-fail --------
+       Real haptic feedback (actual Vibration API, not simulated) so a phone
+       in a bag or pocket still gives the person a chance to notice and
+       react during the confirmation window. */
+    function simulatePassive(key) {
+      Billi.triggerIncident(key);
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      Billi.toast(`${Billi.TRIGGER_METHODS[key].method} detected — confirming before your Trusted Network is told.`, 'warn');
+      BilliAdapters.startIncidentCapture(S.contract).then(() => render());
+      render(); Billi.renderNav('protected.html');
+      startConfirmTicker();
+    }
+    function confirmReal() {
+      Billi.confirmEmergency();
+      Billi.toast('Confirmed — alerting your Trusted Network now.', 'danger');
+      stopConfirmTicker();
+      render(); Billi.renderNav('protected.html');
+    }
+    function dismissFalse() {
+      const res = Billi.dismissFalseAlarm();
+      stopConfirmTicker();
+      if (res.ok) {
+        Billi.toast('✓ Dismissed as a false alarm. Your Trusted Network was never notified.', 'ok');
+        setTimeout(() => location.href = 'dashboard.html', 1000);
+      } else {
+        /* Race: the confirmation window closed (fail-safe auto-confirm)
+           between render and tap. The incident is now live — never tell the
+           person it was dismissed when it wasn't. */
+        Billi.toast('The confirmation window already closed — this is now a live alert to your Trusted Network. Use Cancel emergency below if it\'s truly a false alarm.', 'warn');
+        render(); Billi.renderNav('protected.html');
+      }
+    }
+    /* 1s ticker just for the confirmation countdown — the rest of the page
+       renders on the existing 4s interval, too coarse for a 10s countdown. */
+    let confirmTicker = null;
+    function startConfirmTicker() {
+      if (confirmTicker) return;
+      confirmTicker = setInterval(() => {
+        const a = Billi.getActiveIncident();
+        if (!a || !Billi.incidentView(a).pendingConfirmation) { stopConfirmTicker(); render(); return; }
+        render();
+      }, 1000);
+    }
+    function stopConfirmTicker() {
+      if (confirmTicker) { clearInterval(confirmTicker); confirmTicker = null; }
+    }
+
+    function cancelNoPin() {
+      Billi.cancelWithoutPin();
+      Billi.toast('✓ Marked safe. Your Trusted Network has been told you are okay.', 'ok');
+      setTimeout(() => location.href = 'dashboard.html', 1000);
+    }
+
     /* -------- PIN pad / duress branch -------- */
     function pinKey(k) {
       if (k === '⌫') pinBuffer = pinBuffer.slice(0, -1);
@@ -263,6 +351,7 @@
     }
 
     render();
+    if (Billi.getActiveIncident() && Billi.incidentView(Billi.getActiveIncident()).pendingConfirmation) startConfirmTicker();
     setInterval(() => { const a = Billi.getActiveIncident(); if (a && !a.duress) render(); }, 4000);
   </script>
 </body>

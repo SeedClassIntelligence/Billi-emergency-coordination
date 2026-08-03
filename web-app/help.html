@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Help & Resources</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+  <div class="dashboard-full-wrapper">
+    <div id="billi-nav"></div>
+    <main class="dashboard-main-container" style="max-width:900px; margin:0 auto;" id="main-host"></main>
+  </div>
+
+  <script src="billi-core.js"></script>
+  <script>
+    if (!Billi.state.session.authed) location.href = 'auth.html';
+    Billi.renderNav('help.html');
+    const S = Billi.state;
+    let query = '';
+
+    /* Enriched for the real platform — the legacy app had 6 terms; this
+       covers everything actually built: the shared incident engine, the
+       Safety Contract, the AI layer, and the resilience features. */
+    const GLOSSARY = [
+      { term: 'Incident Engine', category: 'Core Engine', icon: '🛡',
+        what: 'The state machine that owns an emergency from the moment it is triggered to resolution: EMERGENCY_TRIGGERED → TRUSTED_NETWORK_NOTIFIED → GUARDIAN_ACKNOWLEDGED → HELP_RESPONDING → INCIDENT_STABILIZED → RESOLVED.',
+        why: 'One incident, one shared truth. Every role (protected person, guardian, responder) is looking at the same evolving picture instead of separate fragmented alerts.' },
+      { term: 'Living Emergency Packet', category: 'Core Engine', icon: '📄',
+        what: 'A structured record built the moment an incident starts and updated continuously: identity, medical dossier, location history, evidence, Trusted Network responses, and an AI-assisted summary.',
+        why: 'Guardians and responders get complete context in seconds instead of asking the same questions over and over during a crisis.' },
+      { term: 'Safety Contract', category: 'Core Engine', icon: '📋',
+        what: 'Every permission Billi is authorized to use during an emergency — GPS, audio, medical sharing, escalation — decided once during setup, not negotiated mid-crisis.',
+        why: 'No permission dialogs during an actual emergency. Every decision that matters was already made calmly, in advance.' },
+      { term: 'Progressive Escalation', category: 'Core Engine', icon: '⏱',
+        what: 'A 45-second staged ladder that widens who is actively asked to respond if the primary guardian has not acknowledged — not who is notified (everyone opted-in is told immediately), but who is asked to step up next.',
+        why: 'A real emergency can\'t depend on one person seeing one notification. This is the safety net if they don\'t.' },
+      { term: 'Shared Incident State', category: 'Core Engine', icon: '🔗',
+        what: 'The Gateway keeps one canonical incident record; every session (protected person\'s phone, a guardian\'s laptop, a responder\'s console) subscribes to live updates over the same connection.',
+        why: 'When Evelyn taps "I am responding," Maya\'s device hears about it in real time — not a separate app each checks on their own schedule.' },
+      { term: 'Capability Adapter Layer', category: 'Sensors & Telemetry', icon: '📡',
+        what: 'The code that turns a phone\'s real GPS, motion sensors, microphone, and speaker into the same normalized event format the platform understands — armed low-power mode day to day, high-accuracy mode during an incident.',
+        why: 'Real hardware, not a simulation, when a browser (or eventually a native app) grants permission — and an honest state label when it can\'t.' },
+      { term: 'Telemetry', category: 'Sensors & Telemetry', icon: '📶',
+        what: 'The continuous stream of location, motion, and device-health readings a protected person\'s hardware produces once armed.',
+        why: 'Lets guardians see where someone is and how they\'re moving, not just where they were when the alert first fired.' },
+      { term: 'Communication Path Failover', category: 'Sensors & Telemetry', icon: '🧭',
+        what: 'When cellular signal drops, Billi records exactly what was lost, what is still available (BLE relay, cached data), and switches — it never quietly pretends everything is still normal.',
+        why: 'A dead zone (tunnel, basement, parking structure) is exactly when accurate information matters the most.' },
+      { term: 'Duress PIN', category: 'Security & Sovereignty', icon: '🔒',
+        what: 'A second PIN that looks identical to a normal cancellation on the protected person\'s screen — but silently keeps the incident live and warns guardians instead of closing it.',
+        why: 'Lets someone comply with a coercer\'s demand to "cancel it" without actually surrendering protection.' },
+      { term: 'Trusted Network', category: 'Security & Sovereignty', icon: '👥',
+        what: 'The people authorized to be alerted, see medical details, acknowledge, or resolve an incident — each permission set individually, each notified immediately unless a guardian has explicitly opted them out.',
+        why: 'Not everyone should see everything. A campus officer needs different access than a grandmother.' },
+      { term: 'Safety Contract Dossier', category: 'Security & Sovereignty', icon: '📁',
+        what: 'The protected person\'s medical conditions, allergies, medications, and emergency instructions — shared with responders only when an incident is actually live.',
+        why: 'Rescue instructions ("check the backpack for the inhaler") reach the people who need them in seconds, not after repeated questioning.' },
+      { term: 'AI Context Engine (Gemini)', category: 'AI Intelligence', icon: '🧠',
+        what: 'Synthesizes sensor data and the incident timeline into a plain-language operational summary and candidate recommendations — using live Gemini when configured, an honest deterministic fallback when not.',
+        why: 'A guardian arriving mid-crisis gets the situation in one sentence instead of parsing a raw event log.' },
+      { term: 'AI Recommends, Orchestration Decides', category: 'AI Intelligence', icon: '⚖',
+        what: 'The AI layer never executes anything directly. Its suggestions are checked against the authorized Safety Contract by a separate rule engine before any action is approved.',
+        why: 'A person\'s explicit permissions always outrank a model\'s guess — for example, Billi will never switch to a BLE relay the user never authorized, no matter what the AI suggests.' }
+    ];
+
+    const READINESS_HELP = {
+      'Protected person created': 'Every incident needs a subject — this confirms Billi knows who it is protecting.',
+      'Medical dossier complete': 'Conditions, allergies, and emergency instructions responders will see the moment an incident is live.',
+      'Trusted Network established': 'At least two people who will actually be notified and can act.',
+      'Safety Contract authorized': 'The permissions (GPS, audio, escalation, etc.) an incident is allowed to use.',
+      'Voice trigger enrolled': 'A spoken safe word Billi will recognize as an activation.',
+      'Duress protection active': 'A distinct duress PIN, different from the normal one, ready for coercion scenarios.',
+      'Safe zones configured': 'Geofenced areas Billi can compare live location against.',
+      'Devices registered': 'The hardware that can trigger or feed an incident.',
+      'Emergency permissions reviewed': 'GPS and Trusted-Network notification are both explicitly authorized.'
+    };
+
+    function render() {
+      const filtered = GLOSSARY.filter(t =>
+        !query || t.term.toLowerCase().includes(query) || t.what.toLowerCase().includes(query) || t.category.toLowerCase().includes(query));
+      const ready = Billi.readiness();
+
+      document.getElementById('main-host').innerHTML = `
+        <section class="margin-top">
+          <div class="dash-greeting-title">Help & Resources</div>
+          <div class="dash-greeting-sub">What you're looking at, why it's there, and how to use it.</div>
+        </section>
+
+        <!-- READINESS CHECKLIST -->
+        <section class="card margin-top" style="padding:1.1rem;">
+          <div class="panel-section-title" style="font-size:0.95rem;">✨ Your safety ecosystem checklist</div>
+          <p class="text-muted" style="font-size:0.78rem;">Complete these to verify Billi is fully primed. Tap any item for what it means.</p>
+          <div class="grid grid-fit margin-top-xs" style="gap:0.5rem;">
+            ${ready.map(r => `
+              <div class="ready-item" style="cursor:help; align-items:flex-start;" title="${READINESS_HELP[r.label] || ''}">
+                ${r.ok ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'}
+                <div>
+                  <span style="color:${r.ok ? '#e2e8f0' : '#64748b'};">${r.label}</span>
+                  <div class="text-muted" style="font-size:0.68rem; margin-top:0.1rem;">${READINESS_HELP[r.label] || ''}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+          ${ready.every(r => r.ok) ? '' : '<button class="btn btn-secondary margin-top-xs" onclick="location.href=\'onboarding.html\'">Finish setup →</button>'}
+        </section>
+
+        <!-- QUICK ORIENTATION -->
+        <section class="card margin-top" style="padding:1.1rem;">
+          <div class="panel-section-title" style="font-size:0.95rem;">🧭 Where to find things</div>
+          <div class="grid grid-fit margin-top-xs" style="gap:0.5rem; font-size:0.8rem;">
+            <div class="ready-item"><span>🏠</span><div><strong style="color:#e2e8f0;">Command Center</strong><div class="text-muted" style="font-size:0.7rem;">Overview of the protected person, readiness, and recent activity.</div></div></div>
+            <div class="ready-item"><span>🙋</span><div><strong style="color:#e2e8f0;">Protected Person</strong><div class="text-muted" style="font-size:0.7rem;">Armed status and the hold-to-activate SOS.</div></div></div>
+            <div class="ready-item"><span>🔴</span><div><strong style="color:#e2e8f0;">Incident</strong><div class="text-muted" style="font-size:0.7rem;">The live Guardian Command Center once an emergency is active.</div></div></div>
+            <div class="ready-item"><span>👥</span><div><strong style="color:#e2e8f0;">Network</strong><div class="text-muted" style="font-size:0.7rem;">Who's notified, in what order, and what they can do.</div></div></div>
+            <div class="ready-item"><span>📋</span><div><strong style="color:#e2e8f0;">Safety Contract</strong><div class="text-muted" style="font-size:0.7rem;">Every permission Billi is authorized to use.</div></div></div>
+            <div class="ready-item"><span>📶</span><div><strong style="color:#e2e8f0;">Devices</strong><div class="text-muted" style="font-size:0.7rem;">Registered hardware and its honest connection state.</div></div></div>
+          </div>
+        </section>
+
+        <!-- GLOSSARY -->
+        <section class="margin-top">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.5rem;">
+            <div class="panel-section-title" style="font-size:0.95rem;">📖 Technical terms glossary</div>
+            <span class="badge badge-indigo">${filtered.length} terms</span>
+          </div>
+          <input id="glossary-search" class="form-control-dark margin-top-xs" placeholder="Search terms, e.g. 'duress', 'escalation', 'Gemini'..." oninput="query=this.value.toLowerCase(); render(); document.getElementById('glossary-search').focus();" value="${query}">
+          <div class="grid grid-fit margin-top" style="gap:0.6rem;">
+            ${filtered.map(t => `
+              <div class="card" style="padding:0.9rem;">
+                <div class="flex-between">
+                  <strong style="color:#fff; font-size:0.85rem;">${t.icon} ${t.term}</strong>
+                  <span class="badge ${t.category === 'Core Engine' ? 'badge-red' : t.category === 'AI Intelligence' ? 'badge-indigo' : t.category === 'Security & Sovereignty' ? 'badge-amber' : 'badge-blue'}" style="font-size:0.6rem;">${t.category}</span>
+                </div>
+                <p style="color:#cbd5e1; font-size:0.78rem; margin-top:0.4rem;">${t.what}</p>
+                <div class="text-muted" style="font-size:0.72rem; margin-top:0.4rem; padding-top:0.4rem; border-top:1px solid rgba(255,255,255,0.06);">
+                  <strong style="color:#94a3b8;">Why it matters:</strong> ${t.why}
+                </div>
+              </div>`).join('') || '<p class="text-muted margin-top">No matching terms.</p>'}
+          </div>
+        </section>`;
+    }
+
+    render();
+  </script>
+</body>
+</html>

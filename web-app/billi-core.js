@@ -102,6 +102,15 @@
     acoustic:       { device: 'Sennheiser Accentum', method: 'Acoustic distress event (>80 dB spike)' }
   };
 
+  /* Sensor-inferred triggers can false-positive (a bag drop reads as a fall,
+     bag rustling reads as acoustic distress, a forgotten geofence edit reads
+     as a breach). Deliberate triggers (hold-to-SOS, spoken safe word, tactile
+     button, accessibility shortcut, wearable gesture) require a volitional
+     human action and fire with zero delay — this set is intentionally only
+     the four ambiguous, sensor-only signals. */
+  const PASSIVE_TRIGGERS = new Set(['fall', 'crash', 'geofence', 'acoustic']);
+  const CONFIRM_WINDOW_MS = 10000;
+
   /* ---------------------------------------------------------------------
      NINE-SCENARIO OUTCOME PACKS (demonstration blueprint)
      Each pack answers: how activated, what Billi did immediately, what it
@@ -252,6 +261,26 @@
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
   }
 
+  /* Evaluator demos (and viewing someone else's incident as a guardian)
+     must never permanently clobber a real account. Before either overwrites
+     `state`, the caller's real account — if one exists — is preserved here
+     so "Log In" always returns to it, never to leftover borrowed data. */
+  const BACKUP_KEY = 'billi_platform_v1_realbackup';
+  function backupRealAccountIfNeeded() {
+    if (!state.isDemo && !state.isViewingOther && state.setup && state.setup.complete) {
+      localStorage.setItem(BACKUP_KEY, JSON.stringify(state));
+    }
+  }
+  function restoreRealAccount() {
+    try {
+      const raw = localStorage.getItem(BACKUP_KEY);
+      if (raw) { state = JSON.parse(raw); save(); return true; }
+    } catch (e) { /* corrupted backup — fall through to blank */ }
+    state = blankState();
+    save();
+    return false;
+  }
+
   function audit(actor, action, details) {
     state.audit.unshift({ t: Date.now(), actor, action, details });
     if (state.audit.length > 200) state.audit.pop();
@@ -301,17 +330,24 @@
     save();
   }
 
+  /* required: true blocks activation — the bare minimum for Billi to
+     function at all. required: false is presented clearly during onboarding
+     and is always completable later from Settings/Network/Devices, but
+     never locks someone out of arming basic protection over it. Real users
+     testing this flagged that safe words / voice enrollment felt mandatory
+     when they shouldn't be — a family should be able to arm GPS + Trusted
+     Network today and finish the rest when they have five quiet minutes. */
   function readiness() {
     return [
-      { label: 'Protected person created',        ok: !!(state.protectedPerson && state.protectedPerson.name) },
-      { label: 'Medical dossier complete',        ok: !!(state.medical && state.medical.conditions !== undefined && state.medical.instructions) },
-      { label: 'Trusted Network established',     ok: state.contacts.length >= 2 },
-      { label: 'Safety Contract authorized',      ok: !!state.contract },
-      { label: 'Voice trigger enrolled',          ok: state.voice.state === 'Enrolled' },
-      { label: 'Duress protection active',        ok: !!(state.pins.duress && state.pins.duress.length >= 4 && state.pins.duress !== state.pins.normal) },
-      { label: 'Safe zones configured',           ok: state.zones.length >= 1 },
-      { label: 'Devices registered',              ok: state.devices.length >= 1 },
-      { label: 'Emergency permissions reviewed',  ok: !!(state.contract && state.contract.gps && state.contract.notifyNetwork) }
+      { label: 'Protected person created',        ok: !!(state.protectedPerson && state.protectedPerson.name), required: true },
+      { label: 'Trusted Network established',     ok: state.contacts.length >= 1, required: true },
+      { label: 'Safety Contract authorized',      ok: !!state.contract, required: true },
+      { label: 'Emergency permissions reviewed',  ok: !!(state.contract && state.contract.gps && state.contract.notifyNetwork), required: true },
+      { label: 'Medical dossier complete',        ok: !!(state.medical && state.medical.conditions !== undefined && state.medical.instructions), required: false },
+      { label: 'Voice trigger enrolled',          ok: state.voice.state === 'Enrolled', required: false },
+      { label: 'Duress protection active',        ok: !!(state.pins.duress && state.pins.duress.length >= 4 && state.pins.duress !== state.pins.normal), required: false },
+      { label: 'Safe zones configured',           ok: state.zones.length >= 1, required: false },
+      { label: 'Devices registered',              ok: state.devices.length >= 1, required: false }
     ];
   }
 
@@ -405,6 +441,7 @@
      ----------------------------------------------------------------------- */
   const actionKey = (a) => `${a.t}|${a.type}|${a.actor}`;
   let sse = null;
+  let namedAlert = null;
 
   function sharedSnapshot(inc) {
     return {
@@ -425,16 +462,22 @@
     return res;
   }
 
-  function mergeShared(remote) {
+  function mergeShared(remote, opts) {
     if (!remote || !remote.id) return;
-    /* Adopt the protected person's context so guardian/responder sessions
-       render the right person even with an unrelated local setup. */
-    if (remote.context) {
+    opts = opts || {};
+    /* Adopting another account's identity/context must be intentional
+       (Billi.joinLive) or genuinely this account's own incident — never a
+       side effect of merely having an SSE connection open. Without this
+       guard, any active incident anywhere on the gateway would silently
+       overwrite whichever account happens to load a page next. */
+    const isOwnIncident = state.incidents.some(i => i.id === remote.id) || state.activeIncidentId === remote.id;
+    if (remote.context && (opts.adoptContext || isOwnIncident)) {
       if (remote.context.protectedPerson) state.protectedPerson = remote.context.protectedPerson;
       if (remote.context.medical) state.medical = remote.context.medical;
       if (remote.context.contacts && remote.context.contacts.length) state.contacts = remote.context.contacts;
       if (remote.context.owner) state.owner = remote.context.owner;
     }
+    if (!opts.adoptContext && !isOwnIncident) return; // not this account's incident — ignore entirely
     let inc = state.incidents.find(i => i.id === remote.id);
     if (!inc) {
       inc = { ...remote };
@@ -463,10 +506,43 @@
     } catch (e) { sse = null; }
   }
 
-  async function adoptActiveShared() {
+  async function adoptActiveShared(opts) {
     const r = await gfetch('/api/v1/shared/incidents/active', 'GET', null, 2500);
-    if (r && r.incident) mergeShared(r.incident);
+    if (r && r.incident) mergeShared(r.incident, opts);
     return r ? r.incident : null;
+  }
+
+  /* There is no real push-notification channel (no APNS/FCM) — this is the
+     mitigation: any session belonging to a Trusted Network member passively
+     polls for a live incident naming them as a contact, without adopting
+     its identity, so a "join" banner can surface without the member already
+     knowing to click Join as Guardian. */
+  async function checkNamedAlerts() {
+    if (state.isDemo || state.isViewingOther) { namedAlert = null; return null; }
+    const r = await gfetch('/api/v1/shared/incidents/active', 'GET', null, 2500);
+    const remote = r ? r.incident : null;
+    const myPhone = state.owner && state.owner.phone;
+    const isOwnIncident = remote && state.incidents.some(i => i.id === remote.id);
+    if (!remote || remote.resolved || !myPhone || isOwnIncident) { namedAlert = null; return null; }
+    const contacts = (remote.context && remote.context.contacts) || [];
+    const match = contacts.find(c => c.phone === myPhone);
+    const person = (remote.context && remote.context.protectedPerson) || {};
+    namedAlert = match ? { id: remote.id, name: person.name || 'A protected person', contactName: match.name } : null;
+    return namedAlert;
+  }
+
+  /* Backs up this account, borrows the remote incident's context read-only
+     (isViewingOther, not isDemo) so this session can see and act as the
+     Trusted Network member it actually is, then opens the command center. */
+  async function viewNamedAlert() {
+    if (!namedAlert) return false;
+    backupRealAccountIfNeeded();
+    state.isViewingOther = true;
+    save();
+    await adoptActiveShared({ adoptContext: true });
+    namedAlert = null;
+    location.href = 'incident.html';
+    return true;
   }
 
   function postSharedEvent(inc, action) {
@@ -501,10 +577,16 @@
     opts = opts || {};
     if (getActiveIncident()) return getActiveIncident();
     const trig = TRIGGER_METHODS[triggerKey] || TRIGGER_METHODS.sos_hold;
+    /* Demos always fire live instantly — evaluators should never sit through
+       a confirmation window. Real passive triggers get one. */
+    const needsConfirm = PASSIVE_TRIGGERS.has(triggerKey) && !state.isDemo && !opts.scenario;
+    const now = Date.now();
     const inc = {
       id: `BIL-2026-${Math.floor(1000 + Math.random() * 9000)}`,
       correlationId: uid('cor'),
-      triggeredAt: Date.now(),
+      triggeredAt: now,
+      confirmedAt: needsConfirm ? null : now,
+      confirmWindowMs: CONFIRM_WINDOW_MS,
       triggerKey,
       triggerDevice: trig.device,
       triggerMethod: trig.method,
@@ -518,12 +600,53 @@
     };
     state.incidents.unshift(inc);
     state.activeIncidentId = inc.id;
-    audit(state.protectedPerson ? state.protectedPerson.name : 'Protected person', 'EMERGENCY_TRIGGERED', `${trig.method} on ${trig.device}. Incident ${inc.id} opened.`);
+    if (needsConfirm) {
+      audit(state.protectedPerson ? state.protectedPerson.name : 'Protected person', 'EMERGENCY_TRIGGERED', `${trig.method} on ${trig.device} — sensor-inferred, confirming before the Trusted Network is alerted. Incident ${inc.id} opened.`);
+    } else {
+      audit(state.protectedPerson ? state.protectedPerson.name : 'Protected person', 'EMERGENCY_TRIGGERED', `${trig.method} on ${trig.device}. Incident ${inc.id} opened.`);
+    }
     save();
-    /* CONNECTED path: shared incident + gateway vertical slice (non-blocking). */
+    /* CONNECTED path: shared incident + gateway vertical slice (non-blocking).
+       Deferred entirely while a passive trigger awaits confirmation — nobody
+       on the Trusted Network is told anything until it's either confirmed by
+       the protected person or the window silently elapses (fail-safe). */
+    if (!needsConfirm) {
+      sharedCreate(inc);
+      activateRemote(inc).then(r => { if (r && inc.shared) patchShared(inc, { backend: inc.backend }); });
+    }
+    return inc;
+  }
+
+  /* Protected person confirms a pending passive-trigger incident is real —
+     proceeds exactly like an immediate trigger from this point on. */
+  function confirmEmergency() {
+    const inc = getActiveIncident();
+    if (!inc || inc.confirmedAt) return inc;
+    inc.confirmedAt = Date.now();
+    const a = { t: inc.confirmedAt, actor: state.protectedPerson ? state.protectedPerson.name : 'Protected person', type: 'EMERGENCY_CONFIRMED', details: 'Confirmed real — Trusted Network alert proceeding.' };
+    inc.actions.push(a);
+    audit(a.actor, a.type, a.details);
+    save();
     sharedCreate(inc);
     activateRemote(inc).then(r => { if (r && inc.shared) patchShared(inc, { backend: inc.backend }); });
     return inc;
+  }
+
+  /* Dismiss a still-pending passive trigger as a false alarm. Safe to do
+     with no PIN: the Trusted Network was never notified, so there is
+     nothing for an adversary to gain by forcing this — unlike cancelling a
+     live, already-shared incident, which still requires enterDuress(). */
+  function dismissFalseAlarm() {
+    const inc = getActiveIncident();
+    if (!inc || inc.confirmedAt) return { ok: false };
+    inc.resolved = true;
+    inc.resolvedAt = Date.now();
+    const by = state.protectedPerson ? state.protectedPerson.name : 'Protected person';
+    inc.resolution = { by, notes: 'Dismissed inside the confirmation window — the Trusted Network was never notified.', reason: 'False alarm — dismissed before confirmation' };
+    state.activeIncidentId = null;
+    audit(by, 'FALSE_ALARM_DISMISSED', `${inc.triggerMethod} on ${inc.triggerDevice} dismissed as a false alarm before the Trusted Network was alerted.`);
+    save();
+    return { ok: true };
   }
 
   function getActiveIncident() {
@@ -564,6 +687,20 @@
     return { ok: false, mode: 'invalid' };
   }
 
+  /* PINs are optional at setup time (see readiness()) — but cancellation
+     must never be blocked just because a PIN was never configured. Without
+     this, a genuine false alarm would sit "unfixably" active for anyone who
+     skipped the optional PIN step, which is a real safety regression, not
+     just an inconvenience. Duress protection specifically still requires a
+     configured duress PIN to exist — that covert-cancel capability is a
+     deliberate upgrade, not a baseline requirement. */
+  function cancelWithoutPin() {
+    const inc = getActiveIncident();
+    if (!inc) return { ok: false };
+    resolveIncident(state.protectedPerson ? state.protectedPerson.name : 'Protected person', 'Cancelled — no PIN was configured for this account.', 'Safe cancellation');
+    return { ok: true };
+  }
+
   function resolveIncident(by, notes, reason) {
     const inc = getActiveIncident();
     if (!inc) return null;
@@ -584,6 +721,24 @@
     const el = Math.floor((now - inc.triggeredAt) / 1000); // elapsed seconds
     const acts = inc.actions || [];
     const has = (type) => acts.find(a => a.type === type);
+
+    /* Fail-safe: if a passive-trigger confirmation window elapses with no
+       response, treat it as real and proceed — silence escalates, it never
+       cancels. Lazy-applied like the scenario effects below so it fires
+       exactly once, on whichever render happens to cross the deadline. */
+    if (!inc.confirmedAt && now >= inc.triggeredAt + (inc.confirmWindowMs || CONFIRM_WINDOW_MS)) {
+      inc.confirmedAt = inc.triggeredAt + (inc.confirmWindowMs || CONFIRM_WINDOW_MS);
+      acts.push({ t: inc.confirmedAt, actor: 'System', type: 'EMERGENCY_AUTO_CONFIRMED', details: 'No response during the confirmation window — treated as real and the Trusted Network is being alerted (fail-safe).' });
+      save();
+      sharedCreate(inc);
+      activateRemote(inc).then(r => { if (r && inc.shared) patchShared(inc, { backend: inc.backend }); });
+    }
+    const pending = !inc.confirmedAt;
+    const confirmSecondsLeft = pending ? Math.max(0, Math.ceil((inc.triggeredAt + (inc.confirmWindowMs || CONFIRM_WINDOW_MS) - now) / 1000)) : 0;
+    /* elN: seconds since the Trusted Network was actually allowed to be told
+       anything. While pending, nothing downstream of "notify the network"
+       has happened yet, so it's held at 0 rather than tracking real time. */
+    const elN = pending ? 0 : Math.floor((now - inc.confirmedAt) / 1000);
 
     /* Scheduled scenario effects (lazy-applied so they survive reloads). */
     if (inc.autoDuressAt && now >= inc.autoDuressAt && !inc.duress) {
@@ -624,12 +779,15 @@
       t: inc.triggeredAt + i * 10000, transcript: txt
     }));
 
-    /* Four core actions — truth states. */
+    /* Four core actions — truth states. Location and audio are local-only
+       capture and start immediately regardless of confirmation status; only
+       the network leg waits, since that's the one an accidental trigger
+       can't take back once it's out the door. */
     const core = {
       gps:     el < 2 ? 'ACQUIRING' : 'ACQUIRED',
       audio:   el < 3 ? 'STARTING' : 'ACTIVE',
       video:   'UNAVAILABLE IN THIS PROTOTYPE',
-      network: el < 3 ? 'QUEUED' : (el < 6 ? 'SENT' : 'DELIVERED')
+      network: pending ? 'AWAITING CONFIRMATION' : (elN < 3 ? 'QUEUED' : (elN < 6 ? 'SENT' : 'DELIVERED'))
     };
 
     /* Contact response matrix — full notification truth-state ladder:
@@ -642,11 +800,11 @@
        rather than faked as an alert. */
     const contacts = (state.contacts.length ? state.contacts : FIXTURE.contacts).map(c => {
       const notify = c.notifyEnabled !== false;
-      let alertState = !notify ? 'NOT_NOTIFIED' : (el < 1 ? 'PREPARING' : el < 3 ? 'QUEUED' : el < 6 ? 'SENT' : 'DELIVERED');
+      let alertState = !notify ? 'NOT_NOTIFIED' : pending ? 'AWAITING_CONFIRMATION' : (elN < 1 ? 'PREPARING' : elN < 3 ? 'QUEUED' : elN < 6 ? 'SENT' : 'DELIVERED');
       const resp = acts.filter(a => a.contactId === c.id).pop();
       const ack = acts.find(a => a.type === 'GUARDIAN_ACKNOWLEDGED' && a.actor === c.name);
       const responding = acts.filter(a => a.type === 'RESPONDER_STATUS' && a.actor === c.name).pop();
-      let status = notify ? 'Alert ' + alertState.toLowerCase() : 'Not notified — opted out by guardian';
+      let status = !notify ? 'Not notified — opted out by guardian' : pending ? 'Not yet notified — confirming with protected person' : 'Alert ' + alertState.toLowerCase();
       if (ack) { alertState = 'ACKNOWLEDGED'; status = 'Acknowledged'; }
       if (responding) status = responding.details;
       if (resp && resp.type === 'CONTACT_STATUS') status = resp.details;
@@ -655,13 +813,18 @@
 
     /* Progressive escalation: 45s window with staged ladder.
        Countdown 45s→ primary window · 30s→ secondary escalation ·
-       15s→ campus responder · 0s→ emergency-services escalation (SIMULATED). */
+       15s→ campus responder · 0s→ emergency-services escalation (SIMULATED).
+       Based on confirmedAt, not triggeredAt — the response clock can't
+       start before the Trusted Network even knows anything happened. While
+       still pending, escalBase tracks "now" each render, which pins the
+       countdown at a full 45s and keeps every stage unfired. */
     const acked = has('GUARDIAN_ACKNOWLEDGED');
     const ackAt = acked ? acked.t : null;
-    const escalationDue = inc.triggeredAt + 45000;
+    const escalBase = inc.confirmedAt || now;
+    const escalationDue = escalBase + 45000;
     const remaining = Math.max(0, Math.ceil((escalationDue - now) / 1000));
     const cutoff = ackAt || now;
-    const stageReached = (offsetMs) => cutoff > inc.triggeredAt + offsetMs;
+    const stageReached = (offsetMs) => cutoff > escalBase + offsetMs;
     const p3name = ((state.contacts.find(c => c.priority === 3) || {}).name) || 'Authorized responder';
     const stages = [
       { at: 45, label: 'Primary guardian response window opened', fired: true },
@@ -682,7 +845,7 @@
 
     /* Lifecycle state resolution. */
     let lifecycle = 'EMERGENCY_TRIGGERED';
-    if (el >= 3) lifecycle = 'TRUSTED_NETWORK_NOTIFIED';
+    if (!pending && elN >= 3) lifecycle = 'TRUSTED_NETWORK_NOTIFIED';
     if (acked) lifecycle = 'GUARDIAN_ACKNOWLEDGED';
     if (has('RESPONDER_STATUS') || contacts.some(c => /Responding|En route|On scene/i.test(c.status))) lifecycle = 'HELP_RESPONDING';
     if (has('INCIDENT_STABILIZED')) lifecycle = 'INCIDENT_STABILIZED';
@@ -691,9 +854,9 @@
     /* Unified event timeline (pre-trigger telemetry + derived milestones + recorded actions). */
     const events = [];
     (inc.preEvents || []).forEach(pe => events.push({ t: inc.triggeredAt + pe.dt * 1000, actor: pe.actor, label: pe.label }));
-    events.push({ t: inc.triggeredAt, actor: inc.triggerDevice, label: `TRIGGER — ${inc.triggerMethod}` });
+    events.push({ t: inc.triggeredAt, actor: inc.triggerDevice, label: pending ? `TRIGGER (sensor-inferred) — ${inc.triggerMethod} — confirming before the network is told` : `TRIGGER — ${inc.triggerMethod}` });
     if (el >= 2) events.push({ t: inc.triggeredAt + 2000, actor: 'Location Engine', label: `GPS acquired · ${PATH[0].label} (accuracy 6 m)` });
-    if (el >= 3) events.push({ t: inc.triggeredAt + 3000, actor: 'Notification Engine', label: 'Trusted Network alerts dispatched by priority (SIMULATED delivery)' });
+    if (!pending && elN >= 3) events.push({ t: inc.confirmedAt + 3000, actor: 'Notification Engine', label: 'Trusted Network alerts dispatched by priority (SIMULATED delivery)' });
     trail.forEach((p, i) => {
       if (i > 0) events.push({ t: inc.triggeredAt + i * 8000, actor: 'Location Engine', label: `Position update · ${p.label} · ${p.speed} mph` });
     });
@@ -715,7 +878,7 @@
       `Audio evidence contains ${evCount > 3 ? 'high-distress vocal content' : 'ambient monitoring content'}. ` +
       `Medical note: ${(state.medical && state.medical.conditions) || 'none on file'} — ${(state.medical && state.medical.equipment) || 'no rescue equipment listed'}.`;
 
-    return { inc, elapsed: el, lifecycle, core, contacts, trail, loc, evidence, events, escalation, aiSummary, commPath, protection, degraded };
+    return { inc, elapsed: el, lifecycle, core, contacts, trail, loc, evidence, events, escalation, aiSummary, commPath, protection, degraded, pendingConfirmation: pending, confirmSecondsLeft, isPassiveTrigger: PASSIVE_TRIGGERS.has(inc.triggerKey) };
   }
 
   /* 911-Ready Emergency Packet (honest label — not a live CAD submission). */
@@ -764,7 +927,8 @@
     { href: 'responder.html', label: 'Responder' },
     { href: 'devices.html',   label: 'Devices' },
     { href: 'admin.html',     label: 'Safety Contract' },
-    { href: 'history.html',   label: 'History' }
+    { href: 'history.html',   label: 'History' },
+    { href: 'help.html',      label: '❓ Help' }
   ];
 
   function renderNav(current) {
@@ -781,6 +945,27 @@
        and the header never explodes vertically at any viewport width. */
     holder.innerHTML = `
       <header class="billi-header">
+        ${state.isDemo ? `
+        <div class="duress-banner" style="border-color:rgba(245,158,11,0.5); background:rgba(245,158,11,0.08); margin-bottom:0.75rem; animation:none;">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.6rem;">
+            <span style="color:#fbbf24; font-weight:700; font-size:0.82rem;">⚡ EVALUATOR DEMO — ${state.protectedPerson ? state.protectedPerson.name : 'sample'} is not your account. Nothing here is saved as yours.</span>
+            <button class="btn btn-primary" style="font-size:0.72rem;" onclick="Billi.exitDemo()">← Exit Demo to My Account</button>
+          </div>
+        </div>` : ''}
+        ${state.isViewingOther ? `
+        <div class="duress-banner" style="border-color:rgba(99,102,241,0.5); background:rgba(99,102,241,0.08); margin-bottom:0.75rem; animation:none;">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.6rem;">
+            <span style="color:#a5b4fc; font-weight:700; font-size:0.82rem;">👥 Viewing ${state.protectedPerson ? state.protectedPerson.name : 'someone else'}'s incident as a Trusted Network member — not your account.</span>
+            <button class="btn btn-primary" style="font-size:0.72rem;" onclick="Billi.exitDemo()">← Back to My Account</button>
+          </div>
+        </div>` : ''}
+        ${namedAlert && !state.isDemo && !state.isViewingOther ? `
+        <div class="duress-banner margin-bottom" style="cursor:pointer;" onclick="Billi.viewNamedAlert()">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.6rem;">
+            <span style="color:#fca5a5; font-weight:700; font-size:0.82rem;">🔴 ${namedAlert.name} triggered an emergency and you're on their Trusted Network.</span>
+            <button class="btn btn-danger" style="font-size:0.72rem;">View & Respond →</button>
+          </div>
+        </div>` : ''}
         <div class="billi-header-status">
           <div class="brand-mark" onclick="location.href='landing.html'" style="cursor:pointer;">BILLI</div>
           <div class="billi-header-status-right">
@@ -798,6 +983,36 @@
       </header>`;
   }
 
+  /* Contextual "what is this / why is it here" help icon — a vanilla-JS
+     equivalent of the legacy InfoTooltip component. Click the (i) icon to
+     toggle a small popover; clicking anywhere else closes any open one. */
+  function infoTip(id, title, what, why) {
+    return `<span class="info-tip-wrap">
+      <button type="button" class="info-tip-btn" onclick="event.stopPropagation(); Billi.toggleTip('${id}')" title="Help: ${title}">ⓘ</button>
+      <div class="info-tip-pop" id="tip-${id}">
+        <div class="info-tip-head">💡 ${title}</div>
+        <div class="info-tip-label">What is this?</div><p>${what}</p>
+        <div class="info-tip-label">Why is it here?</div><p>${why}</p>
+      </div>
+    </span>`;
+  }
+  let tipListenerAttached = false;
+  function attachTipCloseListener() {
+    if (tipListenerAttached) return;
+    tipListenerAttached = true;
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.info-tip-pop.open').forEach(el => el.classList.remove('open'));
+    });
+  }
+  function toggleTip(id) {
+    attachTipCloseListener();
+    const el = document.getElementById(`tip-${id}`);
+    if (!el) return;
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.info-tip-pop.open').forEach(x => x.classList.remove('open'));
+    if (!wasOpen) el.classList.add('open');
+  }
+
   /* Route guard for authenticated surfaces. */
   function requireSetup() {
     if (!state.session.authed) { location.href = 'auth.html'; return false; }
@@ -807,38 +1022,57 @@
 
   /* --------------------------- PUBLIC API --------------------------- */
   window.Billi = {
-    FIXTURE, SIM_PATH, LIFECYCLE, TRIGGER_METHODS,
+    FIXTURE, SIM_PATH, LIFECYCLE, TRIGGER_METHODS, PASSIVE_TRIGGERS,
     get state() { return state; },
     save, audit, toast, uid, initials, fmtClock, fmtAgo,
 
     /* auth simulation (LOCAL INTERACTIVE) */
     createAccount() {
+      localStorage.removeItem(BACKUP_KEY); // explicit fresh start discards any prior account too
       state = blankState();
       state.session.authed = true;
       save();
       location.href = 'onboarding.html';
     },
     login() {
+      // Returning from a demo, or from viewing someone else's incident as a
+      // guardian: restore the real account instead of handing the user
+      // leftover borrowed data (e.g. "David Reyes") as if it were theirs.
+      if (state.isDemo || state.isViewingOther) restoreRealAccount();
       state.session.authed = true;
       save();
       location.href = state.setup.complete ? 'dashboard.html' : 'onboarding.html';
     },
     logout() {
+      if (state.isDemo || state.isViewingOther) restoreRealAccount();
       state.session.authed = false;
       save();
       location.href = 'landing.html';
     },
+    /* Explicit escape hatch from any demo, reachable from every page via
+       the demo-mode banner — restores the real account (or a fresh one if
+       none exists yet) and routes exactly like a normal login would. */
+    exitDemo() {
+      restoreRealAccount();
+      state.session.authed = true;
+      save();
+      location.href = state.setup.complete ? 'dashboard.html' : 'auth.html';
+    },
     resetPlatform() {
+      localStorage.removeItem(BACKUP_KEY);
       state = blankState();
       save();
       location.href = 'landing.html';
     },
 
     /* Evaluator demonstrations: each of the nine packs proves a distinct
-       outcome — persona, activation gate, telemetry, and network included. */
+       outcome — persona, activation gate, telemetry, and network included.
+       Demos are sandboxed: they never permanently overwrite a real account. */
     runDemo(id) {
       const pack = SCENARIO_PACKS[id] || SCENARIO_PACKS[1];
+      backupRealAccountIfNeeded();
       state = blankState();
+      state.isDemo = true;
       state.session.authed = true;
       applyFixturePrefill();
       if (pack.persona) state.protectedPerson = { ...pack.persona };
@@ -859,16 +1093,20 @@
       if (fx.duressAfter) inc.autoDuressAt = inc.triggeredAt + fx.duressAfter * 1000;
       if (fx.degradeAfter) { inc.degradeAt = inc.triggeredAt + fx.degradeAfter * 1000; inc.degradeMode = fx.degradeMode || 'cellLost'; }
       save();
-      location.href = 'incident.html';
+      location.href = 'demo-live.html';
     },
 
     applyFixturePrefill, readiness, activatePlatform,
     triggerIncident, getActiveIncident, incidentView, recordAction,
-    enterDuress, resolveIncident, buildPacket,
+    enterDuress, cancelWithoutPin, resolveIncident, buildPacket,
+    confirmEmergency, dismissFalseAlarm,
     renderNav, requireSetup,
     get link() { return link; },
     probeBackend, fetchRemoteCad,
     subscribeShared, adoptActiveShared, pushTelemetry,
+    infoTip, toggleTip,
+    checkNamedAlerts, viewNamedAlert,
+    get namedAlert() { return namedAlert; },
     /* Join a live shared incident from a fresh session in a given role. */
     async joinLive(role) {
       state = blankState();
@@ -878,7 +1116,7 @@
       state.armed = true;
       save();
       await probeBackend();
-      const inc = await adoptActiveShared();
+      const inc = await adoptActiveShared({ adoptContext: true }); // explicit — this IS meant to take on the joined incident's identity
       if (!inc) { toast('No live incident found on the gateway.', 'warn'); return null; }
       audit(role === 'responder' ? 'Responder session' : 'Guardian session', 'SESSION_JOINED', `Joined live shared incident ${inc.id}.`);
       location.href = role === 'responder' ? 'responder.html' : 'incident.html';
@@ -899,6 +1137,20 @@
   };
 
   /* Probe the backend on load and every 30s; subscribe to shared state when up. */
-  probeBackend().then(l => { if (l.connected) { subscribeShared(); if (state.setup.complete) adoptActiveShared(); } });
-  setInterval(() => { probeBackend().then(l => { if (l.connected) subscribeShared(); }); }, 30000);
+  function refreshNamedAlertBanner() {
+    checkNamedAlerts().then(() => {
+      const nav = document.getElementById('billi-nav');
+      if (nav && nav.dataset.current) renderNav(nav.dataset.current);
+    });
+  }
+  probeBackend().then(l => {
+    if (l.connected) {
+      subscribeShared();
+      if (state.setup.complete) adoptActiveShared();
+      refreshNamedAlertBanner();
+    }
+  });
+  setInterval(() => {
+    probeBackend().then(l => { if (l.connected) { subscribeShared(); refreshNamedAlertBanner(); } });
+  }, 30000);
 })();

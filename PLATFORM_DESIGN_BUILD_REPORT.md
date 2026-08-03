@@ -411,6 +411,158 @@ time — a real reproducibility gap flagged repeatedly and never fixed until now
   the Gemini platform-config explanation, and an honest capability table (real vs. simulated)
   matching what's actually labeled in the running UI.
 
+## Demo state leaking into real accounts — two bugs, both fixed (2026-08-03)
+
+User-reported: logging in showed a leftover demo persona ("David Reyes") instead of their own
+account, with no obvious way to get a fresh start. Root-caused to two separate, compounding bugs:
+
+1. **Demos permanently overwrote the one persisted account.** `Billi.runDemo()` replaced
+   `state` with a demo persona and marked `setup.complete = true` — indistinguishable from a real
+   completed account. `login()` only checked "is setup complete?", so it walked straight into
+   whatever demo was run last. Fixed: demos now back up the real account (if one exists) to a
+   separate `billi_platform_v1_realbackup` key before overwriting state, tag themselves with
+   `state.isDemo = true`, and `login()`/`logout()` restore the real backup first when leaving a
+   demo. Added an explicit **"Exit Demo to My Account"** banner, visible on every page while in a
+   demo, so there's always an obvious way out — not just an easy-to-miss reset button.
+2. **A second, subtler bug survived the first fix**: the shared-incident SSE sync
+   (`mergeShared`/`adoptActiveShared`) unconditionally overwrote local identity
+   (protectedPerson/medical/contacts/owner) from *any* active incident broadcast by the gateway —
+   with no check that the incident actually belonged to the current account. Since the demo
+   incident stayed unresolved on the backend, every subsequent page load silently re-adopted its
+   identity moments after a correct restore, even though the fix in (1) worked at the localStorage
+   level. Fixed by gating context adoption on either an explicit intent
+   (`Billi.joinLive(role)`, which legitimately means "take on this incident's identity") or the
+   incident already being locally known (`state.incidents.some(i => i.id === remote.id)`) — a
+   passive page load no longer silently inherits a stranger's identity just because a session
+   happens to be connected when *any* incident is active on the gateway.
+
+Verified end-to-end in the browser, twice — the first verification attempt itself surfaced bug
+#2, because clearing `localStorage` alone doesn't reset a page's already-loaded in-memory state
+(a `location.reload()` was needed to prove the fix cleanly). Final proof: created a real "Billy
+Smith" account, ran the David Reyes crash demo, returned to `auth.html`, called `login()`, and
+waited a full 8 seconds past initial render (enough for the async SSE/adopt round trip) —
+confirmed `owner: "Billy Smith"`, zero trace of David/Anna Reyes anywhere on the page. Also
+verified the "Exit Demo" banner button directly. Zero console errors in every pass.
+
+## Multi-device feedback round (2026-08-03)
+
+Real feedback from two physical devices testing the platform simultaneously. Four fixes:
+
+1. **Oversized mobile action buttons.** The earlier mobile fix correctly solved unreadable
+   button slivers by forcing all `.grid-2/3/4` to a single column under 760px — but for dense
+   action-button grids (Guardian response controls, Responder actions — 8 buttons each) this
+   over-corrected: full-width single-column stacking meant scrolling through 8 screens' worth of
+   buttons. Added a dedicated `.action-grid` class that stays 2-up even on phones (verified:
+   143px buttons at 375px viewport width — comfortably tappable, half the scroll length), plus a
+   general `<480px` tightening of default button padding/font-size platform-wide.
+2. **Dedicated single-viewport demo screen** (`demo-live.html`) — landing-page demos now route
+   here instead of the full Guardian Command Center. Compact stage-progress pills, four key live
+   facts (location, speed/comm, core actions, escalation countdown), network snapshot, and a
+   one-line AI summary — all driven by the same real `Billi.incidentView()` engine, not
+   hardcoded like the old `demo_30s.html`. Verified in a real mobile viewport: content height
+   exactly matched viewport height with zero scroll and zero horizontal overflow. A "Full Command
+   Center →" link remains for anyone who wants the deep dashboard.
+3. **Legacy help/resource content found and ported, then enriched.** `archive/legacy-web-reference`
+   had `HelpDrawerContent.tsx` (onboarding checklist + searchable technical glossary) and
+   `InfoTooltip.tsx` (click-to-open "what is this / why is it here" popovers) — exactly what was
+   remembered. Built `help.html`: the onboarding checklist now reuses the real
+   `Billi.readiness()` function instead of the legacy's disconnected local-only checkboxes, and
+   the glossary grew from the original 6 terms to 13, covering everything actually built this
+   session (Shared Incident State, AI Context Engine, AI-recommends/orchestration-decides, Duress
+   PIN, Communication Path Failover, etc.) — each with What/Why, searchable. Added a reusable
+   `Billi.infoTip(id, title, what, why)` helper (vanilla-JS port of the React tooltip pattern) and
+   wired it onto the four dashboard metric-card headers as a working example of the pattern.
+   "Help" added to the shared nav on every page.
+4. Verified end-to-end in a real mobile viewport: demo screen fits without scroll, action-grid
+   buttons are 2-column and appropriately sized, tooltip opens with correct content, help page's
+   search filter works, zero console errors throughout.
+
+## Onboarding gate softened + PIN cancellation regression fixed (2026-08-03)
+
+User-reported: a test account made it all the way through onboarding without ever setting up a
+safe word or voice enrollment — those (and other) optional steps need to stay reachable, not
+mandatory gates. `Billi.readiness()` items now carry `{label, ok, required}`: 4 required items
+(protected person, at least one trusted contact, Safety Contract, permissions reviewed) still
+gate activation; 5 optional items (medical dossier, voice/safe-word enrollment, duress
+protection, safe zones, devices) are shown but never block, and stay editable later from
+Settings. `onboarding.html`'s activation gate changed from "all 9 items" to "all required items."
+
+Fixing that immediately surfaced a self-inflicted regression, reported by the user in the same
+breath: "they have to have a PIN to shut it down... it won't allow them to." Making PINs optional
+broke `enterDuress()`, which can never match an unset PIN string — so anyone who'd skipped PIN
+setup could never cancel a real incident. Fixed with `Billi.cancelWithoutPin()` (resolves the
+incident directly, no PIN check) and a `protected.html` branch on `S.pins.normal`: PIN pad if
+one's configured, a plain "✓ this was a false alarm — I'm safe" button plus a link to add a PIN
+if not. Verified live: minimal account with no PIN configured, triggered and successfully
+cancelled an incident via the fallback button.
+
+## Trusted Network passive alert detection (2026-08-03)
+
+User-reported: "I'm part of her trusted network... I didn't receive [the alert]." There is still
+no real push channel (no APNs/FCM) — this is a mitigation, not a fix for that underlying gap.
+Every session now runs `Billi.checkNamedAlerts()` on load and every 30s poll: it fetches the
+gateway's active shared incident and checks whether the local account's own phone number matches
+a contact on that incident's context. If it does, `renderNav()` shows a red "🔴 X triggered an
+emergency and you're on their Trusted Network → View & Respond" banner without the person needing
+to already know to click "Join as Guardian." Tapping it backs up the local account (reusing the
+existing demo backup/restore mechanism, via a new parallel `state.isViewingOther` flag) and
+adopts the incident's context read-only; `Billi.exitDemo()` already restores generically from
+that backup regardless of which flag triggered it, so returning to one's own account needed no
+new code path. Verified end-to-end against the live 13-service gateway by simulating two
+separate local accounts in the same browser: an incident triggered under account A immediately
+produced a correctly-worded banner on account B (matched by phone), viewing it correctly adopted
+A's incident context, and exiting correctly restored B's own data — including confirming the
+backup survives a real full-page navigation, not just an in-memory JS variable.
+
+## Devices page had no way to register new hardware (2026-08-03)
+
+User-reported from real-phone testing: the devices page only ever showed the fixture-seeded
+devices, and the BLE-scan toast literally told users to "register new hardware in Setup or
+Admin" — no such control existed anywhere. Added a "Register new device" form to `devices.html`
+(mirrors the existing add-contact pattern in `network.html`), backed by a small
+`DEVICE_CATALOG` of types (Phone/Watch/Smart Tag/Headphones/Tablet/Other) each with sensible
+default capabilities and triggers. New devices start in `PAIRING` and auto-transition to
+`REGISTERED` after ~1.8s, matching the app's existing honest-labeling conventions rather than
+appearing instantly connected. Verified live: registered a new phone, correct capabilities and
+triggers applied, device count updated, and the PAIRING→REGISTERED transition observed.
+
+## Accidental-trigger safe-fail / confirmation window (2026-08-03)
+
+User relayed a question they'd been asked: "what if the phone is in a backpack and it
+accidentally goes off, but there's no real emergency — what's the safe fail for that?" In the
+same message the user had also just affirmed that video/audio/location/network must fire
+instantly on any trigger, which ruled out delaying the core actions themselves. The fix
+therefore gates only the one genuinely irreversible step — telling the Trusted Network — and
+only for the four trigger types that are inferred from sensors and can plausibly false-positive
+from being in a bag: `fall`, `crash`, `geofence`, `acoustic`. The five deliberate trigger types
+(hold-to-SOS, spoken safe word, tactile button, accessibility shortcut, wearable gesture) still
+require a volitional human action and still fire with zero delay, unchanged.
+
+`triggerIncident()` now opens a 10-second confirmation window for those four trigger types
+(demos and scenario packs always bypass it) and defers `sharedCreate()`/`activateRemote()` —
+nothing reaches the gateway until the incident is confirmed. Two new actions:
+`Billi.confirmEmergency()` ("I need help" — proceeds exactly like an instant trigger from that
+point on) and `Billi.dismissFalseAlarm()` ("false alarm" — resolves locally, no PIN required,
+since the network was never told and there is nothing for a PIN's coercion-protection to guard
+against here). If the window elapses with no response, `incidentView()` lazily auto-confirms —
+silence always escalates, mirroring the philosophy of the pre-existing 45-second guardian-ack
+ladder, and never fails toward silent cancellation.
+
+`protected.html` gained a live countdown card (own 1-second ticker, separate from the page's
+normal 4-second render loop), a genuine (non-simulated) haptic buzz via `navigator.vibrate()` on
+a passive trigger firing, and reachable test buttons for all four passive trigger types — which
+previously existed only as display metadata with no way to actually fire them. `dashboard.html`
+now distinguishes an amber "⏳ CONFIRMING" state from the red "ACTIVE INCIDENT" state.
+
+Caught during our own verification: the first version of the "false alarm" button always showed
+"dismissed, never notified" and navigated away regardless of whether the dismissal actually
+succeeded. A real race — the confirmation window auto-expiring a few seconds before the dismiss
+call landed — surfaced that it would have told the user their alert was safely cancelled in
+exactly the case where it had just gone live for real. Fixed to check the actual result and show
+an honest warning instead. All three paths — in-window dismiss, explicit confirm, and
+auto-confirm-on-timeout — were verified end-to-end against the live 13-service gateway with real
+backend packet and incident IDs.
+
 ## Boundaries respected
 
 - No backend redesign, no service moves, no new architecture. `services/`, `packages/`,

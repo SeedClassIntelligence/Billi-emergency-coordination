@@ -29,6 +29,15 @@
       'FUTURE ADAPTER': ['future', 'Partner SDK integration planned']
     };
 
+    const DEVICE_CATALOG = {
+      'Phone (Secondary Hub)': { capabilities: ['GPS', 'Cellular', 'Wi-Fi', 'BLE', 'Mic', 'Camera', 'Accelerometer', 'Voice input'], triggers: ['Hold-to-SOS', 'Safe word'] },
+      'Watch':                 { capabilities: ['Fall detection', 'Double-tap', 'Heart rate', 'Secondary GPS', 'BLE'], triggers: ['Fall detection', 'Double-tap gesture'] },
+      'Smart Tag':             { capabilities: ['Tactile panic button', 'BLE beacon', 'Crash accelerometer', 'Relay'], triggers: ['Button squeeze'] },
+      'Headphones':            { capabilities: ['Voice wake-up', 'Noise suppression', 'Acoustic trigger'], triggers: ['Acoustic distress'] },
+      'Tablet':                { capabilities: ['GPS', 'Wi-Fi', 'Camera', 'Mic'], triggers: ['Hold-to-SOS'] },
+      'Other / Custom':        { capabilities: [], triggers: [] }
+    };
+
     function chip(st) {
       const meta = STATE_META[st] || ['local', ''];
       return `<span class="sim-chip ${meta[0]}">${st}</span>`;
@@ -84,6 +93,18 @@
             </div>`).join('')}
         </section>
 
+        <section class="card margin-top" style="padding:1.1rem; border:1px dashed rgba(99,102,241,0.4);">
+          <strong style="color:#fff;">Register new device</strong>
+          <div class="text-muted margin-top-xs" style="font-size:0.76rem;">Add a phone, watch, tag, or other hardware to this protection mesh — anytime, not just during setup.</div>
+          <div class="grid grid-2 margin-top-xs" style="gap:0.5rem;">
+            <input id="nd-name" class="form-control-dark" placeholder="Device name (e.g. Mom's iPhone)">
+            <select id="nd-type" class="form-control-dark">
+              ${Object.keys(DEVICE_CATALOG).map(t => `<option>${t}</option>`).join('')}
+            </select>
+          </div>
+          <button class="btn btn-secondary margin-top-xs" onclick="registerDevice()">+ Register device</button>
+        </section>
+
         <section class="card margin-top" style="padding:1rem;">
           <div class="panel-section-title" style="font-size:0.92rem;">Fallback chain</div>
           <p class="text-muted margin-top-xs" style="font-size:0.8rem;">
@@ -114,6 +135,25 @@
       S.devices = S.devices.filter(x => x.id !== id);
       Billi.save(); render();
       Billi.audit((S.owner || {}).name || 'Owner', 'DEVICE_UNBOUND', `${d.name} removed from hardware inventory.`);
+    }
+
+    function registerDevice() {
+      const name = document.getElementById('nd-name').value.trim();
+      if (!name) { Billi.toast('Enter a device name.', 'warn'); return; }
+      const type = document.getElementById('nd-type').value;
+      const spec = DEVICE_CATALOG[type] || { capabilities: [], triggers: [] };
+      S.devices.push({
+        id: Billi.uid('d'), name, type, state: 'PAIRING', battery: null,
+        capabilities: spec.capabilities, triggers: spec.triggers, lastSeen: 'now'
+      });
+      Billi.save(); render();
+      Billi.audit((S.owner || {}).name || 'Owner', 'DEVICE_REGISTERED', `${name} (${type}) registered — pairing.`);
+      Billi.toast(`✓ ${name} registered — pairing (SIMULATED).`, 'ok');
+      document.getElementById('nd-name').value = '';
+      setTimeout(() => {
+        const d = S.devices.find(x => x.name === name && x.state === 'PAIRING');
+        if (d) { d.state = 'REGISTERED'; Billi.save(); render(); }
+      }, 1800);
     }
 
     render();

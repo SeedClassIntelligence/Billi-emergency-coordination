@@ -1234,7 +1234,42 @@ body.bg-root {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .onboarding-bottom-buttons button,
   .core-action-row { width: 100%; }
+
+  /* Dedicated action-button grids (Guardian response, Responder actions):
+     short icon+label buttons stay 2-up even on phones — full-width 1-column
+     stacking made these needlessly tall (8 buttons = 8 full screens' worth
+     of scrolling) without improving tappability. */
+  .action-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.4rem !important; }
+  .action-grid button { padding: 0.55rem 0.4rem !important; font-size: 0.74rem !important; }
 }
+
+/* Tighter default button sizing platform-wide — buttons had grown oversized
+   on mobile since padding/font-size never scaled down with viewport width. */
+@media (max-width: 480px) {
+  .btn, button.btn-primary, button.btn-secondary, button.btn-danger, button.btn-outline-nav {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.78rem;
+  }
+  .sos-hold-btn { width: 160px; height: 160px; font-size: 1.25rem; }
+}
+
+/* --------------------------- INFO TOOLTIP --------------------------- */
+.info-tip-wrap { position: relative; display: inline-block; margin-left: 0.3rem; }
+.info-tip-btn {
+  background: none; border: none; color: #64748b; cursor: pointer; font-size: 0.85rem;
+  padding: 0; line-height: 1; vertical-align: middle; transition: color 0.15s;
+}
+.info-tip-btn:hover { color: #818cf8; }
+.info-tip-pop {
+  display: none; position: absolute; top: 130%; left: 50%; transform: translateX(-50%);
+  width: 260px; max-width: 78vw; background: #10131f; border: 1px solid rgba(99,102,241,0.4);
+  border-radius: 10px; padding: 0.8rem; z-index: 60; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: left; font-size: 0.76rem; color: #cbd5e1;
+}
+.info-tip-pop.open { display: block; }
+.info-tip-head { color: #a5b4fc; font-weight: 700; font-size: 0.78rem; margin-bottom: 0.4rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.info-tip-label { color: #64748b; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; margin-top: 0.4rem; }
+.info-tip-pop p { margin: 0.15rem 0 0; line-height: 1.4; }
 
 .onboarding-bottom-buttons {
   position: sticky;

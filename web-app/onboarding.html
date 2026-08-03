@@ -319,20 +319,37 @@
           </div>
         </div>`,
 
-      /* 9 — Readiness & activate */
+      /* 9 — Readiness & activate.
+         Only the four REQUIRED items block activation — enough for Billi to
+         function at all (a protected person, someone to notify, an
+         authorized contract, GPS+network permission). Voice enrollment,
+         duress PIN, safe zones, and devices are presented clearly here but
+         never lock a family out of arming basic protection today — they
+         stay one click away from Safety Contract / Network / Devices for
+         whenever there's five quiet minutes to finish them. */
       () => {
         const items = Billi.readiness();
-        const allOk = items.every(i => i.ok);
+        const required = items.filter(i => i.required);
+        const recommended = items.filter(i => !i.required);
+        const requiredOk = required.every(i => i.ok);
+        const recommendedOpen = recommended.filter(i => !i.ok);
+        const row = (i) => `<div class="ready-item">${i.ok ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'} <span style="color:${i.ok ? '#e2e8f0' : '#64748b'};">${i.label}</span></div>`;
         return `
         <h2 class="panel-section-title">Test readiness & activate</h2>
-        <p class="text-muted" style="font-size:0.85rem;">Billi reviews the complete Safety Contract before arming.</p>
-        <div class="grid grid-2 margin-top" style="gap:0.5rem;">
-          ${items.map(i => `<div class="ready-item">${i.ok ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'} <span style="color:${i.ok ? '#e2e8f0' : '#64748b'};">${i.label}</span></div>`).join('')}
-        </div>
-        <div class="card margin-top" style="padding:1.25rem; text-align:center; border:1px solid ${allOk ? 'rgba(16,185,129,0.45)' : 'rgba(245,158,11,0.4)'};">
-          ${allOk
-            ? `<h3 style="color:#34d399; font-size:1.3rem;">Billi is ready.</h3><p class="text-muted" style="font-size:0.82rem;">Activating arms continuous monitoring for ${esc((S.protectedPerson || {}).name || 'your protected person')}.</p>`
-            : `<h3 style="color:#fbbf24; font-size:1.1rem;">Not ready yet</h3><p class="text-muted" style="font-size:0.82rem;">Complete the unchecked items above — go back to the relevant step.</p>`}
+        <p class="text-muted" style="font-size:0.85rem;">Billi checks the essentials before arming. Everything else is optional now and always available later.</p>
+
+        <div class="text-muted margin-top" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;">Required to arm Billi</div>
+        <div class="grid grid-fit margin-top-xs" style="gap:0.5rem;">${required.map(row).join('')}</div>
+
+        <div class="text-muted margin-top" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;">Recommended — optional, add anytime from Settings</div>
+        <div class="grid grid-fit margin-top-xs" style="gap:0.5rem;">${recommended.map(row).join('')}</div>
+
+        <div class="card margin-top" style="padding:1.25rem; text-align:center; border:1px solid ${requiredOk ? 'rgba(16,185,129,0.45)' : 'rgba(245,158,11,0.4)'};">
+          ${requiredOk
+            ? `<h3 style="color:#34d399; font-size:1.3rem;">Billi is ready.</h3>
+               <p class="text-muted" style="font-size:0.82rem;">Activating arms continuous monitoring for ${esc((S.protectedPerson || {}).name || 'your protected person')}.</p>
+               ${recommendedOpen.length ? `<p style="color:#fbbf24; font-size:0.76rem; margin-top:0.4rem;">${recommendedOpen.length} optional item(s) still open (${recommendedOpen.map(i => i.label).join(', ')}) — you can activate now and finish these anytime from Safety Contract, Network, or Devices.</p>` : ''}`
+            : `<h3 style="color:#fbbf24; font-size:1.1rem;">Not ready yet</h3><p class="text-muted" style="font-size:0.82rem;">Complete the required items above — go back to the relevant step.</p>`}
         </div>`;
       }
     ];
@@ -369,9 +386,13 @@
     function nextStep() {
       if (!validateStep() || !saveStep()) return;
       if (cur === 9) {
-        if (!Billi.readiness().every(i => i.ok)) { Billi.toast('Readiness checklist incomplete — resolve the open items first.', 'warn'); return; }
+        const readyItems = Billi.readiness();
+        if (!readyItems.filter(i => i.required).every(i => i.ok)) { Billi.toast('A few essentials are still needed — resolve the required items first.', 'warn'); return; }
+        const openOptional = readyItems.filter(i => !i.required && !i.ok);
         Billi.activatePlatform();
-        Billi.toast('✓ Billi is ready. Safety ecosystem armed.', 'ok');
+        Billi.toast(openOptional.length
+          ? `✓ Billi is armed. ${openOptional.length} optional item(s) can be finished anytime in Settings.`
+          : '✓ Billi is ready. Safety ecosystem armed.', 'ok');
         setTimeout(() => location.href = 'dashboard.html', 900);
         return;
       }

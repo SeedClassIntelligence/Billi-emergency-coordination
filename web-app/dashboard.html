@@ -34,7 +34,15 @@
       const okDevices = S.devices.filter(d => ['SIMULATED', 'CONNECTED', 'REGISTERED', 'STANDBY'].includes(d.state));
 
       document.getElementById('main-host').innerHTML = `
-        ${active ? `
+        ${active && !active.confirmedAt ? `
+        <section class="duress-banner margin-top flex-between" style="cursor:pointer; flex-wrap:wrap; gap:0.75rem; border-color:rgba(245,158,11,0.5); background:rgba(245,158,11,0.08); animation:none;" onclick="location.href='protected.html'">
+          <div>
+            <strong style="color:#fbbf24; font-size:1rem;">⏳ CONFIRMING — ${active.id}</strong>
+            <div class="text-muted" style="font-size:0.78rem;">${active.triggerMethod} · sensor-inferred, awaiting confirmation · Trusted Network not yet notified</div>
+          </div>
+          <button class="btn btn-primary">Open confirmation screen →</button>
+        </section>` : ''}
+        ${active && active.confirmedAt ? `
         <section class="duress-banner margin-top flex-between" style="cursor:pointer; flex-wrap:wrap; gap:0.75rem;" onclick="location.href='incident.html'">
           <div>
             <strong style="color:#fca5a5; font-size:1rem;">🔴 ACTIVE INCIDENT — ${active.id}${active.duress ? ' · CRITICAL DURESS ALERT' : ''}</strong>
@@ -77,28 +85,28 @@
         <!-- OPERATIONAL READINESS GRID -->
         <div class="grid grid-fit margin-top" style="gap:0.75rem;">
           <div class="metric-card">
-            <div class="metric-card-header">Safety Contract</div>
+            <div class="metric-card-header">Safety Contract ${Billi.infoTip('sc', 'Safety Contract', 'Every permission Billi is authorized to use during an emergency — GPS, audio, medical sharing, escalation.', 'Decided once during setup, not negotiated mid-crisis — no permission dialogs during an actual emergency.')}</div>
             <div class="metric-card-val" style="color:${S.contract ? '#34d399' : '#fbbf24'};">${S.contract ? 'AUTHORIZED' : 'MISSING'}</div>
             <div class="metric-card-desc">${S.contract ? `${[S.contract.gps && 'GPS', S.contract.audio && 'Audio', S.contract.notifyNetwork && 'Network'].filter(Boolean).join(' · ')} authorized` : 'Complete setup to authorize'}</div>
             <div class="metric-card-footer"><a href="admin.html" style="color:#a5b4fc;">Edit contract →</a></div>
           </div>
           <div class="metric-card">
-            <div class="metric-card-header">Trusted Network</div>
+            <div class="metric-card-header">Trusted Network ${Billi.infoTip('tn', 'Trusted Network', 'The people authorized to be alerted, see medical details, acknowledge, or resolve an incident.', 'Everyone here is notified immediately by default when an emergency triggers — unless a guardian explicitly opts them out.')}</div>
             <div class="metric-card-val">${S.contacts.length} contacts</div>
             <div class="metric-card-desc">${(S.contacts.sort((a,b)=>a.priority-b.priority)[0] || {}).name ? `P1 ${S.contacts[0].name}` : 'None yet'}</div>
             <div class="metric-card-footer"><a href="network.html" style="color:#a5b4fc;">Manage network →</a></div>
           </div>
           <div class="metric-card">
-            <div class="metric-card-header">Device Health</div>
+            <div class="metric-card-header">Device Health ${Billi.infoTip('dh', 'Device Health', 'The hardware registered to feed telemetry into an incident — phone, watch, smart tag, and fallback devices.', 'If your primary phone goes offline mid-incident, these are what Billi falls back to.')}</div>
             <div class="metric-card-val">${okDevices.length}/${S.devices.length} ready</div>
             <div class="metric-card-desc">${S.devices.filter(d => d.state === 'OFFLINE').length ? `⚠ ${S.devices.filter(d => d.state === 'OFFLINE').length} offline` : 'All hardware reachable'}</div>
             <div class="metric-card-footer"><a href="devices.html" style="color:#a5b4fc;">Device hub →</a></div>
           </div>
           <div class="metric-card">
-            <div class="metric-card-header">Readiness Score</div>
-            <div class="metric-card-val" style="color:${readyPct === 100 ? '#34d399' : '#fbbf24'};">${readyPct}%</div>
-            <div class="metric-card-desc">${readyPct === 100 ? 'All checks passing' : `${ready.filter(r => !r.ok).length} item(s) open`}</div>
-            <div class="metric-card-footer">${readyPct === 100 ? 'Armed & monitoring' : '<a href="onboarding.html" style="color:#fbbf24;">Finish setup →</a>'}</div>
+            <div class="metric-card-header">Readiness Score ${Billi.infoTip('rs', 'Readiness Score', 'How many of the nine setup checks are complete — protected person, medical dossier, network, contract, and more.', 'Billi should reach 100% before you rely on it for a real emergency. See the full checklist on the Help page.')}</div>
+            <div class="metric-card-val" style="color:${readyPct === 100 ? '#34d399' : S.armed ? '#a5b4fc' : '#fbbf24'};">${readyPct}%</div>
+            <div class="metric-card-desc">${readyPct === 100 ? 'All checks passing' : `${ready.filter(r => !r.ok).length} optional item(s) open`}</div>
+            <div class="metric-card-footer">${S.armed ? (readyPct === 100 ? 'Armed & monitoring' : '<a href="help.html" style="color:#a5b4fc;">Armed · finish optional items →</a>') : '<a href="onboarding.html" style="color:#fbbf24;">Finish setup →</a>'}</div>
           </div>
         </div>
 
