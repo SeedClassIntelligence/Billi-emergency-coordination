@@ -28,7 +28,8 @@ const MIME = {
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon', '.woff2': 'font/woff2'
+  '.ico': 'image/x-icon', '.woff2': 'font/woff2',
+  '.apk': 'application/vnd.android.package-archive'
 };
 
 const tls = {
