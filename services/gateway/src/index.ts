@@ -11,7 +11,8 @@ import {
 import { CANONICAL_PROTECTED_PERSON, CANONICAL_SAFETY_CONTRACT, CANONICAL_CONTACTS, CANONICAL_DEVICES } from "../../../packages/demo-fixtures/src";
 
 const app = express();
-app.use(express.json());
+// Default 100kb is too small for base64 photo-evidence payloads (analyze-photo).
+app.use(express.json({ limit: "8mb" }));
 
 // Browser CORS support for the web-app frontend
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -234,6 +235,30 @@ app.get("/api/v1/timeline/:incidentId", async (req: Request, res: Response) => {
 });
 app.post("/api/v1/context/summarize", async (req: Request, res: Response) => {
   const out = await fetchService(`http://localhost:8089/context/summarize`, "POST", req.body);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "context-engine service unavailable" });
+});
+app.post("/api/v1/context/analyze", async (req: Request, res: Response) => {
+  // Heavier structured-schema call (8 required fields) than summarize/synthesize —
+  // measured taking longer than the platform's usual 15s AI-chain budget under
+  // live Gemini, so it gets its own longer allowance rather than false-negative
+  // "service unavailable" while the model is genuinely still working.
+  const out = await fetchService(`http://localhost:8089/context/analyze`, "POST", req.body, 25000);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "context-engine service unavailable" });
+});
+app.post("/api/v1/context/analyze-photo", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8089/context/analyze-photo`, "POST", req.body, 25000);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "context-engine service unavailable" });
+});
+app.post("/api/v1/context/review-setup", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8089/context/review-setup`, "POST", req.body, 25000);
+  if (out) return res.json(out);
+  res.status(502).json({ error: "context-engine service unavailable" });
+});
+app.post("/api/v1/context/translate", async (req: Request, res: Response) => {
+  const out = await fetchService(`http://localhost:8089/context/translate`, "POST", req.body, 15000);
   if (out) return res.json(out);
   res.status(502).json({ error: "context-engine service unavailable" });
 });

@@ -55,6 +55,33 @@
 
     const S = Billi.state;
     let cur = S.setup.step || 1;
+    const GW = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
+    let setupReview = null, setupReviewFetchedFor = null, setupReviewLoading = false;
+
+    /* Extends Gemini beyond incident-time into the SETUP phase — reviews the
+       current Safety Contract/readiness config for prioritized, plain-language
+       gaps grounded in what's actually configured, not a restated checklist. */
+    function refreshSetupReview() {
+      const items = Billi.readiness();
+      const key = JSON.stringify(items.map(i => i.ok));
+      if (setupReviewFetchedFor === key || setupReviewLoading) return;
+      setupReviewLoading = true;
+      setupReviewFetchedFor = key;
+      fetch(`${GW}/api/v1/context/review-setup`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          readiness: items, contract: S.contract, protectedPerson: S.protectedPerson,
+          contactCount: S.contacts.length, hasNormalPin: !!(S.pins && S.pins.normal),
+          hasDuressPin: !!(S.pins && S.pins.duress), voiceEnrolled: S.voice && S.voice.state === 'Enrolled',
+          zoneCount: S.zones.length, deviceCount: S.devices.length
+        })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        setupReviewLoading = false;
+        if (!data) return;
+        setupReview = data;
+        if (cur === 9) render();
+      }).catch(() => { setupReviewLoading = false; });
+    }
 
     const STEP_TITLES = ['Choose the Entity', 'Account Owner', 'Protected Person', 'Medical & Emergency Dossier',
       'Trusted Network', 'Safety Contract', 'Voice & Coercion Protection', 'Safe Zones & Devices', 'Test, Review & Activate'];
@@ -94,6 +121,7 @@
       document.getElementById('btn-back').style.visibility = cur === 1 ? 'hidden' : 'visible';
       document.getElementById('btn-next').innerText = cur === 9 ? '✓ ACTIVATE BILLI' : `Next: ${STEP_TITLES[cur] || ''} →`;
       document.getElementById('step-host').innerHTML = STEPS[cur - 1]();
+      if (cur === 9) refreshSetupReview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -205,7 +233,7 @@
 
       /* 6 — Safety contract */
       () => {
-        if (!S.contract) { S.contract = { gps:true, audio:true, video:false, notifyNetwork:true, silentActivation:true, spokenMode:'reassurance', deterrent:false, shareMedical:true, escalation:true, nearbyRelay:false, bleScanning:true, safeZoneMonitoring:true, wearables:true, evidenceRetention:true, aiProcessing:true, responderAccess:true }; Billi.save(); }
+        if (!S.contract) { S.contract = { gps:true, audio:true, video:false, notifyNetwork:true, silentActivation:true, spokenMode:'reassurance', spokenLanguage:'en', deterrent:false, shareMedical:true, escalation:true, nearbyRelay:false, bleScanning:true, safeZoneMonitoring:true, wearables:true, evidenceRetention:true, aiProcessing:true, responderAccess:true }; Billi.save(); }
         const c = S.contract;
         const tog = (key, label, desc) => `
           <div class="card flex-between margin-top-xs" style="padding:0.7rem 1rem;">
@@ -217,7 +245,7 @@
         <p class="text-muted" style="font-size:0.85rem;">The Safety Contract defines exactly what Billi may do during an emergency. No permission dialogs at emergency time — every decision is made here, now.</p>
         ${tog('gps', 'High-accuracy GPS & continuous location', 'Location, speed, heading, movement history during incidents')}
         ${tog('audio', 'Audio recording', 'Ambient audio evidence from authorized devices')}
-        ${tog('video', 'Video recording', 'Video capture — honest state: unavailable in this prototype')}
+        ${tog('video', 'Photo evidence', 'Periodic camera snapshots during an incident — real capture, not continuous video')}
         ${tog('notifyNetwork', 'Trusted-Network notification', 'Alert your contacts by priority when Billi activates')}
         ${tog('silentActivation', 'Silent activation', 'Triggers make no sound or screen change visible to an aggressor')}
         ${tog('shareMedical', 'Medical-information sharing', 'Dossier shared with authorized responders during incidents')}
@@ -231,6 +259,12 @@
             ${['reassurance','deterrent','silent'].map(m => `<button class="btn ${c.spokenMode===m?'btn-primary':'btn-outline-nav'}" onclick="S.contract.spokenMode='${m}';Billi.save();render();">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
           </div>
           <div class="text-muted" style="font-size:0.72rem; margin-top:0.4rem;">Reassurance: "Your mother received your alert." · Deterrent: "Billi emergency protocol is active." · Silent: no outward audio.</div>
+          <strong style="color:#fff; font-size:0.88rem; display:block; margin-top:0.7rem;">Spoken language (Gemini-translated)</strong>
+          <select class="form-control-dark margin-top-xs" onchange="S.contract.spokenLanguage=this.value;Billi.save();">
+            ${[['en','English'],['es','Español'],['fr','Français'],['zh','中文'],['ar','العربية'],['hi','हिन्दी'],['pt','Português'],['vi','Tiếng Việt'],['tl','Tagalog']].map(([code,name]) =>
+              `<option value="${code}" ${(c.spokenLanguage||'en')===code?'selected':''}>${name}</option>`).join('')}
+          </select>
+          <div class="text-muted" style="font-size:0.72rem; margin-top:0.3rem;">Billi's spoken reassurance is live-translated by Gemini before speaking, for a protected person or guardian who doesn't speak English.</div>
         </div>`;
       },
 
@@ -343,6 +377,21 @@
 
         <div class="text-muted margin-top" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;">Recommended — optional, add anytime from Settings</div>
         <div class="grid grid-fit margin-top-xs" style="gap:0.5rem;">${recommended.map(row).join('')}</div>
+
+        <div class="card margin-top" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);">
+          <div class="flex-between">
+            <span class="panel-section-title" style="font-size:0.9rem;">🧠 Gemini setup review</span>
+            <span class="sim-chip ${setupReview && setupReview.aiProvider === 'gemini-live' ? 'connected' : 'local'}">${setupReview ? (setupReview.aiProvider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback') : 'Reviewing…'}</span>
+          </div>
+          ${setupReview ? `
+          <p style="color:#e2e8f0; font-size:0.85rem; margin-top:0.4rem;">${setupReview.summary}</p>
+          ${(setupReview.recommendations || []).length ? setupReview.recommendations.map(r => `
+            <div class="margin-top-xs" style="font-size:0.8rem; display:flex; gap:0.5rem; align-items:flex-start;">
+              <span class="badge ${r.priority === 'high' ? 'badge-red' : r.priority === 'medium' ? 'badge-amber' : 'badge-blue'}" style="flex-shrink:0;">${(r.priority || '').toUpperCase()}</span>
+              <span style="color:#c7d2fe;">${r.recommendation}</span>
+            </div>`).join('') : `<p class="text-muted margin-top-xs" style="font-size:0.78rem;">No further gaps identified.</p>`}` :
+          `<p class="text-muted margin-top-xs" style="font-size:0.8rem;">Reviewing your setup for gaps beyond the basic checklist…</p>`}
+        </div>
 
         <div class="card margin-top" style="padding:1.25rem; text-align:center; border:1px solid ${requiredOk ? 'rgba(16,185,129,0.45)' : 'rgba(245,158,11,0.4)'};">
           ${requiredOk

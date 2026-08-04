@@ -98,6 +98,36 @@
       }).catch(() => { geminiState.label = 'Deterministic fallback — gateway unreachable'; });
     }
 
+    /* Structured 911/CAD analysis with audio sentiment verification — richer
+       than the one-line summary above, ported from the legacy generation's
+       real (and real-only-there) Gemini analysis endpoint. Cached on the
+       incident itself so a later "Export 911-Ready Packet" can use it even
+       if the export happens on a different page load. */
+    function refreshGeminiAnalysis(inc, v) {
+      const key = inc.id + inc.actions.length;
+      if (inc.geminiAnalysis && inc.geminiAnalysis.fetchedFor === key) return;
+      if (inc._analyzeInFlight === key) return;
+      inc._analyzeInFlight = key;
+      fetch(`${GW}/api/v1/context/analyze`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          incidentId: inc.id,
+          protectedPerson: p, medical: m,
+          activationMethod: inc.triggerMethod,
+          duress: inc.duress,
+          locations: v.trail,
+          evidence: v.evidence.map(e => e.transcript),
+          events: v.events.map(e => ({ actor: e.actor, label: e.label }))
+        })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        inc._analyzeInFlight = null;
+        if (!data || !data.summary) return;
+        inc.geminiAnalysis = { ...data, fetchedFor: key };
+        Billi.save();
+        render();
+      }).catch(() => { inc._analyzeInFlight = null; });
+    }
+
     /* Backend timeline: real events recorded server-side (AI_CONTEXT_SYNTHESIS,
        AI_ACTIONS_EVALUATED, etc.) that the local client-side simulation never
        generates on its own. Fetched once the gateway has a backend incident
@@ -139,6 +169,7 @@
       const v = Billi.incidentView(inc);
       const resolved = inc.resolved;
       refreshGeminiSummary(inc, v);
+      refreshGeminiAnalysis(inc, v);
       refreshBackendTimeline(inc);
       const mergedEvents = [...v.events, ...backendTimeline.events].sort((a, b) => a.t - b.t);
 
@@ -234,6 +265,30 @@
               <p style="color:#c7d2fe; font-size:0.84rem; margin-top:0.4rem;" id="gemini-text">${geminiState.text || v.aiSummary}</p>
               <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Interpretation, not confirmed fact. People make decisions; AI assists.</div>
             </div>
+
+            <!-- 10. GEMINI SENTIMENT ANALYSIS / 911-CAD ANALYSIS -->
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.9rem;">🎙 Audio sentiment analysis</span>
+                <span class="sim-chip ${inc.geminiAnalysis && inc.geminiAnalysis.aiProvider === 'gemini-live' ? 'connected' : 'local'}">${inc.geminiAnalysis ? (inc.geminiAnalysis.aiProvider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback') : 'Analyzing…'}</span>
+              </div>
+              ${inc.geminiAnalysis ? `
+              <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
+                <span class="badge ${inc.geminiAnalysis.riskClassification === 'critical' ? 'badge-red' : inc.geminiAnalysis.riskClassification === 'high' ? 'badge-amber' : 'badge-blue'}">${(inc.geminiAnalysis.riskClassification || '').toUpperCase()}</span>
+                <span class="badge badge-indigo">${(inc.geminiAnalysis.suggestedCategory || '').replace(/_/g, ' ')}</span>
+                <span class="badge ${inc.geminiAnalysis.isRealDistressVerified ? 'badge-red' : 'badge-green'}">${inc.geminiAnalysis.isRealDistressVerified ? '⚠ Distress verified' : '✓ Possible false alarm'}</span>
+              </div>
+              <div style="color:#e2e8f0; font-size:0.8rem; margin-top:0.5rem;"><strong>Sentiment:</strong> ${inc.geminiAnalysis.audioSentimentVerification}</div>
+              <div style="color:#e2e8f0; font-size:0.8rem; margin-top:0.3rem;"><strong>Distress level:</strong> ${inc.geminiAnalysis.distressLevel}</div>
+              ${(inc.geminiAnalysis.keyObservations || []).length ? `
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;">Key observations</div>
+              ${inc.geminiAnalysis.keyObservations.map(o => `<div style="color:#c7d2fe; font-size:0.78rem; margin-top:0.15rem;">• ${o}</div>`).join('')}` : ''}
+              ${(inc.geminiAnalysis.responderDirectives || []).length ? `
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;">Responder directives</div>
+              ${inc.geminiAnalysis.responderDirectives.map(o => `<div style="color:#fca5a5; font-size:0.78rem; margin-top:0.15rem;">▸ ${o}</div>`).join('')}` : ''}
+              ` : `<p class="text-muted margin-top-xs" style="font-size:0.76rem;">Requesting structured Gemini analysis of evidence audio for genuine-distress vs. accidental-trigger verification…</p>`}
+              <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Feeds the 911-Ready Packet export below.</div>
+            </div>
           </div>
 
           <div>
@@ -272,13 +327,17 @@
             <div class="card margin-top-xs" style="padding:1rem;">
               <div class="flex-between">
                 <span class="panel-section-title" style="font-size:0.92rem;">Evidence</span>
-                <span class="text-muted" style="font-size:0.68rem;">Audio ✓ · Video — · Photos —</span>
+                <span class="text-muted" style="font-size:0.68rem;">Audio ✓ · Video — · Photos ${(inc.telemetry || []).filter(t => t.event_type === 'PHOTO_SEALED').length ? `✓ (${(inc.telemetry || []).filter(t => t.event_type === 'PHOTO_SEALED').length}, real device capture)` : '—'}</span>
               </div>
               <div style="max-height:150px; overflow-y:auto;">
                 ${v.evidence.map((s, i) => `
                   <div class="margin-top-xs" style="font-size:0.75rem; font-family:monospace; color:${i > 2 ? '#fca5a5' : '#94a3b8'};">
                     [${Billi.fmtClock(s.t)}] ${s.type === 'audio' ? '🎙' : 'ℹ'} ${s.transcript}</div>`).join('')}
+                ${(inc.telemetry || []).filter(t => t.event_type === 'PHOTO_ANALYZED').map(t => `
+                  <div class="margin-top-xs" style="font-size:0.75rem; color:#c7d2fe;">
+                    [${Billi.fmtClock(new Date(t.timestamp).getTime())}] 📸🧠 Photo #${t.n} (${t.aiProvider === 'gemini-live' ? 'Gemini Vision' : 'fallback'}): ${t.description}</div>`).join('')}
               </div>
+              <div class="text-muted margin-top-xs" style="font-size:0.62rem;">Photo bytes stay on the capturing device — only the AI-generated description above ever crosses the network, same as audio evidence.</div>
             </div>
 
             <!-- MEDICAL -->

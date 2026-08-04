@@ -30,6 +30,9 @@
     const p = S.protectedPerson || {};
     let pinBuffer = '';
     let holdTimer = null, holdStart = 0;
+    const GW = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
+    let photoAnalyzing = false;
+    let lastPhotoAnalysis = null;
 
     function render() {
       const active = Billi.getActiveIncident();
@@ -83,7 +86,7 @@
           <div class="panel-section-title" style="font-size:0.9rem;">What Billi is doing right now</div>
           ${readyRow('📍 Location', true, v.core.gps)}
           ${readyRow('🎙 Audio evidence', true, v.core.audio)}
-          ${readyRow('🎥 Video', false, v.core.video)}
+          ${readyRow('📸 Photo evidence', v.core.video === 'NOT AUTHORIZED' ? 'warn' : true, v.core.video)}
           ${readyRow('👥 Trusted Network', true, v.core.network)}
           ${(c.spokenMode !== 'silent') ? `
           <div class="card margin-top-xs" style="padding:0.7rem 0.9rem; background:rgba(99,102,241,0.08);">
@@ -121,7 +124,7 @@
             <div class="panel-section-title" style="font-size:0.9rem;">Billi is ready</div>
             ${readyRow('📍 GPS', c.gps, c.gps ? 'READY' : 'NOT AUTHORIZED')}
             ${readyRow('🎙 Audio', c.audio, c.audio ? 'READY' : 'NOT AUTHORIZED')}
-            ${readyRow('🎥 Video', false, 'UNAVAILABLE IN PROTOTYPE')}
+            ${readyRow('📸 Photo evidence', c.video, c.video ? 'READY' : 'NOT AUTHORIZED')}
             ${readyRow('📶 BLE & communication', c.bleScanning, c.bleScanning ? 'READY (SIMULATED)' : 'OFF')}
             ${readyRow('👥 Trusted Network sync', S.contacts.length >= 2, `${S.contacts.length} CONTACTS`)}
             ${readyRow('🗣 Safe words', S.voice.state === 'Enrolled', S.voice.state === 'Enrolled' ? `${S.voice.safeWords.length} ENROLLED` : S.voice.state.toUpperCase())}
@@ -167,14 +170,26 @@
             <span class="panel-section-title" style="font-size:0.9rem;">📡 Real device capabilities</span>
             <button class="btn btn-secondary" style="font-size:0.7rem;" onclick="enableCapabilities()">Enable on this device</button>
           </div>
-          <p class="text-muted" style="font-size:0.7rem;">This device's actual GPS, motion sensors, microphone, speech, and network feed the shared incident. States below are real, not simulated.</p>
+          <p class="text-muted" style="font-size:0.7rem;">This device's actual GPS, motion sensors, microphone, camera, speech, and network feed the shared incident. States below are real, not simulated.</p>
           <div class="grid grid-2 margin-top-xs" style="gap:0.4rem; font-size:0.75rem;" id="cap-grid">
             ${capRow('📍 Location', BilliAdapters.Location.status, BilliAdapters.Location.mode)}
             ${capRow('📳 Motion sensors', BilliAdapters.Motion.status, '')}
             ${capRow('🎙 Audio evidence', BilliAdapters.AudioEvidence.status, BilliAdapters.AudioEvidence.segment ? BilliAdapters.AudioEvidence.segment + ' segments sealed' : '')}
+            ${capRow('📸 Photo evidence', BilliAdapters.Photo.status, BilliAdapters.Photo.count ? BilliAdapters.Photo.count + ' photos sealed' : '')}
             ${capRow('🔊 Spoken output', BilliAdapters.Speech.status, BilliAdapters.Speech.lastSpoken ? '"' + BilliAdapters.Speech.lastSpoken.text + '"' : '')}
             ${capRow('📶 Network', BilliAdapters.Network.status, '')}
           </div>
+          ${BilliAdapters.Photo.count ? `
+          <div class="card margin-top-xs" style="padding:0.7rem 0.9rem; background:rgba(99,102,241,0.08);">
+            <div class="flex-between">
+              <span class="text-muted" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;">🧠 Gemini vision — scene description</span>
+              <button class="btn btn-secondary" style="font-size:0.66rem;" ${photoAnalyzing ? 'disabled' : ''} onclick="analyzePhoto()">${photoAnalyzing ? 'Analyzing…' : '🔍 Analyze latest photo'}</button>
+            </div>
+            ${lastPhotoAnalysis ? `
+            <div style="color:#e2e8f0; font-size:0.8rem; margin-top:0.3rem;">${lastPhotoAnalysis.description}</div>
+            <div class="text-muted margin-top-xs" style="font-size:0.62rem;">Photo #${lastPhotoAnalysis.n} · ${lastPhotoAnalysis.aiProvider === 'gemini-live' ? 'LIVE GEMINI VISION' : 'deterministic fallback'}</div>` :
+            `<div class="text-muted margin-top-xs" style="font-size:0.74rem;">${photoAnalyzing ? 'Analyzing the latest sealed photo…' : 'Not yet analyzed.'}</div>`}
+          </div>` : ''}
         </section>`;
     }
 
@@ -186,6 +201,38 @@
         <span style="text-align:right;"><span class="${good ? 'text-green' : bad ? 'text-red' : 'text-amber'}" style="font-weight:700;">${status}</span>
         ${note ? `<br><span class="text-muted" style="font-size:0.62rem;">${note}</span>` : ''}</span></div>`;
     }
+
+    /* Genuine Gemini MULTIMODAL usage — sends the actual sealed photo (base64,
+       never persisted server-side) for a live scene description. Auto-fires
+       once on the first sealed photo per incident; otherwise on-demand via
+       the "Analyze latest photo" button. */
+    function analyzePhoto() {
+      const shot = BilliAdapters.Photo.getLatestForAnalysis();
+      if (!shot || photoAnalyzing) return;
+      photoAnalyzing = true;
+      render();
+      const inc = Billi.getActiveIncident();
+      fetch(`${GW}/api/v1/context/analyze-photo`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageBase64: shot.base64, mimeType: shot.mimeType,
+          protectedPerson: p, activationMethod: inc ? inc.triggerMethod : null
+        })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        photoAnalyzing = false;
+        if (!data) { render(); return; }
+        lastPhotoAnalysis = { n: shot.n, description: data.description, aiProvider: data.aiProvider };
+        Billi.pushTelemetry({
+          event_type: 'PHOTO_ANALYZED', source_device_id: BilliAdapters.DEVICE_ID,
+          timestamp: new Date().toISOString(), n: shot.n, description: data.description,
+          aiProvider: data.aiProvider, permission_state: 'AUTHORIZED', execution_state: 'FOREGROUND'
+        });
+        render();
+      }).catch(() => { photoAnalyzing = false; render(); });
+    }
+    document.addEventListener('billi:adapter', (e) => {
+      if (e.detail && e.detail.event_type === 'PHOTO_SEALED' && e.detail.n === 1 && !lastPhotoAnalysis && !photoAnalyzing) analyzePhoto();
+    });
 
     async function enableCapabilities() {
       BilliAdapters.Network.start();
@@ -205,37 +252,54 @@
        Spoken-once tracking derives from the incident's own telemetry, so a
        page refresh or second device never repeats an announcement. */
     const spoken = { sent: false, delivered: false, ackBy: null };
-    function alreadySpoken(active, fragment) {
-      return (active.telemetry || []).some(t => t.event_type === 'SPOKEN_OUTPUT' && (t.text || '').includes(fragment));
+    /* Live-translates Billi's spoken reassurance via Gemini before speaking,
+       when the Safety Contract's spokenLanguage isn't English — real
+       accessibility value for a protected person or guardian who doesn't
+       speak English, using the /context/translate route built earlier this
+       session but never wired to anything until now. */
+    function speakTranslated(text, mode, stage) {
+      const lang = (S.contract || {}).spokenLanguage || 'en';
+      if (lang === 'en') { BilliAdapters.Speech.speak(text, mode, 'en', stage); return; }
+      fetch(`${GW}/api/v1/context/translate`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, targetLanguage: lang })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        BilliAdapters.Speech.speak((data && data.translated) || text, mode, lang, stage);
+      }).catch(() => BilliAdapters.Speech.speak(text, mode, 'en', stage));
+    }
+    /* Dedup on a stable stage KEY, not English text fragments — once spoken
+       output can be translated, matching substrings like "being sent" no
+       longer reliably identifies "was the sent-stage line already spoken?"
+       after a page reload re-hydrates from telemetry history. */
+    function alreadySpokenStage(active, stage) {
+      return (active.telemetry || []).some(t => t.event_type === 'SPOKEN_OUTPUT' && t.stage === stage);
     }
     function speakOnConfirmedState() {
       const active = Billi.getActiveIncident();
       if (!active || active.duress) return; // duress: absolute silence, no reveal
       const mode = (S.contract || {}).spokenMode || 'reassurance';
       if (mode === 'silent') return;
-      if (!spoken.sent && alreadySpoken(active, 'being sent')) spoken.sent = true;
-      if (!spoken.sent && alreadySpoken(active, 'protocol is active')) spoken.sent = true;
-      if (!spoken.delivered && alreadySpoken(active, 'delivered')) spoken.delivered = true;
-      if (!spoken.delivered && alreadySpoken(active, 'have been notified')) spoken.delivered = true;
-      if (!spoken.ackBy && alreadySpoken(active, 'is responding')) {
+      if (!spoken.sent && alreadySpokenStage(active, 'sent')) spoken.sent = true;
+      if (!spoken.delivered && alreadySpokenStage(active, 'delivered')) spoken.delivered = true;
+      if (!spoken.ackBy && alreadySpokenStage(active, 'ack')) {
         const priorAck = (active.actions || []).find(a => a.type === 'GUARDIAN_ACKNOWLEDGED');
         spoken.ackBy = priorAck ? priorAck.actor : 'replayed';
       }
       const v = Billi.incidentView(active);
       if (!spoken.sent && (v.core.network === 'SENT' || v.core.network === 'DELIVERED')) {
         spoken.sent = true;
-        BilliAdapters.Speech.speak(mode === 'deterrent' ? 'Billi emergency protocol is active. Location and incident information are being transmitted.' : 'Billi is active. Your alert is being sent.', mode);
+        speakTranslated(mode === 'deterrent' ? 'Billi emergency protocol is active. Location and incident information are being transmitted.' : 'Billi is active. Your alert is being sent.', mode, 'sent');
       }
       if (!spoken.delivered && (v.core.network === 'DELIVERED' || v.core.network === 'ACKNOWLEDGED')) {
         spoken.delivered = true;
-        BilliAdapters.Speech.speak(mode === 'deterrent' ? 'Trusted contacts have been notified.' : 'Your alert was delivered to your trusted network.', mode);
+        speakTranslated(mode === 'deterrent' ? 'Trusted contacts have been notified.' : 'Your alert was delivered to your trusted network.', mode, 'delivered');
       }
       const ack = (active.actions || []).find(a => a.type === 'GUARDIAN_ACKNOWLEDGED');
       if (ack && spoken.ackBy !== ack.actor) {
         spoken.ackBy = ack.actor;
         const c = (S.contacts || []).find(x => x.name === ack.actor);
         const who = c && c.relationship === 'Mother' ? 'Your mother' : c && c.relationship === 'Father' ? 'Your father' : ack.actor;
-        BilliAdapters.Speech.speak(`${who} is responding.`, mode);
+        speakTranslated(`${who} is responding.`, mode, 'ack');
       }
     }
     document.addEventListener('billi:shared', () => { speakOnConfirmedState(); const a = Billi.getActiveIncident(); if (!a || !a.duress) render(); });

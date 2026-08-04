@@ -17,8 +17,33 @@
     if (!Billi.requireSetup()) throw new Error('redirect');
     Billi.renderNav('admin.html');
     const S = Billi.state;
+    const GW = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
+    let setupReview = null, setupReviewLoading = false;
 
     function esc(s) { return (s || '').toString().replace(/</g, '&lt;'); }
+
+    /* On-demand (not auto-fired — this is a settings page visited often,
+       unlike onboarding's one-time review) Gemini review of the current
+       Safety Contract / readiness configuration. */
+    function reviewSetup() {
+      if (setupReviewLoading) return;
+      setupReviewLoading = true;
+      render();
+      const items = Billi.readiness();
+      fetch(`${GW}/api/v1/context/review-setup`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          readiness: items, contract: S.contract, protectedPerson: S.protectedPerson,
+          contactCount: S.contacts.length, hasNormalPin: !!(S.pins && S.pins.normal),
+          hasDuressPin: !!(S.pins && S.pins.duress), voiceEnrolled: S.voice && S.voice.state === 'Enrolled',
+          zoneCount: S.zones.length, deviceCount: S.devices.length
+        })
+      }).then(r => r.ok ? r.json() : null).then(data => {
+        setupReviewLoading = false;
+        if (data) setupReview = data;
+        render();
+      }).catch(() => { setupReviewLoading = false; render(); });
+    }
 
     function render() {
       const p = S.protectedPerson || {}, m = S.medical || {}, c = S.contract || {};
@@ -94,7 +119,7 @@
               <div class="panel-section-title" style="font-size:0.92rem;">Emergency permissions (Safety Contract)</div>
               ${tog('gps', '📍 High-accuracy GPS & continuous location')}
               ${tog('audio', '🎙 Audio recording')}
-              ${tog('video', '🎥 Video recording (prototype: unavailable)')}
+              ${tog('video', '📸 Photo evidence — periodic camera snapshots (real, not continuous video)')}
               ${tog('notifyNetwork', '👥 Trusted-Network notification')}
               ${tog('silentActivation', '🤫 Silent activation')}
               ${tog('shareMedical', '⚕ Medical-data sharing')}
@@ -104,6 +129,33 @@
               ${tog('aiProcessing', '🧠 AI processing (Gemini)')}
               ${tog('responderAccess', '🛡 Responder access')}
               ${tog('evidenceRetention', '🗄 Evidence retention')}
+              <div class="core-action-row margin-top-xs">
+                <span style="color:#e2e8f0; font-size:0.84rem;">🗣 Spoken language (Gemini-translated)</span>
+                <select class="form-control-dark" style="font-size:0.72rem; width:auto; min-width:100px;" onchange="S.contract.spokenLanguage=this.value;Billi.save();Billi.audit((S.owner||{}).name||'Owner','CONTRACT_CHANGED','Spoken language → '+this.value);">
+                  ${[['en','English'],['es','Español'],['fr','Français'],['zh','中文'],['ar','العربية'],['hi','हिन्दी'],['pt','Português'],['vi','Tiếng Việt'],['tl','Tagalog']].map(([code,name]) =>
+                    `<option value="${code}" ${(c.spokenLanguage||'en')===code?'selected':''}>${name}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <!-- GEMINI SETUP REVIEW -->
+            <div class="card margin-top-xs" style="padding:1.1rem;">
+              <div class="flex-between">
+                <span class="panel-section-title" style="font-size:0.92rem;">🧠 Gemini setup review</span>
+                <button class="btn btn-secondary" style="font-size:0.7rem;" ${setupReviewLoading ? 'disabled' : ''} onclick="reviewSetup()">${setupReviewLoading ? 'Reviewing…' : (setupReview ? 'Re-review' : 'Review my setup')}</button>
+              </div>
+              <p class="text-muted" style="font-size:0.72rem;">Reviews your current Safety Contract and readiness configuration for prioritized, plain-language gaps — not a restated checklist.</p>
+              ${setupReview ? `
+              <div class="flex-between margin-top-xs">
+                <span class="text-muted" style="font-size:0.68rem;"></span>
+                <span class="sim-chip ${setupReview.aiProvider === 'gemini-live' ? 'connected' : 'local'}">${setupReview.aiProvider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback'}</span>
+              </div>
+              <p style="color:#e2e8f0; font-size:0.85rem; margin-top:0.3rem;">${setupReview.summary}</p>
+              ${(setupReview.recommendations || []).map(r => `
+                <div class="margin-top-xs" style="font-size:0.8rem; display:flex; gap:0.5rem; align-items:flex-start;">
+                  <span class="badge ${r.priority === 'high' ? 'badge-red' : r.priority === 'medium' ? 'badge-amber' : 'badge-blue'}" style="flex-shrink:0;">${(r.priority || '').toUpperCase()}</span>
+                  <span style="color:#c7d2fe;">${r.recommendation}</span>
+                </div>`).join('')}` : ''}
             </div>
 
             <!-- ZONES -->

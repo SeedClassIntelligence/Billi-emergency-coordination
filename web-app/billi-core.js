@@ -34,7 +34,7 @@
     ],
     contract: {
       gps: true, audio: true, video: false, notifyNetwork: true,
-      silentActivation: true, spokenMode: 'reassurance', deterrent: false,
+      silentActivation: true, spokenMode: 'reassurance', spokenLanguage: 'en', deterrent: false,
       shareMedical: true, escalation: true, nearbyRelay: true,
       bleScanning: true, safeZoneMonitoring: true, wearables: true,
       evidenceRetention: true, aiProcessing: true, responderAccess: true
@@ -783,10 +783,11 @@
        capture and start immediately regardless of confirmation status; only
        the network leg waits, since that's the one an accidental trigger
        can't take back once it's out the door. */
+    const videoAuthorized = !!(state.contract && state.contract.video);
     const core = {
       gps:     el < 2 ? 'ACQUIRING' : 'ACQUIRED',
       audio:   el < 3 ? 'STARTING' : 'ACTIVE',
-      video:   'UNAVAILABLE IN THIS PROTOTYPE',
+      video:   !videoAuthorized ? 'NOT AUTHORIZED' : (el < 4 ? 'STARTING' : 'PHOTO EVIDENCE ACTIVE'),
       network: pending ? 'AWAITING CONFIRMATION' : (elN < 3 ? 'QUEUED' : (elN < 6 ? 'SENT' : 'DELIVERED'))
     };
 
@@ -886,6 +887,7 @@
     const v = incidentView(inc);
     const p = state.protectedPerson || FIXTURE.protectedPerson;
     const m = state.medical || FIXTURE.medical;
+    const ga = inc.geminiAnalysis || null;
     return [
       '====================================================',
       'BILLI 911-READY EMERGENCY PACKET (PROTOTYPE — LOCAL)',
@@ -911,8 +913,22 @@
       'EVIDENCE REFERENCES:',
       ...v.evidence.map((s, i) => `  [${fmtClock(s.t)}] ${s.type.toUpperCase()} — ${s.transcript}`),
       '',
-      'AI-ASSISTED SUMMARY (deterministic, interpretation — not confirmed fact):',
-      `  ${v.aiSummary}`,
+      ...(ga ? [
+        `AI ANALYSIS (${ga.aiProvider === 'gemini-live' ? 'LIVE GEMINI' : 'deterministic fallback'} — interpretation, not confirmed fact):`,
+        `  RISK CLASSIFICATION:   ${(ga.riskClassification || '').toUpperCase()}`,
+        `  CATEGORY:              ${(ga.suggestedCategory || '').replace(/_/g, ' ')}`,
+        `  AUDIO SENTIMENT:       ${ga.audioSentimentVerification}`,
+        `  DISTRESS VERIFIED:     ${ga.isRealDistressVerified ? 'YES' : 'NO — possible false alarm'}`,
+        `  DISTRESS LEVEL:        ${ga.distressLevel}`,
+        `  SUMMARY:               ${ga.summary}`,
+        '  KEY OBSERVATIONS:',
+        ...(ga.keyObservations || []).map(o => `    - ${o}`),
+        '  RESPONDER DIRECTIVES:',
+        ...(ga.responderDirectives || []).map(o => `    - ${o}`)
+      ] : [
+        'AI-ASSISTED SUMMARY (deterministic, interpretation — not confirmed fact):',
+        `  ${v.aiSummary}`
+      ]),
       '===================================================='
     ].join('\n');
   }

@@ -174,20 +174,101 @@
     }
   };
 
+  /* ------------------------- PhotoEvidenceAdapter -------------------------
+     Real (not simulated) periodic photo capture — same getUserMedia pattern
+     as AudioEvidence, one video track instead of audio. A single stream is
+     opened once and reused for every snapshot (drawn to a canvas, sealed as
+     a JPEG blob) rather than re-requesting the camera each interval, which
+     would re-prompt and flicker. Like audio, only the sealed metadata
+     (bytes, mime, timestamp) is pushed to the shared incident — the actual
+     image stays local to this browser tab (object URL), same honest
+     local-only-evidence limitation the audio adapter already has. */
+  const PhotoEvidenceAdapter = {
+    status: 'IDLE', stream: null, video: null, canvas: null, timer: null,
+    count: 0, photos: [],
+    async start() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !document.createElement('canvas').getContext) {
+        this.status = 'UNSUPPORTED'; return false;
+      }
+      try {
+        this.status = 'STARTING';
+        this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        this.video = document.createElement('video');
+        this.video.muted = true; this.video.playsInline = true; this.video.srcObject = this.stream;
+        await this.video.play().catch(() => {});
+        await new Promise((resolve) => {
+          if (this.video.readyState >= 2) return resolve();
+          this.video.onloadeddata = () => resolve();
+        });
+        this.canvas = document.createElement('canvas');
+        this.count = 0; this.photos = [];
+        this._capture(); // seal one immediately, then every 15s
+        this.timer = setInterval(() => this._capture(), 15000);
+        this.status = 'ACTIVE';
+        emit(normalize('PHOTO_CAPTURE_STARTED', { interval_seconds: 15 }));
+        return true;
+      } catch (err) {
+        this.status = err.name === 'NotAllowedError' ? 'PERMISSION_DENIED' : 'FAILED';
+        emit(normalize('PHOTO_ERROR', { reason: err.message }, err.name === 'NotAllowedError' ? 'DENIED' : 'AUTHORIZED'));
+        return false;
+      }
+    },
+    _capture() {
+      if (!this.video || !this.canvas) return;
+      const vw = this.video.videoWidth, vh = this.video.videoHeight;
+      if (!vw || !vh) return; // frame not ready yet — skip this tick, next one will catch it
+      /* Downscale to a max 768px edge — evidence thumbnails, not photography,
+         and it keeps the payload small for the (optional) Gemini vision call. */
+      const scale = Math.min(1, 768 / Math.max(vw, vh));
+      const w = Math.round(vw * scale), h = Math.round(vh * scale);
+      this.canvas.width = w; this.canvas.height = h;
+      const ctx = this.canvas.getContext('2d');
+      ctx.drawImage(this.video, 0, 0, w, h);
+      const dataUrl = this.canvas.toDataURL('image/jpeg', 0.7);
+      this.canvas.toBlob((blob) => {
+        if (!blob) return;
+        this.count++;
+        this.photos.push({ n: this.count, bytes: blob.size, url: URL.createObjectURL(blob), dataUrl, at: Date.now() });
+        emit(normalize('PHOTO_SEALED', { n: this.count, bytes: blob.size, mime: blob.type }));
+      }, 'image/jpeg', 0.7);
+    },
+    /* {base64, mimeType} for the most recent sealed photo, or null if none yet —
+       used for the on-demand Gemini vision analysis call. */
+    getLatestForAnalysis() {
+      const last = this.photos[this.photos.length - 1];
+      if (!last || !last.dataUrl) return null;
+      const m = /^data:([^;]+);base64,(.*)$/.exec(last.dataUrl);
+      if (!m) return null;
+      return { n: last.n, mimeType: m[1], base64: m[2] };
+    },
+    stop() {
+      if (this.timer) { clearInterval(this.timer); this.timer = null; }
+      try { if (this.stream) this.stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+      if (this.status === 'ACTIVE') emit(normalize('PHOTO_CAPTURE_STOPPED', { photos: this.count }));
+      this.stream = null; this.video = null; this.canvas = null;
+      if (this.status !== 'PERMISSION_DENIED') this.status = 'IDLE';
+    }
+  };
+
   /* ------------------------- SpeechOutputAdapter -------------------------
      Speaks ONLY confirmed state (QUEUED ≠ DELIVERED — callers must pass
      text derived from confirmed incident state). Honors silent mode. */
+  const BCP47 = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', zh: 'zh-CN', ar: 'ar-SA', hi: 'hi-IN', pt: 'pt-BR', vi: 'vi-VN', tl: 'fil-PH' };
   const SpeechOutputAdapter = {
     status: (typeof speechSynthesis !== 'undefined') ? 'READY' : 'UNSUPPORTED',
     lastSpoken: null,
-    speak(text, mode) {
+    /* lang: short code ('es','fr',...) — Gemini-translated text needs the
+       matching BCP-47 tag or the browser's TTS engine mispronounces it in
+       an English voice regardless of the text's actual language. */
+    speak(text, mode, lang, stage) {
       if (mode === 'silent') { this.lastSpoken = { text: '[suppressed — silent mode]', at: Date.now() }; return false; }
       if (typeof speechSynthesis === 'undefined') return false;
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 1.0; u.pitch = 1.0;
+      if (lang && lang !== 'en') u.lang = BCP47[lang] || lang;
       speechSynthesis.speak(u);
-      this.lastSpoken = { text, at: Date.now() };
-      emit(normalize('SPOKEN_OUTPUT', { text, mode: mode || 'reassurance' }));
+      this.lastSpoken = { text, at: Date.now(), lang: lang || 'en' };
+      emit(normalize('SPOKEN_OUTPUT', { text, mode: mode || 'reassurance', lang: lang || 'en', stage: stage || null }));
       return true;
     }
   };
@@ -211,15 +292,17 @@
     Location: LocationAdapter,
     Motion: MotionAdapter,
     AudioEvidence: AudioEvidenceAdapter,
+    Photo: PhotoEvidenceAdapter,
     Speech: SpeechOutputAdapter,
     Network: NetworkAdapter,
-    /* Start everything appropriate for an active incident (user gesture required for mic/motion). */
+    /* Start everything appropriate for an active incident (user gesture required for mic/motion/camera). */
     async startIncidentCapture(contract) {
       const results = { location: LocationAdapter.startIncident(), network: NetworkAdapter.start() };
       results.motion = await MotionAdapter.start();
       results.audio = (contract && contract.audio) ? await AudioEvidenceAdapter.start() : false;
+      results.photo = (contract && contract.video) ? await PhotoEvidenceAdapter.start() : false;
       return results;
     },
-    stopAll() { LocationAdapter.stop(); MotionAdapter.stop(); AudioEvidenceAdapter.stop(); }
+    stopAll() { LocationAdapter.stop(); MotionAdapter.stop(); AudioEvidenceAdapter.stop(); PhotoEvidenceAdapter.stop(); }
   };
 })();
