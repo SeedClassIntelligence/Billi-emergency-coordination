@@ -16,6 +16,23 @@ const http = require('http');
 
 const ROOT = __dirname;
 
+// Services whose tsconfig sets rootDir to "../.." (they import shared
+// packages from packages/*/src, so tsc's rootDir must extend up to cover
+// those files too) — this makes tsc mirror the full path from repo root,
+// so the compiled entry point lands nested under dist/services/<name>/src/
+// rather than a flat dist/index.js. Every other service's rootDir is
+// "./src", producing a flat dist/index.js. Confirmed by test-compiling
+// gateway and inspecting all 13 tsconfig.json files directly.
+const NESTED_DIST_SERVICES = new Set([
+  'gateway', 'identity-service', 'safety-protocol', 'capability-registry'
+]);
+
+function distEntry(name) {
+  return NESTED_DIST_SERVICES.has(name)
+    ? path.join('dist', 'services', name, 'src', 'index.js')
+    : path.join('dist', 'index.js');
+}
+
 const SERVICES = [
   { name: 'gateway',                port: 8080 },
   { name: 'orchestration-engine',   port: 8081 },
@@ -40,7 +57,7 @@ function log(name, line) {
 
 function startService(svc) {
   const cwd = path.join(ROOT, 'services', svc.name);
-  const child = spawn('npx', ['ts-node-dev', '--transpile-only', 'src/index.ts'], {
+  const child = spawn('node', [distEntry(svc.name)], {
     cwd, shell: true, env: { ...process.env, PORT: String(svc.port) }
   });
   child.stdout.on('data', (d) => d.toString().split('\n').filter(Boolean).forEach(l => log(svc.name, l)));

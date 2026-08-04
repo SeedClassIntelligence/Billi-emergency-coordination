@@ -64,7 +64,7 @@ async function fetchService(url: string, method: string = "GET", body?: any, tim
 import * as fs from "fs";
 import * as path from "path";
 
-const DATA_DIR = path.join(__dirname, "..", ".data");
+const DATA_DIR = path.join(process.cwd(), ".data");
 const SHARED_FILE = path.join(DATA_DIR, "shared_incidents.json");
 
 let sharedIncidents: Record<string, any> = {};
