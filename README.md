@@ -4,6 +4,13 @@
 devices, trusted network, and responders into one shared, continuously-updated incident —
 from activation through resolution — with live Gemini AI assisting every step of the way.
 
+## Live demo
+
+**https://billi-platform-467802610371.us-central1.run.app** — public, no setup required. Runs
+scale-to-zero on Cloud Run, so if it's been idle a while the first load can take 1-3 minutes
+while all 13 internal services boot; it's not stuck, just cold-starting. See
+[DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough.
+
 ## Quick start
 
 ```bash
