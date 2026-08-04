@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+.git
+.env
+.env.example
+**/.data
+archive
+docs
+mobile-app
+simulator
+web-app/test
+*.md
+Dockerfile
+.dockerignore
