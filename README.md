@@ -7,9 +7,10 @@ from activation through resolution — with live Gemini AI assisting every step 
 ## Live demo
 
 **https://billi-platform-467802610371.us-central1.run.app** — public, no setup required. Runs
-scale-to-zero on Cloud Run, so if it's been idle a while the first load can take 1-3 minutes
-while all 13 internal services boot; it's not stuck, just cold-starting. See
-[DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough.
+scale-to-zero on Cloud Run: every service ships pre-compiled (no on-the-fly TypeScript
+transpilation), so a cold start brings all 13 internal services up in well under 30 seconds,
+not the 1-3 minutes an interpreted boot used to take. See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for
+a guided walkthrough.
 
 ## Quick start
 
