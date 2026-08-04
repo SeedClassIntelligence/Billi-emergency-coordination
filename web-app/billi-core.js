@@ -803,6 +803,33 @@
     const trail = PATH.slice(0, steps);
     const loc = trail[trail.length - 1];
 
+    /* Real outbound SMS - fires exactly once per incident, only when
+       running inside the native Android shell (window.BilliNative present,
+       see mobile-native/) and only for a genuine trigger, never a demo
+       (inc.scenario is set exclusively by runDemo() - a demo must never
+       text a real phone number). Fires the moment the network leg reaches
+       SENT (elN>=3), matching the alertState ladder below. Lazy-applied
+       like the scenario effects elsewhere in this function so it survives
+       reloads and fires on whichever render tick crosses the threshold. */
+    if (!pending && !inc.scenario && elN >= 3 && !inc.realSmsSentAt &&
+        typeof window !== 'undefined' && window.BilliNative && window.BilliNative.sendSms) {
+      inc.realSmsSentAt = now;
+      const who = (state.protectedPerson && state.protectedPerson.name) || 'A Billi user';
+      const coords = loc ? `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}` : 'location acquiring';
+      const msg = `Billi Emergency Alert: ${who} has triggered an SOS. Location: ${coords}. Open Billi for live updates.`;
+      (state.contacts.length ? state.contacts : FIXTURE.contacts).forEach(c => {
+        if (c.notifyEnabled === false || !c.channels || c.channels.indexOf('SMS') === -1 || !c.phone) return;
+        let sent = false, err = null;
+        try { sent = window.BilliNative.sendSms(c.phone, msg); } catch (e) { err = e.message; }
+        acts.push({
+          t: now, actor: 'Communication Engine', type: 'REAL_SMS_SENT', contactId: c.id,
+          details: sent ? `Real SMS dispatched to ${c.name} (${c.phone})`
+                         : `SMS not sent to ${c.name}${err ? ' - ' + err : ' - SEND_SMS permission not granted'}`
+        });
+      });
+      save();
+    }
+
     /* Evidence: one audio segment every 10 seconds. */
     const evCount = Math.min(Math.floor(el / 10) + 1, TRANS.length);
     const evidence = TRANS.slice(0, evCount).map((txt, i) => ({

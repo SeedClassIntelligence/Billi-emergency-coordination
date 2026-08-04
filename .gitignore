@@ -28,6 +28,9 @@ ios/Pods/
 *.tfstate
 *.tfstate.*
 crash.log
+
+# Android build toolchain (downloaded portable JDK + SDK, ~340MB, not source)
+.android-toolchain/
 override.tf
 override.tf.json
 *_override.tf
