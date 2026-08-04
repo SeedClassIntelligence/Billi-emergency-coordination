@@ -755,6 +755,37 @@
     }
     const degraded = !!(inc.degradeAt && now >= inc.degradeAt);
 
+    /* DEMO-ONLY auto-progression. inc.scenario is set exclusively by
+       runDemo() — never by a real trigger — so this can never fire for an
+       actual emergency; a real incident must always wait for an actual
+       human guardian to acknowledge/respond/stabilize/resolve. Without
+       this, a demo scenario watched passively gets stuck after the first
+       (automatic, time-based) lifecycle hop: every stage past
+       TRUSTED_NETWORK_NOTIFIED normally requires a manually-recorded
+       action, and the compact demo-live.html view only exposes one of the
+       four buttons that record them (the full Command Center has the rest).
+       This walks a demo through the whole lifecycle on a fixed schedule so
+       watching it actually shows the story end to end. */
+    if (inc.scenario && !inc.resolved) {
+      const t0 = inc.confirmedAt || inc.triggeredAt;
+      const lead = (state.contacts[0] || {}).name || 'Trusted Contact';
+      if (!has('GUARDIAN_ACKNOWLEDGED') && now >= t0 + 8000) {
+        acts.push({ t: t0 + 8000, actor: lead, type: 'GUARDIAN_ACKNOWLEDGED', details: 'Acknowledged — responding now. ETA 3 minutes (SIMULATED route).' });
+        save();
+      }
+      if (!has('RESPONDER_STATUS') && now >= t0 + 15000) {
+        acts.push({ t: t0 + 15000, actor: lead, type: 'RESPONDER_STATUS', details: 'Responding — ETA 3 min' });
+        save();
+      }
+      if (!has('INCIDENT_STABILIZED') && now >= t0 + 30000) {
+        acts.push({ t: t0 + 30000, actor: lead, type: 'INCIDENT_STABILIZED', details: 'Situation stabilized — protected person in guardian contact.' });
+        save();
+      }
+      if (now >= t0 + 40000 && state.activeIncidentId === inc.id) {
+        resolveIncident(lead, 'Reunited safely — demo scenario complete.', 'Protected person confirmed safe');
+      }
+    }
+
     /* Communication path + protection tier (legacy 5-tier model). */
     const commPath = degraded
       ? (inc.degradeMode === 'phoneOff' ? 'WATCH + SMART TAG FALLBACK (SIMULATED)' : 'BLE NEARBY-RELAY (SIMULATED)')

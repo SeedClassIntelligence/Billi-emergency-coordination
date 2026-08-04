@@ -70,9 +70,11 @@ Billi is built to be honest about this everywhere in the UI (look for `CONNECTED
 | BLE mesh relay | Simulated — strategy selection is real, physical radio relay is not |
 
 See [PLATFORM_DESIGN_BUILD_REPORT.md](PLATFORM_DESIGN_BUILD_REPORT.md) for the full build history
-and verification log, and [MOBILE_CAPABILITY_EXECUTION_MATRIX.md](MOBILE_CAPABILITY_EXECUTION_MATRIX.md)
+and verification log, [MOBILE_CAPABILITY_EXECUTION_MATRIX.md](MOBILE_CAPABILITY_EXECUTION_MATRIX.md)
 for the capability-by-capability breakdown of what's wired to native device APIs today versus
-what a native mobile app would still need to add.
+what a native mobile app would still need to add, and [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a
+walkthrough covering exactly where and how Gemini is used, including what to say if its free-tier
+quota is exhausted mid-demo.
 
 ## Project structure
 
@@ -89,10 +91,12 @@ what a native mobile app would still need to add.
                                # reference only, not part of the running platform
 ```
 
-`archive/` contains three earlier, no-longer-running attempts (a React+Firebase monolith, a
-2-service Cloud Run design, and a set of orphaned Firebase Cloud Functions) — none of them are
-wired to anything live. The `services/` directory above is the one real, complete, currently
-running system.
+`archive/` contains two earlier, no-longer-running attempts (a React+Firebase monolith and a
+2-service Cloud Run design) — kept for reference only; real business logic has been ported out
+of the monolith where useful (e.g. the Gemini 911/CAD analysis schema). A third earlier
+generation — orphaned Firebase Cloud Functions and duplicate Terraform infra — was deleted
+outright as dead code rather than archived, since nothing referenced it. The `services/`
+directory above is the one real, complete, currently running system.
 
 ## Running an individual service
 
@@ -102,3 +106,14 @@ Each service can also be started on its own during development:
 cd services/<service-name>
 npx ts-node-dev --transpile-only src/index.ts
 ```
+
+## Tests
+
+```bash
+npm test
+```
+
+Runs the safety-critical logic in `billi-core.js` (readiness gating, duress/PIN cancellation,
+the accidental-trigger confirmation window) under Node's built-in test runner — no test
+framework dependency, in keeping with the rest of the project having no build step. See
+`web-app/test/harness.js` for how it loads a `<script>`-tag-style file into a sandboxed context.

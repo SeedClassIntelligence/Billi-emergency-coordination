@@ -31,6 +31,19 @@
     const S = Billi.state;
     const p = S.protectedPerson || Billi.FIXTURE.protectedPerson;
 
+    /* This screen re-renders every 1.5s regardless of whether anything
+       changed, which — with the app's usual wholesale innerHTML replace —
+       read as static even while the underlying incident genuinely was
+       progressing. Tracking the last-rendered value per fact and flashing
+       only the ones that actually changed since the previous tick makes
+       real updates visibly register instead of silently swapping text. */
+    let prevVals = {};
+    function flashClass(key, val) {
+      const changed = prevVals[key] !== undefined && prevVals[key] !== val;
+      prevVals[key] = val;
+      return changed ? 'value-flash' : '';
+    }
+
     function render() {
       const host = document.getElementById('main-host');
       const inc = Billi.getActiveIncident() || S.incidents[0];
@@ -41,9 +54,33 @@
       }
       const v = Billi.incidentView(inc);
       const resolved = inc.resolved;
-      const escLabel = v.escalation.acknowledged ? 'HALTED' : v.escalation.remaining > 0 ? `T-${v.escalation.remaining}s` : 'LADDER COMPLETE';
       const notified = v.contacts.filter(c => c.notifyEnabled !== false);
       const responding = v.contacts.filter(c => /Responding|En route|On scene|Acknowledged/i.test(c.status));
+
+      /* Escalation: an animated ring, not static "T-Ns" text — see the
+         countdown-ring-drain keyframe (style.css) for why a from->to CSS
+         animation is what actually works across a wholesale re-render,
+         where a `transition` between old/new DOM nodes cannot. */
+      const escRing = (() => {
+        if (resolved || v.escalation.acknowledged) return '';
+        const R = 15, C = 2 * Math.PI * R;
+        const pct = Math.max(0, Math.min(1, v.escalation.remaining / v.escalation.windowSeconds));
+        const fromOffset = C * (1 - pct);
+        return `<svg width="34" height="34" viewBox="0 0 34 34" style="transform:rotate(-90deg); flex-shrink:0;">
+          <circle cx="17" cy="17" r="${R}" stroke-width="3" fill="none" stroke="rgba(255,255,255,0.1)"></circle>
+          <circle cx="17" cy="17" r="${R}" stroke-width="3" fill="none" stroke="${v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'}" stroke-linecap="round"
+            stroke-dasharray="${C.toFixed(2)}"
+            style="--ring-from:${fromOffset.toFixed(2)}; --ring-to:${C.toFixed(2)}; stroke-dashoffset:${fromOffset.toFixed(2)}; animation: countdown-ring-drain ${Math.max(v.escalation.remaining, 0.05)}s linear forwards;">
+          </circle>
+        </svg>`;
+      })();
+      const escLabel = v.escalation.acknowledged ? 'HALTED' : v.escalation.remaining > 0 ? `T-${v.escalation.remaining}s` : 'LADDER COMPLETE';
+
+      const locVal = v.loc.label.length > 26 ? v.loc.label.slice(0, 24) + '…' : v.loc.label;
+      const speedVal = `${v.loc.speed} mph · ${v.degraded ? 'DEGRADED' : 'OK'}`;
+      const coreVal = `GPS ${v.core.gps === 'ACQUIRED' ? '✓' : '…'} · Audio ${v.core.audio === 'ACTIVE' ? '✓' : '…'} · Net ${v.core.network === 'DELIVERED' ? '✓' : '…'}`;
+      const netVal = `${notified.length} notified · ${responding.length} responding${responding[0] ? ' — ' + responding[0].name.split(' ')[0] + ' first' : ''}`;
+      const aiVal = v.aiSummary.length > 130 ? v.aiSummary.slice(0, 128) + '…' : v.aiSummary;
 
       host.innerHTML = `
         <div class="demo-top">
@@ -63,7 +100,7 @@
         <div class="flex-row" style="gap:0.6rem; align-items:center; margin-top:0.3rem;">
           <div class="person-avatar-circle" style="width:44px; height:44px; font-size:0.9rem; ${resolved ? '' : 'border-color:#ef4444;'}">${Billi.initials(p.name)}</div>
           <div>
-            <div style="color:#fff; font-weight:700; font-size:0.95rem;">${p.name} <span class="badge ${resolved ? 'badge-green' : 'badge-red'}" style="font-size:0.58rem; margin-left:0.25rem;">${resolved ? 'RESOLVED' : 'LIVE'}</span></div>
+            <div style="color:#fff; font-weight:700; font-size:0.95rem;">${p.name} <span class="badge ${resolved ? 'badge-green' : 'badge-red'}" style="font-size:0.58rem; margin-left:0.25rem; ${resolved ? '' : 'animation:pulse-red 1.6s infinite;'}">${resolved ? 'RESOLVED' : '● LIVE'}</span></div>
             <div class="text-muted" style="font-size:0.68rem;">${inc.scenario || inc.triggerMethod}</div>
           </div>
         </div>
@@ -72,28 +109,31 @@
         <div class="demo-stage-pills margin-top-xs">
           ${Billi.LIFECYCLE.map(st => {
             const idx = Billi.LIFECYCLE.indexOf(st), cur = Billi.LIFECYCLE.indexOf(v.lifecycle);
-            return `<span class="demo-stage-pill ${idx < cur ? 'done' : idx === cur ? 'current' : ''}">${st.replace(/_/g, ' ')}</span>`;
+            return `<span class="demo-stage-pill ${idx < cur ? 'done' : idx === cur ? 'current' : ''}">${idx < cur ? '✓ ' : ''}${st.replace(/_/g, ' ')}</span>`;
           }).join('')}
         </div>
 
         <!-- KEY LIVE FACTS -->
         <div class="demo-facts-grid margin-top-xs">
-          <div class="demo-fact"><div class="demo-fact-label">📍 Location</div><div class="demo-fact-val">${v.loc.label.length > 26 ? v.loc.label.slice(0, 24) + '…' : v.loc.label}</div></div>
-          <div class="demo-fact"><div class="demo-fact-label">Speed / Comm</div><div class="demo-fact-val">${v.loc.speed} mph · ${v.degraded ? 'DEGRADED' : 'OK'}</div></div>
-          <div class="demo-fact"><div class="demo-fact-label">📍🎙👥 Core actions</div><div class="demo-fact-val" style="font-size:0.7rem;">GPS ${v.core.gps === 'ACQUIRED' ? '✓' : '…'} · Audio ${v.core.audio === 'ACTIVE' ? '✓' : '…'} · Net ${v.core.network === 'DELIVERED' ? '✓' : '…'}</div></div>
-          <div class="demo-fact"><div class="demo-fact-label">⏱ Escalation</div><div class="demo-fact-val" style="color:${v.escalation.acknowledged ? '#34d399' : v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'};">${escLabel}</div></div>
+          <div class="demo-fact ${flashClass('loc', locVal)}"><div class="demo-fact-label">📍 Location</div><div class="demo-fact-val">${locVal}</div></div>
+          <div class="demo-fact ${flashClass('speed', speedVal)}"><div class="demo-fact-label">Speed / Comm</div><div class="demo-fact-val">${speedVal}</div></div>
+          <div class="demo-fact ${flashClass('core', coreVal)}"><div class="demo-fact-label">📍🎙👥 Core actions</div><div class="demo-fact-val" style="font-size:0.7rem;">${coreVal}</div></div>
+          <div class="demo-fact ${flashClass('esc', escLabel)}" style="display:flex; align-items:center; gap:0.4rem;">
+            <div style="flex:1;"><div class="demo-fact-label">⏱ Escalation</div><div class="demo-fact-val" style="color:${v.escalation.acknowledged ? '#34d399' : v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'};">${escLabel}</div></div>
+            ${escRing}
+          </div>
         </div>
 
         <!-- NETWORK SNAPSHOT -->
-        <div class="demo-fact margin-top-xs">
+        <div class="demo-fact margin-top-xs ${flashClass('net', netVal)}">
           <div class="demo-fact-label">👥 Trusted Network</div>
-          <div class="demo-fact-val" style="font-size:0.72rem;">${notified.length} notified · ${responding.length} responding${responding[0] ? ' — ' + responding[0].name.split(' ')[0] + ' first' : ''}</div>
+          <div class="demo-fact-val" style="font-size:0.72rem;">${netVal}</div>
         </div>
 
         <!-- AI SUMMARY (one line) -->
-        <div class="demo-fact margin-top-xs" style="border-color:rgba(99,102,241,0.3);">
+        <div class="demo-fact margin-top-xs ${flashClass('ai', aiVal)}" style="border-color:rgba(99,102,241,0.3);">
           <div class="demo-fact-label">🧠 AI summary</div>
-          <div style="font-size:0.72rem; color:#c7d2fe; margin-top:0.15rem; line-height:1.35;">${v.aiSummary.length > 130 ? v.aiSummary.slice(0, 128) + '…' : v.aiSummary}</div>
+          <div style="font-size:0.72rem; color:#c7d2fe; margin-top:0.15rem; line-height:1.35;">${aiVal}</div>
         </div>
 
         ${resolved ? `

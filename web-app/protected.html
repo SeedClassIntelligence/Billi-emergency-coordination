@@ -73,8 +73,24 @@
           <div style="font-size:2.2rem;">⏳</div>
           <div style="color:#fbbf24; font-weight:700; font-size:1rem; margin-top:0.3rem;">${v.inc.triggerMethod} detected on ${v.inc.triggerDevice}</div>
           <p class="text-muted" style="font-size:0.8rem; margin-top:0.3rem;">This is a sensor-inferred trigger, not a deliberate one — it can be wrong (dropped in a bag, a hard bump, background noise). Your Trusted Network has <strong style="color:#e2e8f0;">not</strong> been told anything yet. Location and audio are already recording as evidence either way.</p>
-          <div style="font-size:2rem; font-weight:800; color:#fbbf24; margin-top:0.5rem;">${v.confirmSecondsLeft}s</div>
-          <p class="text-muted" style="font-size:0.7rem;">If nothing is tapped, Billi treats this as real and alerts your network when the countdown ends — silence escalates, it never cancels.</p>
+          ${(() => {
+            const R = 46, C = 2 * Math.PI * R;
+            const windowS = (v.inc.confirmWindowMs || 10000) / 1000;
+            const pct = Math.max(0, Math.min(1, v.confirmSecondsLeft / windowS));
+            const fromOffset = C * (1 - pct);
+            return `
+          <div style="position:relative; width:120px; height:120px; margin:0.6rem auto 0;">
+            <svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg);">
+              <circle cx="60" cy="60" r="${R}" stroke-width="8" fill="none" stroke="rgba(255,255,255,0.08)"></circle>
+              <circle cx="60" cy="60" r="${R}" stroke-width="8" fill="none" stroke="#fbbf24" stroke-linecap="round"
+                stroke-dasharray="${C.toFixed(2)}"
+                style="--ring-from:${fromOffset.toFixed(2)}; --ring-to:${C.toFixed(2)}; stroke-dashoffset:${fromOffset.toFixed(2)}; animation: countdown-ring-drain ${Math.max(v.confirmSecondsLeft, 0.05)}s linear forwards;">
+              </circle>
+            </svg>
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.7rem; font-weight:800; color:#fbbf24;">${v.confirmSecondsLeft}s</div>
+          </div>`;
+          })()}
+          <p class="text-muted" style="font-size:0.7rem; margin-top:0.4rem;">If nothing is tapped, Billi treats this as real and alerts your network when the countdown ends — silence escalates, it never cancels.</p>
           <div class="grid grid-2 margin-top" style="gap:0.6rem;">
             <button class="btn btn-danger" style="padding:0.9rem; font-size:0.85rem;" onclick="confirmReal()">🚨 Yes, I need help</button>
             <button class="btn btn-secondary" style="padding:0.9rem; font-size:0.85rem;" onclick="dismissFalse()">✓ False alarm — cancel now</button>

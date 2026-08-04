@@ -1123,6 +1123,26 @@ body.bg-root {
 }
 @keyframes pulse-red { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.35);} 50% { box-shadow: 0 0 0 7px rgba(239,68,68,0);} }
 
+/* Countdown ring: driven by CSS custom properties set fresh on every 1s
+   render tick (from -> to over exactly the remaining seconds). Because the
+   math always represents "where a continuously-draining ring really would
+   be right now," consecutive 1s re-renders chain into one visually smooth
+   drain even though the DOM node is technically recreated each render —
+   this app renders everything by wholesale innerHTML replacement, so a CSS
+   `transition` between renders can't work (no persisting element to
+   interpolate from); a self-contained `animation` that plays from a
+   freshly-computed start point can. */
+@keyframes countdown-ring-drain { from { stroke-dashoffset: var(--ring-from, 0); } to { stroke-dashoffset: var(--ring-to, 289); } }
+
+/* Generic "this value just changed" flash — for surfaces that re-render on
+   an interval (demo-live.html) rather than user action, so periodic data
+   updates read as visibly live instead of a silent value swap. */
+@keyframes value-flash {
+  0% { background: rgba(99,102,241,0.35); }
+  100% { background: transparent; }
+}
+.value-flash { animation: value-flash 900ms ease-out; }
+
 #billi-toasts { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 4000; display: flex; flex-direction: column; gap: 0.5rem; }
 .billi-toast {
   background: #10131f; border: 1px solid rgba(99,102,241,0.4); color: #e2e8f0;
