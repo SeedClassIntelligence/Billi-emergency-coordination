@@ -11,6 +11,11 @@
        like Google Maps. -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Address/building search box on the map — uses OpenStreetMap's free
+       Nominatim geocoding service under the hood, same no-API-key,
+       no-billing-account choice as the map tiles themselves. -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
 </head>
 <body class="bg-root">
 
@@ -322,7 +327,7 @@
         <h2 class="panel-section-title">Safe zones & protection hardware</h2>
         <div class="card margin-top-xs" style="padding:1rem;">
           <strong style="color:#fff;">Geofenced safe zones</strong>
-          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">Click the map to place a zone, drag to fine-tune, or use your current location. Every zone below is a real, saved geofence.</p>
+          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">Search an address or building, click the map, drag to fine-tune, or use your current location. Every zone below is a real, saved geofence.</p>
           <div id="zone-map" style="height:320px; border-radius:12px; overflow:hidden; margin-top:0.5rem; background:rgba(255,255,255,0.03);"></div>
           <div class="flex-row margin-top-xs" style="gap:0.5rem;">
             <button class="btn btn-outline-nav" style="font-size:0.75rem;" onclick="useCurrentLocationForZone()">📍 Use my current location</button>
@@ -507,6 +512,22 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
       }).addTo(zoneMap);
+
+      /* Address/building search — routes results through the same
+         placePendingZone() a map click uses, so search behaves exactly
+         like clicking: a draggable pending pin, nothing saved to
+         S.zones until the explicit Save tap. defaultMarkGeocode:false
+         stops the plugin from adding its own separate marker. */
+      if (typeof L.Control !== 'undefined' && L.Control.geocoder) {
+        L.Control.geocoder({ defaultMarkGeocode: false, placeholder: 'Search an address or building…' })
+          .on('markgeocode', (e) => {
+            zoneMap.setView(e.geocode.center, 16);
+            placePendingZone(e.geocode.center);
+            const addrField = document.getElementById('zn-addr');
+            if (addrField && !addrField.value) addrField.value = e.geocode.name;
+          })
+          .addTo(zoneMap);
+      }
 
       zones.forEach(z => {
         L.circle([z.lat, z.lng], { radius: z.radius, color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.15 })
