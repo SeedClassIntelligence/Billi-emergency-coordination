@@ -323,15 +323,16 @@
                 <a style="cursor:pointer; color:#64748b;" onclick="S.zones=S.zones.filter(x=>x.id!=='${z.id}');Billi.save();render();">✕</a>
               </span>
             </div>`).join('') || '<p class="text-muted" style="font-size:0.8rem;">No zones yet.</p>'}
+          <p class="text-muted" style="font-size:0.78rem;">Stand at the place you want to protect, then save it — this uses your device's real GPS, not a typed address.</p>
           <div class="grid grid-2 margin-top-xs" style="gap:0.6rem;">
             ${field('zn-name', 'Zone name', '', 'Pine Middle School')}
-            ${field('zn-addr', 'Street address', '', '1155 Pine St, San Francisco')}
+            ${field('zn-addr', 'Description (optional)', '', 'e.g. main entrance')}
           </div>
           <div class="form-group margin-top-xs">
             <label class="form-label-muted">Radius: <strong id="zn-radius-val" style="color:#a5b4fc;">100 m</strong> (50–1000 m)</label>
             <input id="zn-radius" type="range" min="50" max="1000" step="10" value="100" style="width:100%;" oninput="document.getElementById('zn-radius-val').innerText=this.value+' m'">
           </div>
-          <button class="btn btn-secondary" onclick="addZone()">+ Add safe zone</button>
+          <button id="zn-add-btn" class="btn btn-secondary" onclick="addZone()">+ Save this location as a safe zone</button>
         </div>
 
         <div class="card margin-top-xs" style="padding:1rem;">
@@ -467,10 +468,27 @@
     function addZone() {
       const name = val('zn-name');
       if (!name) { Billi.toast('Enter a zone name.', 'warn'); return; }
-      /* LOCAL INTERACTIVE — coordinates are fixture-based; live geocoding is a connected capability. */
-      S.zones.push({ id: Billi.uid('z'), name, address: val('zn-addr'), lat: 37.7749 + Math.random() * 0.01, lng: -122.4194 - Math.random() * 0.01, radius: parseInt(document.getElementById('zn-radius').value, 10), active: true });
-      Billi.save(); render();
-      Billi.toast(`✓ Safe zone "${name}" added.`, 'ok');
+      if (!navigator.geolocation) { Billi.toast('This device does not support real GPS — cannot set a safe zone.', 'warn'); return; }
+      const radius = parseInt(document.getElementById('zn-radius').value, 10);
+      const addr = val('zn-addr');
+      const btn = document.getElementById('zn-add-btn');
+      if (btn) { btn.disabled = true; btn.innerText = 'Getting your real location…'; }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          S.zones.push({
+            id: Billi.uid('z'), name, address: addr,
+            lat: pos.coords.latitude, lng: pos.coords.longitude,
+            radius, active: true
+          });
+          Billi.save(); render();
+          Billi.toast(`✓ Safe zone "${name}" saved at your real current location (±${Math.round(pos.coords.accuracy)}m accuracy).`, 'ok');
+        },
+        (err) => {
+          if (btn) { btn.disabled = false; btn.innerText = '+ Save this location as a safe zone'; }
+          Billi.toast(`Could not get real location — ${err.message || 'permission denied or unavailable'}. Zone not saved.`, 'warn');
+        },
+        { enableHighAccuracy: true, timeout: 15000 }
+      );
     }
 
     function registerDevice(name, type, st) {
