@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — Join a Household</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+
+  <header class="top-navbar">
+    <div class="nav-flex">
+      <div class="brand-wrapper" onclick="location.href='landing.html'"><span class="brand-mark">BILLI</span></div>
+      <div class="nav-actions flex-row">
+        <button class="btn btn-outline-nav" onclick="location.href='landing.html'">← Back to Platform</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card auth-card" style="padding: 2.2rem;" id="jh-host">Loading…</div>
+  </main>
+
+  <script src="billi-core.js"></script>
+  <script>
+    function esc(s) { return (s || '').toString().replace(/</g, '&lt;'); }
+    const params = new URLSearchParams(location.search);
+    const code = (params.get('code') || '').toUpperCase().trim();
+    const host = document.getElementById('jh-host');
+
+    function renderError(msg) {
+      host.innerHTML = `
+        <div class="text-center">
+          <h1 style="color:#fff; font-size:1.4rem;">Can't join a household</h1>
+          <p class="text-muted margin-top-xs" style="font-size:0.88rem;">${esc(msg)}</p>
+          <button class="btn btn-secondary margin-top" onclick="location.href='landing.html'">Back to Billi</button>
+        </div>`;
+    }
+
+    function renderForm(h) {
+      host.innerHTML = `
+        <div class="text-center">
+          <h1 style="color:#fff; font-size:1.5rem; letter-spacing:-0.02em;">Join ${esc(h.ownerName)}'s Billi household</h1>
+          <p class="text-muted margin-top-xs" style="font-size:0.88rem;">
+            This device will get its own real GPS, camera, and microphone protection, and share
+            ${esc(h.ownerName)}'s trusted network and Safety Contract (${h.contacts.length} contact${h.contacts.length === 1 ? '' : 's'} configured).
+          </p>
+        </div>
+        <div class="margin-top-md">
+          <div class="form-group">
+            <label class="form-label-muted">What should we call this device?</label>
+            <input id="jh-label" class="form-control-dark" placeholder="e.g. Maya's Phone">
+          </div>
+          <div class="form-group margin-top-xs">
+            <label class="form-label-muted">Who does this device protect?</label>
+            <input id="jh-person" class="form-control-dark" placeholder="e.g. Maya Johnson">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block margin-top-md" style="padding:0.85rem;" onclick="doJoin()">Join Household →</button>
+        <p class="text-muted text-center margin-top-xs" style="font-size:0.72rem;">
+          Household code: <span style="font-family:monospace; letter-spacing:0.1em;">${esc(h.code)}</span>
+        </p>`;
+    }
+
+    async function doJoin() {
+      const label = document.getElementById('jh-label').value.trim();
+      const person = document.getElementById('jh-person').value.trim();
+      if (!label || !person) { Billi.toast('Fill in both fields to join.', 'warn'); return; }
+      const result = await Billi.joinHousehold(code, { label, protectedPersonName: person });
+      if (result) location.href = 'dashboard.html';
+    }
+
+    (async function init() {
+      if (!code) { renderError('No household code was included in this link. Ask whoever invited you for the correct link, or enter the 6-character code they gave you directly in the app.'); return; }
+      const h = await Billi.previewHousehold(code);
+      if (!h) { renderError(`Household code "${code}" wasn't found — it may be mistyped, or the invite may be stale.`); return; }
+      renderForm(h);
+    })();
+  </script>
+</body>
+</html>

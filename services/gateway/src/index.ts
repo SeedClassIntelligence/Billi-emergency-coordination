@@ -201,6 +201,90 @@ app.post("/api/v1/shared/incidents/:id/telemetry", (req: Request, res: Response)
   res.json({ ok: true, rev: inc.rev });
 });
 
+/* =====================================================================
+   HOUSEHOLDS — lets an account owner (e.g. a parent) invite a second
+   physical device (e.g. a child's phone) into the same safety setup
+   without needing that device in hand. The owner creates a household
+   (gets a short shareable code + a snapshot of their current trusted
+   contacts/safety contract/entity type), sends the code or a join link
+   to the other device, and that device's own onboarding adopts the
+   snapshot instead of starting from a disconnected blank account.
+   Same atomic-write JSON persistence pattern as shared incidents above.
+   ===================================================================== */
+const HOUSEHOLDS_FILE = path.join(DATA_DIR, "households.json");
+let households: Record<string, any> = {};
+
+try {
+  households = JSON.parse(fs.readFileSync(HOUSEHOLDS_FILE, "utf8"));
+  console.log(`[GATEWAY] Restored ${Object.keys(households).length} household(s) from disk.`);
+} catch (e) { /* first boot — empty store */ }
+
+function persistHouseholds() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const tmp = HOUSEHOLDS_FILE + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(households, null, 2));
+    fs.renameSync(tmp, HOUSEHOLDS_FILE);
+  } catch (e) {
+    console.error("[GATEWAY] Household persistence failed:", e);
+  }
+}
+
+function genHouseholdCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I — avoids misread codes
+  let code = "";
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+app.post("/api/v1/household", (req: Request, res: Response) => {
+  let code = genHouseholdCode();
+  while (households[code]) code = genHouseholdCode();
+  households[code] = {
+    code, ownerName: req.body?.ownerName || "A Billi household",
+    entityType: req.body?.entityType || null,
+    contacts: req.body?.contacts || [],
+    contract: req.body?.contract || null,
+    createdAt: Date.now(), devices: []
+  };
+  persistHouseholds();
+  res.status(201).json(households[code]);
+});
+
+// Owner re-syncs the household's shared snapshot (contacts/contract change
+// after creation, e.g. a new trusted contact added later) so devices that
+// join afterward get the current setup, not a stale one from creation time.
+app.patch("/api/v1/household/:code", (req: Request, res: Response) => {
+  const h = households[(req.params.code || "").toUpperCase()];
+  if (!h) return res.status(404).json({ error: "household not found" });
+  if (req.body?.contacts) h.contacts = req.body.contacts;
+  if (req.body?.contract) h.contract = req.body.contract;
+  if (req.body?.entityType) h.entityType = req.body.entityType;
+  persistHouseholds();
+  res.json(h);
+});
+
+app.get("/api/v1/household/:code", (req: Request, res: Response) => {
+  const h = households[(req.params.code || "").toUpperCase()];
+  if (!h) return res.status(404).json({ error: "household not found" });
+  res.json(h);
+});
+
+app.post("/api/v1/household/:code/join", (req: Request, res: Response) => {
+  const h = households[(req.params.code || "").toUpperCase()];
+  if (!h) return res.status(404).json({ error: "household not found" });
+  const device = {
+    id: `dev_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    label: req.body?.label || "Unnamed device",
+    protectedPersonName: req.body?.protectedPersonName || "",
+    joinedAt: Date.now()
+  };
+  h.devices.push(device);
+  persistHouseholds();
+  console.log(`[GATEWAY] Device "${device.label}" joined household ${h.code}.`);
+  res.status(201).json({ household: h, device });
+});
+
 // Aggregate service health for the frontend connection indicator
 const SERVICE_PORTS: Record<string, number> = {
   "orchestration-engine": 8081, "communication-engine": 8082, "incident-timeline": 8083,

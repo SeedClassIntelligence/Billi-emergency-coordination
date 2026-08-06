@@ -19,6 +19,46 @@
     const S = Billi.state;
     const GW = (location.protocol === 'https:') ? '' : 'http://localhost:8080';
     let setupReview = null, setupReviewLoading = false;
+    let householdDevices = null, householdLoading = false;
+
+    function loadHouseholdDevices() {
+      if (!S.householdCode || householdLoading) return;
+      householdLoading = true;
+      Billi.getHouseholdDevices().then(devs => {
+        householdDevices = devs;
+        householdLoading = false;
+        render();
+      });
+    }
+
+    async function generateHousehold() {
+      const h = await Billi.createHousehold();
+      if (h) { householdDevices = h.devices; render(); }
+    }
+
+    function householdJoinUrl() {
+      return `${location.origin}/join-household.html?code=${S.householdCode}`;
+    }
+
+    function copyHouseholdLink() {
+      navigator.clipboard.writeText(householdJoinUrl()).then(
+        () => Billi.toast('✓ Join link copied.', 'ok'),
+        () => Billi.toast('Could not copy — link: ' + householdJoinUrl(), 'warn')
+      );
+    }
+
+    async function inviteHouseholdBySms() {
+      const phone = document.getElementById('hh-invite-phone').value.trim();
+      if (!phone) { Billi.toast('Enter a phone number to invite.', 'warn'); return; }
+      await Billi.syncHousehold(); // push current contacts/contract before inviting
+      const msg = `You're invited to join ${(S.owner || {}).name || 'a family'}'s Billi safety setup: ${householdJoinUrl()}`;
+      if (window.BilliNative && window.BilliNative.sendSms) {
+        const sent = window.BilliNative.sendSms(phone, msg);
+        Billi.toast(sent ? `✓ Invite texted to ${phone}.` : 'SMS permission not granted — copy the link below instead.', sent ? 'ok' : 'warn');
+      } else {
+        Billi.toast('Real SMS needs the native Android app — copy the link below and send it yourself.', 'warn');
+      }
+    }
 
     function esc(s) { return (s || '').toString().replace(/</g, '&lt;'); }
 
@@ -175,6 +215,40 @@
               <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Radius sliders 50–1000 m · geofence evaluation is Haversine-based in the connected backend.</div>
             </div>
 
+            <!-- FAMILY DEVICES / HOUSEHOLD -->
+            <div class="card margin-top-xs" style="padding:1.1rem;">
+              <div class="panel-section-title" style="font-size:0.92rem;">Family devices</div>
+              <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
+                Add another family member's own phone to this setup — without needing it in hand. They join with their
+                own real GPS/camera/mic and share your trusted network and Safety Contract.
+              </p>
+              ${!S.householdCode ? `
+                <button class="btn btn-secondary margin-top-xs" onclick="generateHousehold()">Generate household invite code</button>
+              ` : `
+                <div class="flex-between margin-top-xs" style="padding:0.6rem 0.8rem; background:rgba(99,102,241,0.1); border-radius:8px;">
+                  <span style="font-family:monospace; font-size:1.1rem; letter-spacing:0.15em; color:#a5b4fc;">${esc(S.householdCode)}</span>
+                  <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="copyHouseholdLink()">📋 Copy join link</button>
+                </div>
+                <div class="grid grid-2 margin-top-xs" style="gap:0.5rem;">
+                  <input id="hh-invite-phone" class="form-control-dark" placeholder="Phone number to invite">
+                  <button class="btn btn-secondary" onclick="inviteHouseholdBySms()">✉️ Invite via SMS</button>
+                </div>
+                <p class="text-muted margin-top-xs" style="font-size:0.68rem;">Real SMS send requires the native Android app on this device — otherwise, copy the link above and share it yourself.</p>
+                <div class="margin-top-xs">
+                  <div class="flex-between">
+                    <span style="color:#e2e8f0; font-size:0.8rem;">Joined devices</span>
+                    <a style="cursor:pointer; color:#64748b; font-size:0.72rem;" onclick="loadHouseholdDevices()">↻ Refresh</a>
+                  </div>
+                  ${householdDevices === null ? '<p class="text-muted margin-top-xs" style="font-size:0.78rem;">Loading…</p>' :
+                    (householdDevices.length ? householdDevices.map(d => `
+                      <div class="flex-between margin-top-xs" style="font-size:0.8rem; padding:0.45rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+                        <span style="color:#e2e8f0;">📱 ${esc(d.label)} <span class="text-muted" style="font-size:0.72rem;">protecting ${esc(d.protectedPersonName || 'someone')}</span></span>
+                        <span class="badge badge-green">JOINED</span>
+                      </div>`).join('') : '<p class="text-muted margin-top-xs" style="font-size:0.78rem;">No devices have joined yet.</p>')}
+                </div>
+              `}
+            </div>
+
             <!-- QUICK LINKS -->
             <div class="card margin-top-xs" style="padding:1.1rem;">
               <div class="panel-section-title" style="font-size:0.92rem;">Related administration</div>
@@ -222,6 +296,7 @@
     }
 
     render();
+    if (S.householdCode) loadHouseholdDevices();
   </script>
 </body>
 </html>

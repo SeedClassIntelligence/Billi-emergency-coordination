@@ -1196,6 +1196,73 @@
       location.href = role === 'responder' ? 'responder.html' : 'incident.html';
       return inc;
     },
+
+    /* ---------- HOUSEHOLDS ----------
+       Lets an account owner invite a second physical device (e.g. a
+       child's phone) into the same safety setup without needing that
+       device in hand — the owner shares a short code or join link,
+       generated once and reused; the joining device fetches a snapshot
+       of the owner's current contacts/safety-contract/entity type and
+       adopts it locally rather than starting from a disconnected blank
+       account. Real backend persistence (households.json on gateway),
+       not a local-only simulation. */
+    async createHousehold() {
+      if (state.householdCode) return gfetch(`/api/v1/household/${state.householdCode}`, 'GET', null, 4000);
+      const h = await gfetch('/api/v1/household', 'POST', {
+        ownerName: (state.owner && state.owner.name) || (state.protectedPerson && state.protectedPerson.name) || 'A Billi household',
+        entityType: state.entityType, contacts: state.contacts, contract: state.contract
+      }, 6000);
+      if (!h) { toast('Could not reach the backend to create a household code.', 'warn'); return null; }
+      state.householdCode = h.code;
+      save();
+      return h;
+    },
+    /* Push this device's current contacts/safety-contract to the household
+       record, so a device joining later gets what's configured NOW rather
+       than a stale snapshot from whenever the code was first generated. */
+    async syncHousehold() {
+      if (!state.householdCode) return null;
+      return gfetch(`/api/v1/household/${state.householdCode}`, 'PATCH', {
+        contacts: state.contacts, contract: state.contract, entityType: state.entityType
+      }, 6000);
+    },
+    async getHouseholdDevices() {
+      if (!state.householdCode) return [];
+      const h = await gfetch(`/api/v1/household/${state.householdCode}`, 'GET', null, 4000);
+      return h ? h.devices : [];
+    },
+    /* Preview a household by code before committing to join it (used by
+       join-household.html to show "You're joining X's household" before
+       the device's own permissions/setup happen). */
+    async previewHousehold(code) {
+      return gfetch(`/api/v1/household/${(code || '').toUpperCase()}`, 'GET', null, 4000);
+    },
+    /* Actually join: registers this device with the household, then seeds
+       a fresh local account from the household's contacts/contract/entity
+       snapshot, with THIS device's own protected-person label — a child's
+       phone protects the child, not whoever the parent originally set up
+       their own account for. */
+    async joinHousehold(code, { label, protectedPersonName }) {
+      const upper = (code || '').toUpperCase();
+      const result = await gfetch(`/api/v1/household/${upper}/join`, 'POST', { label, protectedPersonName }, 6000);
+      if (!result) { toast('Could not reach the backend to join that household.', 'warn'); return null; }
+      const h = result.household;
+      state = blankState();
+      state.session.authed = true;
+      state.entityType = h.entityType || state.entityType;
+      state.contacts = (h.contacts && h.contacts.length) ? h.contacts.map(c => ({ ...c })) : [];
+      if (h.contract) state.contract = { ...h.contract };
+      state.protectedPerson = { name: protectedPersonName || 'Protected person' };
+      state.householdCode = upper;
+      state.householdDeviceId = result.device.id;
+      state.householdRole = 'member';
+      state.setup.complete = true;
+      state.armed = true;
+      audit('Household join', 'DEVICE_JOINED_HOUSEHOLD', `Joined household ${upper} as "${label}".`);
+      save();
+      return result;
+    },
+
     /* Retry the gateway activation if navigation aborted the original call. */
     async retryRemoteActivation() {
       const inc = getActiveIncident();
