@@ -11,19 +11,49 @@ import {
 import { CANONICAL_PROTECTED_PERSON, CANONICAL_SAFETY_CONTRACT, CANONICAL_CONTACTS, CANONICAL_DEVICES } from "../../../packages/demo-fixtures/src";
 
 const app = express();
+app.disable("x-powered-by"); // don't hand out framework fingerprinting for free
 // Default 100kb is too small for base64 photo-evidence payloads (analyze-photo).
 app.use(express.json({ limit: "8mb" }));
 
-// Browser CORS support for the web-app frontend
+// Browser CORS support — the deployed web-app plus local dev tooling only,
+// not a public wildcard. A wildcard let any third-party website script
+// requests against this API directly from a visitor's browser; found during
+// a platform security audit. Local dev (any localhost/127.0.0.1 port, since
+// billi-core.js's GATEWAY constant hits localhost:8080 directly when the
+// page isn't served over HTTPS) is reflected back explicitly rather than
+// hardcoded to one port, since preview tooling varies.
+const PROD_ORIGIN = "https://billi-platform-467802610371.us-central1.run.app";
+function isAllowedOrigin(origin: string | undefined): boolean {
+  if (!origin) return false;
+  if (origin === PROD_ORIGIN) return true;
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+}
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key");
+  const origin = req.headers.origin as string | undefined;
+  if (isAllowedOrigin(origin)) res.header("Access-Control-Allow-Origin", origin);
+  res.header("Access-Control-Allow-Headers", "Content-Type, X-Correlation-Id, Idempotency-Key, X-Admin-Key");
   res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
 
 const PORT = process.env.PORT || 8080;
+
+// Gate for the two GET routes that expose data other than what the caller
+// just submitted themselves (tester feedback, household contact snapshots)
+// — found with nothing gating them at all during a platform security audit.
+// Submission (POST) routes deliberately stay open; that's the intended
+// low-friction "anyone with the link can test" design, not the problem.
+// No ADMIN_KEY set means the route stays closed rather than silently open —
+// the safe default, same reasoning as GEMINI_API_KEY being platform config
+// passed only via Cloud Run env vars, never baked into the image.
+const ADMIN_KEY = process.env.ADMIN_KEY;
+function requireAdminKey(req: Request, res: Response, next: NextFunction) {
+  const supplied = (req.headers["x-admin-key"] as string) || (req.query.key as string);
+  if (!ADMIN_KEY) return res.status(503).json({ error: "admin access not configured on this deployment" });
+  if (supplied !== ADMIN_KEY) return res.status(401).json({ error: "invalid or missing admin key" });
+  next();
+}
 
 // Health Check Probe
 app.get("/health", (req: Request, res: Response) => {
@@ -264,10 +294,18 @@ app.patch("/api/v1/household/:code", (req: Request, res: Response) => {
   res.json(h);
 });
 
+// Preview/device-list view — deliberately does NOT include the real contact
+// list (names + phone numbers). Anyone who has the 6-char code can reach
+// this before ever committing to join, and a leaked/screenshotted code
+// used to hand over a family's phone numbers with zero trace. Full contacts
+// are only ever returned from the join route below, at the point a device
+// actually registers — an action that leaves a real, visible audit entry
+// on the owner's device list, unlike a bare GET.
 app.get("/api/v1/household/:code", (req: Request, res: Response) => {
   const h = households[(req.params.code || "").toUpperCase()];
   if (!h) return res.status(404).json({ error: "household not found" });
-  res.json(h);
+  const { contacts, contract, ...preview } = h;
+  res.json({ ...preview, contactCount: contacts.length });
 });
 
 app.post("/api/v1/household/:code/join", (req: Request, res: Response) => {
@@ -327,7 +365,7 @@ app.post("/api/v1/tester-feedback", (req: Request, res: Response) => {
   res.status(201).json({ ok: true, id: entry.id });
 });
 
-app.get("/api/v1/tester-feedback", (req: Request, res: Response) => {
+app.get("/api/v1/tester-feedback", requireAdminKey, (req: Request, res: Response) => {
   res.json({ feedback: testerFeedback, count: testerFeedback.length });
 });
 
@@ -562,6 +600,23 @@ app.post("/api/v1/emergency/activate", async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ error: "Emergency activation failed", details: error.message });
   }
+});
+
+// Every defined route returns a JSON {"error": "..."} shape on failure —
+// an unmatched route should too, not Express's default HTML page.
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: "not found" });
+});
+
+// Catches malformed-JSON and payload-too-large errors that would otherwise
+// fall through to Express's default HTML error page, which includes a full
+// stack trace with local filesystem paths (services/gateway/node_modules/...)
+// — found leaking that to any caller during a platform security audit.
+// Must be registered last and keep all four params for Express to treat it
+// as an error handler rather than a normal route.
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const status = err.status || err.statusCode || 400;
+  res.status(status).json({ error: status === 413 ? "payload too large" : "malformed request body" });
 });
 
 app.listen(PORT, () => {
