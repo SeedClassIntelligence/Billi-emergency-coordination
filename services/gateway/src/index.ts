@@ -285,6 +285,52 @@ app.post("/api/v1/household/:code/join", (req: Request, res: Response) => {
   res.status(201).json({ household: h, device });
 });
 
+/* =====================================================================
+   TESTER FEEDBACK — a lightweight, real inbox for people testing the
+   live deployment to report bugs/confusion/praise from inside the app.
+   Deliberately separate from feedback-engine's /feedback/analyze, which
+   is a different concept entirely (post-incident protocol-tuning
+   recommendations, not tester comments). Same persistence pattern as
+   households/shared incidents. Reviewable via GET, no admin UI needed
+   for a testing-phase inbox this size.
+   ===================================================================== */
+const TESTER_FEEDBACK_FILE = path.join(DATA_DIR, "tester_feedback.json");
+let testerFeedback: any[] = [];
+
+try {
+  testerFeedback = JSON.parse(fs.readFileSync(TESTER_FEEDBACK_FILE, "utf8"));
+  console.log(`[GATEWAY] Restored ${testerFeedback.length} tester feedback entr(ies) from disk.`);
+} catch (e) { /* first boot — empty store */ }
+
+function persistTesterFeedback() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const tmp = TESTER_FEEDBACK_FILE + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(testerFeedback, null, 2));
+    fs.renameSync(tmp, TESTER_FEEDBACK_FILE);
+  } catch (e) {
+    console.error("[GATEWAY] Tester feedback persistence failed:", e);
+  }
+}
+
+app.post("/api/v1/tester-feedback", (req: Request, res: Response) => {
+  const { text, contact, page, ownerName } = req.body || {};
+  if (!text || !text.trim()) return res.status(400).json({ error: "text required" });
+  const entry = {
+    id: `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    text: text.trim(), contact: contact || null, page: page || null,
+    ownerName: ownerName || null, submittedAt: Date.now()
+  };
+  testerFeedback.push(entry);
+  persistTesterFeedback();
+  console.log(`[GATEWAY] Tester feedback from ${entry.ownerName || 'anonymous'} (${entry.page || 'unknown page'}): "${entry.text.slice(0, 80)}"`);
+  res.status(201).json({ ok: true, id: entry.id });
+});
+
+app.get("/api/v1/tester-feedback", (req: Request, res: Response) => {
+  res.json({ feedback: testerFeedback, count: testerFeedback.length });
+});
+
 // Aggregate service health for the frontend connection indicator
 const SERVICE_PORTS: Record<string, number> = {
   "orchestration-engine": 8081, "communication-engine": 8082, "incident-timeline": 8083,

@@ -1055,6 +1055,50 @@
           ${NAV_LINKS.map(l => `<a href="${l.href}" class="${current === l.href ? 'active' : ''}">${l.label}</a>`).join('')}
         </nav>
       </header>`;
+    mountFeedback();
+  }
+
+  /* Floating "send feedback" widget for the testing phase — a real inbox
+     (persisted server-side via gateway, not a mailto: or a fake toast),
+     reachable from every page (authenticated pages get it automatically
+     via renderNav(); landing.html/auth.html call it directly since they
+     render before any account exists). Idempotent — safe to call on
+     every render without double-mounting. */
+  function mountFeedback() {
+    if (document.getElementById('billi-fb-widget')) return;
+    const el = document.createElement('div');
+    el.id = 'billi-fb-widget';
+    el.innerHTML = `
+      <button id="billi-fb-toggle" title="Send feedback" style="position:fixed;bottom:18px;right:18px;z-index:9999;width:52px;height:52px;border-radius:50%;background:#6366f1;color:#fff;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.35);">💬</button>
+      <div id="billi-fb-panel" style="display:none;position:fixed;bottom:80px;right:18px;z-index:9999;width:min(320px,calc(100vw - 36px));background:#161b2e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <strong style="color:#fff;font-size:0.85rem;">Send feedback</strong>
+        <p class="text-muted" style="font-size:0.72rem;margin-top:2px;">Testing Billi? Tell us what's broken, confusing, or working well.</p>
+        <textarea id="billi-fb-text" rows="4" class="form-control-dark" style="margin-top:0.5rem;width:100%;resize:vertical;" placeholder="What happened?"></textarea>
+        <input id="billi-fb-contact" class="form-control-dark" style="margin-top:0.5rem;width:100%;" placeholder="Your name or contact (optional)">
+        <button id="billi-fb-submit" class="btn btn-primary" style="width:100%;margin-top:0.6rem;font-size:0.78rem;">Send</button>
+        <div id="billi-fb-status" style="font-size:0.7rem;margin-top:0.4rem;"></div>
+      </div>`;
+    document.body.appendChild(el);
+    document.getElementById('billi-fb-toggle').onclick = () => {
+      const p = document.getElementById('billi-fb-panel');
+      p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    };
+    document.getElementById('billi-fb-submit').onclick = async () => {
+      const text = document.getElementById('billi-fb-text').value.trim();
+      const contact = document.getElementById('billi-fb-contact').value.trim();
+      const statusEl = document.getElementById('billi-fb-status');
+      if (!text) { statusEl.textContent = 'Enter some feedback first.'; statusEl.style.color = '#fbbf24'; return; }
+      statusEl.textContent = 'Sending…'; statusEl.style.color = '#94a3b8';
+      const ok = await gfetch('/api/v1/tester-feedback', 'POST', {
+        text, contact, page: location.pathname, ownerName: (state.owner || {}).name || null
+      }, 6000);
+      if (ok) {
+        statusEl.textContent = '✓ Thanks — sent.'; statusEl.style.color = '#34d399';
+        document.getElementById('billi-fb-text').value = '';
+      } else {
+        statusEl.textContent = 'Could not reach the backend — try again shortly.'; statusEl.style.color = '#f87171';
+      }
+    };
   }
 
   /* Contextual "what is this / why is it here" help icon — a vanilla-JS
@@ -1174,7 +1218,7 @@
     triggerIncident, getActiveIncident, incidentView, recordAction,
     enterDuress, cancelWithoutPin, resolveIncident, buildPacket,
     confirmEmergency, dismissFalseAlarm,
-    renderNav, requireSetup,
+    renderNav, requireSetup, mountFeedback,
     get link() { return link; },
     probeBackend, fetchRemoteCad,
     subscribeShared, adoptActiveShared, pushTelemetry,

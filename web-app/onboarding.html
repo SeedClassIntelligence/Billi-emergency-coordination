@@ -63,6 +63,7 @@
   <script>
     if (!Billi.state.session.authed) location.href = 'auth.html';
     if (Billi.state.setup.complete) location.href = 'dashboard.html';
+    Billi.mountFeedback();
 
     const S = Billi.state;
     let cur = S.setup.step || 1;
