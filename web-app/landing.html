@@ -31,6 +31,10 @@
 
   <!-- MAIN LANDING PAGE CONTAINER (SURFACE 1) -->
   <main>
+    <div style="max-width:720px; margin:1rem auto 0; padding:0.85rem 1.1rem; border-radius:10px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); font-size:0.82rem; color:#fbbf24; text-align:center;">
+      🧪 <strong>You're testing a live prototype.</strong> GPS, microphone, camera, and (via the Android app) real SMS are genuinely active — not simulated. Use your own real information, and only add trusted contacts who've agreed to receive a test alert.
+    </div>
+
     <section class="hero-wrapper text-center">
       <h1 class="hero-title-main">Safety Coordination<br>Platform</h1>
       <p class="hero-subheadline-1">Every second accounted for. Every person protected.</p>
@@ -41,9 +45,14 @@
         <button class="btn btn-hero-secondary" onclick="window.location.href='auth.html'">Create Account</button>
         <a class="btn btn-hero-secondary" href="/billi.apk" download>📱 Download Android App</a>
       </div>
-      <p class="hero-subheadline-2" style="margin-top:8px;font-size:0.85rem;opacity:0.75;">
-        Native Android build — enables real SMS alerts via your phone's own SIM (not on the Play Store yet, so Android will ask you to allow installing from this source)
-      </p>
+      <div style="max-width:520px; margin:12px auto 0; padding:0.9rem 1.1rem; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); font-size:0.8rem; text-align:left; color:#cbd5e1;">
+        <strong style="color:#e2e8f0;">Installing the Android app (not on the Play Store yet):</strong>
+        <ol style="margin:0.4rem 0 0 1.1rem; padding:0; line-height:1.6;">
+          <li>Tap the download button above, open the file, then tap <strong>Install anyway</strong> when Android warns about an unrecognized developer — expected for an app outside the Play Store, not a sign anything's wrong.</li>
+          <li>On first launch, allow the SMS, Location, Microphone, and Camera prompts — these power the app's real features.</li>
+          <li>If SMS specifically gets blocked ("for your protection"): Settings → Apps → Billi → ⋮ menu → <strong>Allow restricted settings</strong>, then go back and allow SMS. This is a standard Android safeguard for sideloaded apps requesting SMS access, not a Billi bug.</li>
+        </ol>
+      </div>
 
       <!-- PRODUCT SHOWCASE BROWSER MOCKUP WINDOW -->
       <div class="product-window-frame margin-top-lg">
