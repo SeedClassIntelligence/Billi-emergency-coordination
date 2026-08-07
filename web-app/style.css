@@ -435,6 +435,64 @@ body.bg-root {
   overflow: hidden;
 }
 
+/* Decorative street-grid pattern for the hero mockup's map pane — purely
+   illustrative (no real tile service), giving the black box actual visual
+   texture instead of a flat void. */
+.map-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.09) 1px, transparent 1px);
+  background-size: 42px 42px;
+  pointer-events: none;
+}
+
+/* Radar sweep — a rotating wedge suggesting active search, meant to run
+   only while a GPS lock is being acquired and stop once it's found. */
+.map-radar-sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(168, 85, 247, 0.35), transparent 35%);
+  animation: radar-spin 2.4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.map-radar-sweep.active { opacity: 1; }
+
+@keyframes radar-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Ripple ring fired once at the moment a GPS lock is acquired. */
+.map-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.8);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+  pointer-events: none;
+}
+.map-ripple.firing {
+  animation: ripple-pulse 1s ease-out;
+}
+
+@keyframes ripple-pulse {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
+}
+
 .map-pulsing-pin {
   position: absolute;
   top: 50%;

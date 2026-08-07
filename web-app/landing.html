@@ -69,6 +69,9 @@
         <div class="window-content-grid">
           <div class="window-map-pane">
             <div class="mapbox-dark-canvas" style="height: 100%; border-radius: 8px;">
+              <div class="map-grid-pattern"></div>
+              <div class="map-radar-sweep" id="mockup-radar"></div>
+              <div class="map-ripple" id="mockup-ripple"></div>
               <div class="map-pulsing-pin" id="mockup-pin" style="background: #a855f7; box-shadow: 0 0 20px #a855f7; opacity: 0; transition: opacity 0.5s ease, box-shadow 0.5s ease;"></div>
               <div class="map-person-tag" id="mockup-tag" style="background: rgba(15,23,42,0.9); border: 1px solid rgba(168,85,247,0.4); opacity: 0; transition: opacity 0.5s ease;">📍 Location Locked</div>
             </div>
@@ -369,6 +372,8 @@
       el.style.color = fg;
     }
 
+    let mockupLockFired = false;
+
     function applyCoreActionFrame(frame) {
       setCoreBadge('core-badge-gps', frame.gps);
       setCoreBadge('core-badge-audio', frame.audio);
@@ -377,7 +382,22 @@
 
       const pin = document.getElementById('mockup-pin');
       const tag = document.getElementById('mockup-tag');
-      if (frame.gps === 'ACQUIRED') { pin.style.opacity = '1'; tag.style.opacity = '1'; }
+      const radar = document.getElementById('mockup-radar');
+      const ripple = document.getElementById('mockup-ripple');
+
+      if (frame.gps === 'ACQUIRING') {
+        radar.classList.add('active');
+      } else if (frame.gps === 'ACQUIRED') {
+        radar.classList.remove('active');
+        pin.style.opacity = '1';
+        tag.style.opacity = '1';
+        if (!mockupLockFired) {
+          mockupLockFired = true;
+          ripple.classList.remove('firing');
+          void ripple.offsetWidth; // restart the CSS animation from scratch
+          ripple.classList.add('firing');
+        }
+      }
 
       const caption = document.getElementById('mockup-caption');
       caption.style.opacity = '0';
@@ -388,7 +408,12 @@
       ['gps', 'audio', 'photo', 'message'].forEach(k => setCoreBadge(`core-badge-${k}`, k === 'message' ? 'QUEUED' : 'PENDING'));
       const pin = document.getElementById('mockup-pin');
       const tag = document.getElementById('mockup-tag');
+      const radar = document.getElementById('mockup-radar');
+      const ripple = document.getElementById('mockup-ripple');
       if (pin) { pin.style.opacity = '0'; tag.style.opacity = '0'; }
+      if (radar) radar.classList.remove('active');
+      if (ripple) ripple.classList.remove('firing');
+      mockupLockFired = false;
     }
 
     (function startCoreActionLoop() {
