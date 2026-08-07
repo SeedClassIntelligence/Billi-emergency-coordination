@@ -68,31 +68,32 @@
         <div class="window-content-grid">
           <div class="window-map-pane">
             <div class="mapbox-dark-canvas" style="height: 100%; border-radius: 8px;">
-              <div class="map-pulsing-pin" id="mockup-pin" style="background: #a855f7; box-shadow: 0 0 20px #a855f7; transition: top 1.1s ease, left 1.1s ease, background 0.6s ease, box-shadow 0.6s ease;"></div>
-              <div class="map-person-tag" id="mockup-tag" style="background: rgba(15,23,42,0.9); border: 1px solid rgba(168,85,247,0.4); transition: opacity 0.3s ease;">📍 Active Tracking Pin</div>
+              <div class="map-pulsing-pin" id="mockup-pin" style="background: #a855f7; box-shadow: 0 0 20px #a855f7; opacity: 0; transition: opacity 0.5s ease, box-shadow 0.5s ease;"></div>
+              <div class="map-person-tag" id="mockup-tag" style="background: rgba(15,23,42,0.9); border: 1px solid rgba(168,85,247,0.4); opacity: 0; transition: opacity 0.5s ease;">📍 Location Locked</div>
             </div>
           </div>
           <div class="window-control-pane">
-            <div class="window-pane-header">Guardian Command Center</div>
-            <div class="window-action-grid grid grid-2" id="mockup-buttons">
-              <div class="win-btn active-purple" data-btn="Configure">Configure</div>
-              <div class="win-btn" data-btn="Detect">Detect</div>
-              <div class="win-btn" data-btn="Action Grid">Action Grid</div>
-              <div class="win-btn" data-btn="Metrics">Metrics</div>
-              <div class="win-btn" data-btn="Duress Escalation">Duress Escalation</div>
-              <div class="win-btn" data-btn="Resolve">Resolve</div>
-            </div>
-            <div class="window-timer-box margin-top">
-              <div class="flex-between" style="font-size: 0.75rem; color: #94a3b8;">
-                <span id="mockup-timer-label">Escalation Timer</span>
-                <span class="text-amber" id="mockup-timer-val">20:00</span>
+            <div class="window-pane-header">The Instant Billi Activates</div>
+            <div class="margin-top-xs" id="core-action-rows" style="display:flex; flex-direction:column; gap:0.5rem;">
+              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                <span style="font-size:0.78rem; color:#e2e8f0;">📍 GPS Location</span>
+                <span class="core-action-badge" id="core-badge-gps" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
               </div>
-              <div class="progress-bar-track margin-top-xs">
-                <div class="progress-bar-fill" id="mockup-timer-bar" style="width: 65%; background: linear-gradient(90deg, #f59e0b, #ef4444);"></div>
+              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                <span style="font-size:0.78rem; color:#e2e8f0;">🎙️ Audio Capture</span>
+                <span class="core-action-badge" id="core-badge-audio" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+              </div>
+              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                <span style="font-size:0.78rem; color:#e2e8f0;">📸 Photo Evidence</span>
+                <span class="core-action-badge" id="core-badge-photo" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+              </div>
+              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                <span style="font-size:0.78rem; color:#e2e8f0;">💬 Alert Message</span>
+                <span class="core-action-badge" id="core-badge-message" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
               </div>
             </div>
-            <p class="text-muted" id="mockup-caption" style="font-size:0.74rem; margin-top:0.75rem; min-height:2.6em; line-height:1.4; transition: opacity 0.3s ease;">
-              GPS lock acquired in under 2 seconds.
+            <p class="text-muted" id="mockup-caption" style="font-size:0.74rem; margin-top:0.7rem; min-height:2.2em; line-height:1.4; transition: opacity 0.3s ease;">
+              Every core action starts the instant Billi is triggered — no waiting, no sequence to follow.
             </p>
           </div>
         </div>
@@ -178,6 +179,48 @@
             The protected person or an authorized guardian closes it out, leaving a clear, auditable record of what
             happened, when, and how it ended.
           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES — capability list, distinct from the process flow above -->
+    <section id="features" class="container section-spacing text-center">
+      <div class="section-tag-muted">Features</div>
+      <h2 class="section-title-white">What Billi Actually Does</h2>
+      <p class="text-muted margin-top-xs" style="margin-bottom: 2rem;">Not a feature roadmap — every item below is real and running right now.</p>
+
+      <div class="grid grid-4 text-left">
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🛰️ Real Device Sensing</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Real GPS, motion, and audio capture through the browser or native app — never simulated.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🧠 Gemini AI Reasoning</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Live context synthesis, risk analysis, and translation — with an honest deterministic fallback whenever live AI isn't available.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🔑 Nine Real Trigger Paths</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Safe word, hold-to-activate, fall or crash detection, a duress PIN, and more — every path reaches the same protected response.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🗺️ Real Safe Zones</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">An actual interactive map with address search — click, drag, or search a building, not a slider and a guess.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">📲 Real SMS Delivery</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Sent through the phone's own SIM on Android, or a real carrier gateway for iOS and browser-only sessions.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">👨‍👩‍👧 Family Device Invite</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Add a family member's own phone to your setup remotely — they get their own real sensors, not yours.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🔄 Live Multi-Device Sync</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Guardian, protected person, and responder sessions all see the same incident update in real time, on every device.</p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">✅ Honest Labeling, Always</h3>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Every capability is marked CONNECTED, SIMULATED, or LOCAL right in the product — nothing ever pretends to be real when it isn't.</p>
         </div>
       </div>
     </section>
@@ -284,70 +327,77 @@
   <script>
     Billi.mountFeedback();
 
-    /* Hero mockup scenario cycle — illustrates different real Billi
-       capabilities inside the small preview window instead of one
-       frozen static state. Purely illustrative UI (the mockup already
-       shows a fake "guardiancommand.com" browser chrome), so cycling
-       through scenarios here doesn't carry the same "must be real data"
-       bar as the actual product screens - it's a rotating showcase, not
-       a live view. */
-    const MOCKUP_SCENARIOS = [
-      { pin: { top: '50%', left: '50%' }, color: '#a855f7', tag: '📍 GPS Lock Acquired', btn: 'Detect',
-        timerLabel: 'Trigger to Lock', timerVal: '< 2s', timerPct: '15%', timerGrad: 'linear-gradient(90deg, #6366f1, #a855f7)',
-        caption: 'GPS lock acquired in under 2 seconds — the moment any of the nine trigger paths fires.' },
-      { pin: { top: '30%', left: '68%' }, color: '#f97316', tag: '⚠ Fall Detected — Confirming', btn: 'Detect',
-        timerLabel: 'Confirm Window', timerVal: '0:07', timerPct: '35%', timerGrad: 'linear-gradient(90deg, #f97316, #f59e0b)',
-        caption: 'A passive trigger like a hard fall opens a short confirmation window first — silence still escalates, it never cancels.' },
-      { pin: { top: '62%', left: '28%' }, color: '#ef4444', tag: '🔒 Duress PIN Entered', btn: 'Duress Escalation',
-        timerLabel: 'Escalation Timer', timerVal: '0:32', timerPct: '70%', timerGrad: 'linear-gradient(90deg, #f59e0b, #ef4444)',
-        caption: 'Duress PIN entered under coercion — the screen feigns cancellation while real escalation continues silently.' },
-      { pin: { top: '42%', left: '58%' }, color: '#6366f1', tag: '👥 Trusted Network Notified', btn: 'Action Grid',
-        timerLabel: 'Escalation Timer', timerVal: '0:12', timerPct: '90%', timerGrad: 'linear-gradient(90deg, #6366f1, #818cf8)',
-        caption: 'Live location, evidence, and AI-synthesized context reach every guardian device at once, and stay updated.' },
-      { pin: { top: '50%', left: '50%' }, color: '#10b981', tag: '✓ Confirmed Safe', btn: 'Resolve',
-        timerLabel: 'Resolved', timerVal: '0:00', timerPct: '100%', timerGrad: 'linear-gradient(90deg, #10b981, #34d399)',
-        caption: 'Protected person confirms safe. A clear, auditable record is saved automatically.' }
+    /* Hero mockup — illustrates the actual four core actions that fire
+       the instant Billi activates (GPS, audio, photo, alert message),
+       matching the real truth-state pattern already used in
+       protected.html/incident.html (core.gps/core.audio/core.video/
+       core.network), not an invented scenario story. Purely
+       illustrative timing here (the mockup already shows fake
+       "guardiancommand.com" browser chrome) - the STATES and their
+       order are real, the exact seconds are compressed for a landing
+       page loop, not measured from the live app. */
+    const CORE_ACTION_TIMELINE = [
+      { t: 0,    gps: 'ACQUIRING', audio: 'STARTING', photo: 'PENDING',   message: 'QUEUED',
+        caption: 'Every core action starts the instant Billi is triggered — no waiting, no sequence to follow.' },
+      { t: 1400, gps: 'ACQUIRED',  audio: 'STARTING', photo: 'STARTING', message: 'QUEUED',
+        caption: 'GPS locks first — usually under two seconds, even before anything else finishes starting up.' },
+      { t: 2800, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'STARTING', message: 'SENT',
+        caption: 'Audio capture goes active and the alert is already sent — real evidence, not a delayed report after the fact.' },
+      { t: 4200, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'CAPTURED', message: 'SENT',
+        caption: 'A photo is sealed as evidence, timestamped and tied to this exact moment.' },
+      { t: 5600, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'CAPTURED', message: 'DELIVERED',
+        caption: 'The trusted network has it — location, audio, photo, and context, all live, all at once.' }
     ];
+    const CORE_ACTION_HOLD_MS = 3200; // pause at fully-active before looping
+    const CORE_ACTION_STATE_COLOR = {
+      PENDING: ['rgba(148,163,184,0.15)', '#94a3b8'], QUEUED: ['rgba(148,163,184,0.15)', '#94a3b8'],
+      ACQUIRING: ['rgba(245,158,11,0.2)', '#fbbf24'], STARTING: ['rgba(245,158,11,0.2)', '#fbbf24'], SENT: ['rgba(245,158,11,0.2)', '#fbbf24'],
+      ACQUIRED: ['rgba(16,185,129,0.2)', '#34d399'], ACTIVE: ['rgba(16,185,129,0.2)', '#34d399'],
+      CAPTURED: ['rgba(16,185,129,0.2)', '#34d399'], DELIVERED: ['rgba(16,185,129,0.2)', '#34d399']
+    };
 
-    function applyMockupScenario(s) {
-      const pin = document.getElementById('mockup-pin');
-      const tag = document.getElementById('mockup-tag');
-      const caption = document.getElementById('mockup-caption');
-      const timerLabel = document.getElementById('mockup-timer-label');
-      const timerVal = document.getElementById('mockup-timer-val');
-      const timerBar = document.getElementById('mockup-timer-bar');
-      if (!pin) return;
-
-      pin.style.top = s.pin.top;
-      pin.style.left = s.pin.left;
-      pin.style.background = s.color;
-      pin.style.boxShadow = `0 0 20px ${s.color}`;
-
-      document.querySelectorAll('#mockup-buttons .win-btn').forEach(b => {
-        b.classList.toggle('active-purple', b.dataset.btn === s.btn);
-      });
-
-      [tag, caption].forEach(el => { if (el) el.style.opacity = '0'; });
-      timerBar.style.width = s.timerPct;
-      timerBar.style.background = s.timerGrad;
-      setTimeout(() => {
-        tag.innerText = s.tag;
-        caption.innerText = s.caption;
-        timerLabel.innerText = s.timerLabel;
-        timerVal.innerText = s.timerVal;
-        tag.style.opacity = '1';
-        caption.style.opacity = '1';
-      }, 300);
+    function setCoreBadge(id, state) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const [bg, fg] = CORE_ACTION_STATE_COLOR[state] || CORE_ACTION_STATE_COLOR.PENDING;
+      el.innerText = state;
+      el.style.background = bg;
+      el.style.color = fg;
     }
 
-    (function startMockupCycle() {
+    function applyCoreActionFrame(frame) {
+      setCoreBadge('core-badge-gps', frame.gps);
+      setCoreBadge('core-badge-audio', frame.audio);
+      setCoreBadge('core-badge-photo', frame.photo);
+      setCoreBadge('core-badge-message', frame.message);
+
+      const pin = document.getElementById('mockup-pin');
+      const tag = document.getElementById('mockup-tag');
+      if (frame.gps === 'ACQUIRED') { pin.style.opacity = '1'; tag.style.opacity = '1'; }
+
+      const caption = document.getElementById('mockup-caption');
+      caption.style.opacity = '0';
+      setTimeout(() => { caption.innerText = frame.caption; caption.style.opacity = '1'; }, 250);
+    }
+
+    function resetCoreActionMockup() {
+      ['gps', 'audio', 'photo', 'message'].forEach(k => setCoreBadge(`core-badge-${k}`, k === 'message' ? 'QUEUED' : 'PENDING'));
+      const pin = document.getElementById('mockup-pin');
+      const tag = document.getElementById('mockup-tag');
+      if (pin) { pin.style.opacity = '0'; tag.style.opacity = '0'; }
+    }
+
+    (function startCoreActionLoop() {
       if (!document.getElementById('mockup-pin')) return;
-      let i = 0;
-      applyMockupScenario(MOCKUP_SCENARIOS[0]);
-      setInterval(() => {
-        i = (i + 1) % MOCKUP_SCENARIOS.length;
-        applyMockupScenario(MOCKUP_SCENARIOS[i]);
-      }, 3600);
+      function playOnce() {
+        CORE_ACTION_TIMELINE.forEach(frame => setTimeout(() => applyCoreActionFrame(frame), frame.t));
+        const lastT = CORE_ACTION_TIMELINE[CORE_ACTION_TIMELINE.length - 1].t;
+        setTimeout(() => {
+          resetCoreActionMockup();
+          setTimeout(playOnce, 600);
+        }, lastT + CORE_ACTION_HOLD_MS);
+      }
+      playOnce();
     })();
   </script>
 </body>

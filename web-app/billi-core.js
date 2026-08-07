@@ -1115,7 +1115,7 @@
     const el = document.createElement('div');
     el.id = 'billi-fb-widget';
     el.innerHTML = `
-      <button id="billi-fb-toggle" title="Send feedback" style="position:fixed;bottom:18px;right:18px;z-index:9999;width:52px;height:52px;border-radius:50%;background:#6366f1;color:#fff;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.35);">💬</button>
+      <button id="billi-fb-toggle" title="Send feedback" style="position:fixed;bottom:18px;right:18px;z-index:9999;height:44px;padding:0 16px 0 14px;border-radius:22px;background:#6366f1;color:#fff;border:none;font-size:0.8rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">💬 Feedback</button>
       <div id="billi-fb-panel" style="display:none;position:fixed;bottom:80px;right:18px;z-index:9999;width:min(320px,calc(100vw - 36px));background:#161b2e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
         <strong style="color:#fff;font-size:0.85rem;">Send feedback</strong>
         <p class="text-muted" style="font-size:0.72rem;margin-top:2px;">Testing Billi? Tell us what's broken, confusing, or working well.</p>
