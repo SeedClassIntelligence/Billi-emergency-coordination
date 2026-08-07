@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BILLI — How Billi Compares</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-root">
+
+  <header id="top-nav" class="top-navbar">
+    <div class="nav-flex">
+      <div class="brand-wrapper" onclick="window.location.href='landing.html'">
+        <span class="brand-mark">BILLI</span>
+      </div>
+      <nav class="center-nav-links">
+        <a href="landing.html">Platform</a>
+        <a href="landing.html#why-billi">Why Billi</a>
+        <a href="landing.html#features">Features</a>
+        <a href="compare.html">Compare</a>
+      </nav>
+      <div class="nav-actions flex-row">
+        <button class="btn btn-outline-nav" onclick="window.location.href='auth.html'">Log In</button>
+        <button class="btn btn-primary-nav" onclick="window.location.href='auth.html'">Get Started</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-wrapper text-center">
+      <h1 class="hero-title-main" style="font-size:2.4rem;">Is Billi Just Another<br>Safety App?</h1>
+      <p class="hero-subheadline-1">Short answer: no. Here's what's actually different — not just claimed, but built.</p>
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section class="container section-spacing">
+      <div class="section-tag-muted text-center">Where It Actually Differs</div>
+      <h2 class="section-title-white text-center">Typical Safety App vs. Billi</h2>
+      <div style="max-width:920px; margin:2rem auto 0; overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+          <thead>
+            <tr style="border-bottom:2px solid rgba(255,255,255,0.12);">
+              <th style="text-align:left; padding:0.75rem 1rem; color:#94a3b8; font-weight:600; width:26%;"></th>
+              <th style="text-align:left; padding:0.75rem 1rem; color:#94a3b8; font-weight:600;">Typical Safety App</th>
+              <th style="text-align:left; padding:0.75rem 1rem; color:#a5b4fc; font-weight:700;">Billi</th>
+            </tr>
+          </thead>
+          <tbody id="compare-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- WHO IT'S ACTUALLY BUILT FOR -->
+    <section class="container section-spacing text-center">
+      <div class="section-tag-muted">Who It's Built For</div>
+      <h2 class="section-title-white">Real Coverage, Not a Feature Checklist</h2>
+      <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto;">
+        The same core mechanisms — real GPS safe zones with exit-breach alerts, fall detection, silent duress protection —
+        genuinely extend to situations that get treated as an afterthought elsewhere.
+      </p>
+
+      <div class="grid grid-3 margin-top-md text-left" id="who-for-grid"></div>
+
+      <div class="card margin-top" style="max-width:680px; margin-left:auto; margin-right:auto; padding:1.1rem; text-align:left; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05);">
+        <strong style="color:#fbbf24; font-size:0.85rem;">⚠ Honest gap: pets.</strong>
+        <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.5;">
+          Billi's protected-person model is built around a person — someone who can speak a safe word, hold a button,
+          or otherwise be described by name, age, and medical detail. Extending real protection to a pet isn't a
+          relabel of what already exists; an animal can't do any of that, so it would need its own real design, not a
+          checkbox. Not built yet, and we'd rather say so than imply otherwise.
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <section class="container section-spacing text-center" style="padding-bottom: 5rem;">
+      <h2 class="section-title-white" style="font-size: 2rem;">See it running, not just described.</h2>
+      <div class="hero-cta-group flex-row justify-center margin-top">
+        <button class="btn btn-hero-primary" onclick="window.location.href='landing.html#demos-section'">Explore Live Demos →</button>
+        <button class="btn btn-hero-secondary" onclick="window.location.href='auth.html'">Create Account</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="billi-core.js"></script>
+  <script src="app.js"></script>
+  <script>
+    Billi.mountFeedback();
+
+    const COMPARE_ROWS = [
+      ['Trigger', 'One button, one alert', 'Nine real trigger paths — safe word, hold-to-activate, fall or crash detection, duress PIN — all reach the same real response'],
+      ['Under coercion', 'No way to fake a cancel', 'A duress PIN feigns cancellation on screen while real escalation keeps going silently'],
+      ['AI reasoning', 'None, or an unexplained black box', 'Live Gemini reasoning — and it tells you honestly when live AI isn\'t available instead of pretending'],
+      ['Reaching people without the app', 'Push notification only — hopes the other person has it installed', 'Real SMS through the phone\'s own SIM (Android), or a real carrier gateway fallback for everyone else'],
+      ['Coordination', 'A one-way alert', 'One live incident every guardian device sees and updates in real time, together'],
+      ['Wandering & geofencing', 'Sometimes offered as a paid add-on', 'Real GPS safe zones with exit-breach alerts, built in from the start'],
+      ['Transparency', 'Marketing describes what the product should do', 'Every capability is labeled CONNECTED, SIMULATED, or LOCAL directly in the product — you always know what\'s actually real']
+    ];
+    document.getElementById('compare-rows').innerHTML = COMPARE_ROWS.map(([label, them, us], i) => `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); ${i % 2 === 0 ? 'background:rgba(255,255,255,0.015);' : ''}">
+        <td style="padding:0.85rem 1rem; color:#e2e8f0; font-weight:600;">${label}</td>
+        <td style="padding:0.85rem 1rem; color:#64748b;">${them}</td>
+        <td style="padding:0.85rem 1rem; color:#cbd5e1;">${us}</td>
+      </tr>`).join('');
+
+    const WHO_FOR = [
+      ['🧒', 'Children', 'A spoken safe word, hold-to-activate SOS, and safe zones for school and home boundaries — with an exit-breach alert if a zone is left unexpectedly.'],
+      ['🧩', 'Children with autism', 'The same safe-zone exit-breach alert is exactly the mechanism used for elopement risk — a real, serious concern, not an edge case Billi treats as secondary.'],
+      ['👵', 'Elderly family members', 'Real fall detection covers the moment something happens. Safe-zone wandering alerts cover the moment someone leaves and can\'t explain why — dementia-related wandering, not just falls.'],
+      ['✈️', 'Travelers & tourists', 'Safe zones for unfamiliar areas, duress protection that works even without local language fluency, and real GPS that doesn\'t depend on the destination\'s own emergency infrastructure.'],
+      ['🏫', 'Students & campuses', 'Silent activation, real-time responder coordination, and a Living Emergency Packet that hands responders real context instead of a bare address.'],
+      ['👪', 'Whole families', 'One shared setup, multiple real devices — a parent can add a family member\'s own phone to the same household without needing it physically in hand.']
+    ];
+    document.getElementById('who-for-grid').innerHTML = WHO_FOR.map(([icon, title, desc]) => `
+      <div class="card process-step-card">
+        <h3 class="step-title-text" style="font-size:0.95rem;">${icon} ${title}</h3>
+        <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">${desc}</p>
+      </div>`).join('');
+  </script>
+</body>
+</html>
