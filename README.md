@@ -6,11 +6,23 @@ from activation through resolution — with live Gemini AI assisting every step 
 
 ## Live demo
 
-**https://billi-platform-467802610371.us-central1.run.app** — public, no setup required. Runs
-scale-to-zero on Cloud Run: every service ships pre-compiled (no on-the-fly TypeScript
-transpilation), so a cold start brings all 13 internal services up in well under 30 seconds,
-not the 1-3 minutes an interpreted boot used to take. See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for
-a guided walkthrough.
+**[billi-platform-467802610371.us-central1.run.app](https://billi-platform-467802610371.us-central1.run.app)**
+— public, no setup required, no login gate. Share this link with anyone and they can create
+their own account and test the full platform immediately. Runs scale-to-zero on Cloud Run:
+every service ships pre-compiled (no on-the-fly TypeScript transpilation), so a cold start
+brings all 13 internal services up in well under 30 seconds, not the 1-3 minutes an interpreted
+boot used to take. See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough.
+
+The landing page also has a **📱 Download Android App** button — a native shell (see
+[mobile-native/](mobile-native/)) that wraps the same live site and adds the one thing a
+browser categorically can't do: sending a real SMS through the phone's own SIM the moment an
+incident triggers, no third-party gateway involved. It's sideloaded (not on the Play Store
+yet), so Android will show an "unknown developer" warning — the landing page walks through
+exactly what to tap.
+
+Every page also has a floating 💬 feedback button, backed by a real inbox
+(`GET /api/v1/tester-feedback`, admin-key gated — see `.env.example`) — testers can report
+what's broken or confusing without leaving the app.
 
 ## Quick start
 
@@ -36,14 +48,20 @@ guardian, responder), not something each person running the platform needs to su
 themselves. Without a key, every AI-assisted route falls back to honest, clearly-labeled
 deterministic logic — nothing ever silently pretends to be AI-generated when it isn't.
 
+Also set `ADMIN_KEY` (any long random string) to read back what's been submitted through the
+in-app feedback widget — `GET /api/v1/tester-feedback?key=<value>`. Unset, that route stays
+closed rather than silently open; feedback can still be submitted either way.
+
 ## Architecture
 
 ```
-web-app/ (9 surfaces, plain HTML/CSS/JS)
+web-app/ (17 pages, plain HTML/CSS/JS)
         │  talks only to the gateway — no other service is browser-facing
         ▼
 services/gateway (:8080)
-        │  fans out to, and aggregates responses from:
+        │  also owns shared incidents, /api/v1/household/*, and
+        │  /api/v1/tester-feedback directly (JSON-file persistence,
+        │  no separate service) — everything else fans out to:
         ├─ orchestration-engine (:8081)   state machine, core-actions invariant,
         │                                  AI-recommendation rule engine
         ├─ communication-engine (:8082)   transport selection, delivery-state tracking
@@ -74,7 +92,9 @@ Billi is built to be honest about this everywhere in the UI (look for `CONNECTED
 | Gemini context synthesis, summarization, action recommendations | Real, live, when `GEMINI_API_KEY` is set |
 | Real device GPS, motion, audio recording, speech output | Real, via browser APIs (`web-app/billi-adapters.js`) — needs HTTPS |
 | Video capture | Honestly unavailable in this prototype — never faked |
-| Push notifications, carrier SMS/voice, live 911/CAD dispatch | Simulated — no external integration exists yet |
+| SMS to trusted contacts | Real, via `SmsManager` on the phone's own SIM — but only from the native Android app (`mobile-native/`). The web app alone cannot send SMS (no browser API for it), and no equivalent channel exists for iOS — that's an Apple platform restriction, not a gap this build can close |
+| Family device invite (parent adds a child's own phone to the same setup) | Real — backend-persisted (`gateway` `/api/v1/household/*`), verified end to end |
+| Push notifications, live 911/CAD dispatch | Simulated — no external integration exists yet |
 | BLE mesh relay | Simulated — strategy selection is real, physical radio relay is not |
 
 See [PLATFORM_DESIGN_BUILD_REPORT.md](PLATFORM_DESIGN_BUILD_REPORT.md) for the full build history
@@ -88,11 +108,17 @@ quota is exhausted mid-demo.
 
 ```
 .
-├── start-all.js              # One-command startup for all 13 services + HTTPS server
+├── start-all.js              # One-command startup for all 13 services + HTTPS server (local dev)
+├── start-cloud.js            # Cloud Run entry point — same services, plain-HTTP public server
+├── Dockerfile                # Single-container build: compiles every service, no ts-node-dev at runtime
 ├── services/                 # 13 backend microservices (the running architecture)
-├── web-app/                  # Frontend — 9 surfaces, plain HTML/CSS/JS, no build step
+├── web-app/                  # Frontend — 17 pages, plain HTML/CSS/JS, no build step
+│   └── billi.apk             # The native Android build, served directly for download
+├── mobile-native/            # Native Android shell (WebView + SmsManager bridge) — see build.sh
 ├── packages/                 # Shared TypeScript contracts + demo fixtures
-├── tools/https-server.js     # HTTPS static server + gateway proxy (phone-testable)
+├── tools/
+│   ├── https-server.js       # HTTPS static server + gateway proxy (local phone testing)
+│   └── cloud-server.js       # Plain-HTTP equivalent for Cloud Run
 ├── PLATFORM_DESIGN_BUILD_REPORT.md
 ├── MOBILE_CAPABILITY_EXECUTION_MATRIX.md
 └── archive/                  # Earlier architecture generations, superseded — kept for
