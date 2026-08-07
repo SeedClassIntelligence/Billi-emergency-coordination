@@ -81,19 +81,31 @@
             <div class="margin-top-xs" id="core-action-rows" style="display:flex; flex-direction:column; gap:0.5rem;">
               <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
                 <span style="font-size:0.78rem; color:#e2e8f0;">📍 GPS Location</span>
-                <span class="core-action-badge" id="core-badge-gps" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                <span class="flex-row" style="gap:0.4rem; align-items:center;">
+                  <span class="row-scan-dot" id="anim-gps"></span>
+                  <span class="core-action-badge" id="core-badge-gps" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                </span>
               </div>
               <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
                 <span style="font-size:0.78rem; color:#e2e8f0;">🎙️ Audio Capture</span>
-                <span class="core-action-badge" id="core-badge-audio" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                <span class="flex-row" style="gap:0.4rem; align-items:center;">
+                  <span class="audio-wave" id="anim-audio"><span></span><span></span><span></span><span></span></span>
+                  <span class="core-action-badge" id="core-badge-audio" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                </span>
               </div>
               <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
                 <span style="font-size:0.78rem; color:#e2e8f0;">📸 Photo Evidence</span>
-                <span class="core-action-badge" id="core-badge-photo" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                <span class="flex-row" style="gap:0.4rem; align-items:center;">
+                  <span class="photo-flash" id="anim-photo"></span>
+                  <span class="core-action-badge" id="core-badge-photo" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                </span>
               </div>
               <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
                 <span style="font-size:0.78rem; color:#e2e8f0;">💬 Alert Message</span>
-                <span class="core-action-badge" id="core-badge-message" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                <span class="flex-row" style="gap:0.4rem; align-items:center;">
+                  <span class="msg-ping" id="anim-message"></span>
+                  <span class="core-action-badge" id="core-badge-message" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
+                </span>
               </div>
             </div>
             <p class="text-muted" id="mockup-caption" style="font-size:0.74rem; margin-top:0.7rem; min-height:2.2em; line-height:1.4; transition: opacity 0.3s ease;">
@@ -421,6 +433,7 @@
     }
 
     let mockupLockFired = false;
+    let mockupPhotoFired = false;
 
     function applyCoreActionFrame(frame) {
       setCoreBadge('core-badge-gps', frame.gps);
@@ -432,11 +445,14 @@
       const tag = document.getElementById('mockup-tag');
       const radar = document.getElementById('mockup-radar');
       const ripple = document.getElementById('mockup-ripple');
+      const gpsDot = document.getElementById('anim-gps');
 
       if (frame.gps === 'ACQUIRING') {
         radar.classList.add('active');
+        gpsDot.classList.add('scanning');
       } else if (frame.gps === 'ACQUIRED') {
         radar.classList.remove('active');
+        gpsDot.classList.remove('scanning');
         pin.style.opacity = '1';
         tag.style.opacity = '1';
         if (!mockupLockFired) {
@@ -446,6 +462,34 @@
           ripple.classList.add('firing');
         }
       }
+
+      // Audio — waveform runs for the whole duration capture is actually
+      // active, not a one-shot; there's no discrete "done" moment for
+      // ongoing audio the way there is for a GPS lock or a photo.
+      const audioWave = document.getElementById('anim-audio');
+      audioWave.classList.toggle('active', frame.audio === 'STARTING' || frame.audio === 'ACTIVE');
+
+      // Photo — a soft priming pulse while starting, then one real
+      // shutter-flash exactly when it's sealed as evidence.
+      const photoFlash = document.getElementById('anim-photo');
+      if (frame.photo === 'STARTING') {
+        photoFlash.classList.add('priming');
+        photoFlash.classList.remove('flashing');
+      } else if (frame.photo === 'CAPTURED') {
+        photoFlash.classList.remove('priming');
+        if (!mockupPhotoFired) {
+          mockupPhotoFired = true;
+          photoFlash.classList.remove('flashing');
+          void photoFlash.offsetWidth;
+          photoFlash.classList.add('flashing');
+        }
+      }
+
+      // Message — pulses while queued/sent (in transit), settles to a
+      // solid dot once actually delivered.
+      const msgPing = document.getElementById('anim-message');
+      msgPing.classList.toggle('sending', frame.message === 'QUEUED' || frame.message === 'SENT');
+      msgPing.classList.toggle('delivered', frame.message === 'DELIVERED');
 
       const caption = document.getElementById('mockup-caption');
       caption.style.opacity = '0';
@@ -461,7 +505,12 @@
       if (pin) { pin.style.opacity = '0'; tag.style.opacity = '0'; }
       if (radar) radar.classList.remove('active');
       if (ripple) ripple.classList.remove('firing');
+      document.getElementById('anim-gps')?.classList.remove('scanning');
+      document.getElementById('anim-audio')?.classList.remove('active');
+      document.getElementById('anim-photo')?.classList.remove('priming', 'flashing');
+      document.getElementById('anim-message')?.classList.remove('sending', 'delivered');
       mockupLockFired = false;
+      mockupPhotoFired = false;
     }
 
     (function startCoreActionLoop() {

@@ -493,6 +493,100 @@ body.bg-root {
   100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
 }
 
+/* Per-row core-action mockup animations — GPS's radar sweep is the big
+   background element; these are the small inline equivalents for the
+   other three rows, so all four read as actively doing something while
+   in progress, not just a badge changing color. */
+
+/* GPS row — a small scanning dot pulse, separate from the big radar
+   sweep behind the map pin, so the row itself visibly pulses too. */
+.row-scan-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a855f7;
+  opacity: 0;
+}
+.row-scan-dot.scanning {
+  opacity: 1;
+  animation: scan-dot-pulse 0.9s ease-in-out infinite;
+}
+@keyframes scan-dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.6); opacity: 1; }
+}
+
+/* Audio row — a small animated waveform, active for the whole duration
+   audio capture is actually running (it doesn't have a discrete "done"
+   moment the way GPS lock or a photo capture do). */
+.audio-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.audio-wave.active { opacity: 1; }
+.audio-wave span {
+  width: 3px;
+  border-radius: 2px;
+  background: #34d399;
+  animation: wave-bounce 0.9s ease-in-out infinite;
+}
+.audio-wave span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.audio-wave span:nth-child(2) { height: 13px; animation-delay: 0.15s; }
+.audio-wave span:nth-child(3) { height: 9px;  animation-delay: 0.3s; }
+.audio-wave span:nth-child(4) { height: 14px; animation-delay: 0.45s; }
+@keyframes wave-bounce {
+  0%, 100% { transform: scaleY(0.35); }
+  50%      { transform: scaleY(1); }
+}
+
+/* Photo row — a brief shutter flash firing once at the moment a photo
+   is sealed as evidence, plus a soft pulse while the capture is
+   starting (the camera "getting ready" beat before the flash). */
+.photo-flash {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+}
+.photo-flash.priming {
+  background: rgba(249, 115, 22, 0.5);
+  animation: scan-dot-pulse 0.9s ease-in-out infinite;
+}
+.photo-flash.flashing {
+  animation: shutter-flash 0.5s ease-out;
+}
+@keyframes shutter-flash {
+  0%   { background: #ffffff; box-shadow: 0 0 10px 3px rgba(255,255,255,0.9); transform: scale(1.4); }
+  100% { background: transparent; box-shadow: none; transform: scale(1); }
+}
+
+/* Message row — a pulsing "in transit" dot while queued/sent, settling
+   to a solid steady dot once actually delivered. */
+.msg-ping {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #818cf8;
+  opacity: 0;
+}
+.msg-ping.sending {
+  opacity: 1;
+  animation: scan-dot-pulse 0.7s ease-in-out infinite;
+}
+.msg-ping.delivered {
+  opacity: 1;
+  animation: none;
+  background: #34d399;
+  transform: scale(1);
+}
+
 .map-pulsing-pin {
   position: absolute;
   top: 50%;
