@@ -803,29 +803,76 @@
     const trail = PATH.slice(0, steps);
     const loc = trail[trail.length - 1];
 
-    /* Real outbound SMS - fires exactly once per incident, only when
-       running inside the native Android shell (window.BilliNative present,
-       see mobile-native/) and only for a genuine trigger, never a demo
-       (inc.scenario is set exclusively by runDemo() - a demo must never
-       text a real phone number). Fires the moment the network leg reaches
-       SENT (elN>=3), matching the alertState ladder below. Lazy-applied
-       like the scenario effects elsewhere in this function so it survives
-       reloads and fires on whichever render tick crosses the threshold. */
-    if (!pending && !inc.scenario && elN >= 3 && !inc.realSmsSentAt &&
-        typeof window !== 'undefined' && window.BilliNative && window.BilliNative.sendSms) {
+    /* Real outbound SMS - fires exactly once per incident, only for a
+       genuine trigger, never a demo (inc.scenario is set exclusively by
+       runDemo() - a demo must never text a real phone number). Fires the
+       moment the network leg reaches SENT (elN>=3), matching the
+       alertState ladder below. Lazy-applied like the scenario effects
+       elsewhere in this function so it survives reloads and fires on
+       whichever render tick crosses the threshold.
+
+       Two real transports, tried in this order per contact:
+       1. window.BilliNative.sendSms - the native Android app (mobile-native/),
+          free, sends through the phone's own SIM. Synchronous.
+       2. Gateway -> communication-engine -> Twilio fallback - the only real
+          option for anyone without that app, which is everyone on iOS
+          (Apple permits no third-party app to send SMS without a manual
+          tap, wrapped or not) and any browser-only session. Async,
+          real per-message cost, requires TWILIO_* env vars to be
+          configured - see .env.example. Fire-and-forget from here since
+          incidentView() itself is synchronous; the resulting act lands
+          on whatever render tick comes after the promise resolves, same
+          pattern as this app's other async backend calls. */
+    if (!pending && !inc.scenario && elN >= 3 && !inc.realSmsSentAt) {
       inc.realSmsSentAt = now;
       const who = (state.protectedPerson && state.protectedPerson.name) || 'A Billi user';
       const coords = loc ? `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}` : 'location acquiring';
       const msg = `Billi Emergency Alert: ${who} has triggered an SOS. Location: ${coords}. Open Billi for live updates.`;
+      const hasNative = typeof window !== 'undefined' && window.BilliNative && window.BilliNative.sendSms;
       (state.contacts.length ? state.contacts : FIXTURE.contacts).forEach(c => {
         if (c.notifyEnabled === false || !c.channels || c.channels.indexOf('SMS') === -1 || !c.phone) return;
-        let sent = false, err = null;
-        try { sent = window.BilliNative.sendSms(c.phone, msg); } catch (e) { err = e.message; }
-        acts.push({
-          t: now, actor: 'Communication Engine', type: 'REAL_SMS_SENT', contactId: c.id,
-          details: sent ? `Real SMS dispatched to ${c.name} (${c.phone})`
-                         : `SMS not sent to ${c.name}${err ? ' - ' + err : ' - SEND_SMS permission not granted'}`
-        });
+        if (hasNative) {
+          let sent = false, err = null;
+          try { sent = window.BilliNative.sendSms(c.phone, msg); } catch (e) { err = e.message; }
+          acts.push({
+            t: now, actor: 'Communication Engine', type: 'REAL_SMS_SENT', contactId: c.id,
+            details: sent ? `Real SMS dispatched to ${c.name} (${c.phone}) via the phone's own SIM`
+                           : `SMS not sent to ${c.name}${err ? ' - ' + err : ' - SEND_SMS permission not granted'}`
+          });
+        } else {
+          // Not gfetch(): that helper collapses any non-2xx response to
+          // null, which would hide the honest, specific reason (e.g.
+          // "not configured" vs. an actual Twilio failure) the gateway
+          // deliberately preserves for this exact route - same reasoning
+          // as the gateway's own passthrough instead of fetchService().
+          const ctl = new AbortController();
+          const timer = setTimeout(() => ctl.abort(), 10000);
+          fetch(`${GATEWAY}/api/v1/sms/send`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to: c.phone, message: msg }), signal: ctl.signal
+          }).then(r => r.json()).then(result => {
+            clearTimeout(timer);
+            const activeInc = getActiveIncident();
+            if (!activeInc || activeInc.id !== inc.id) return; // incident resolved/changed by the time this resolved
+            activeInc.actions = activeInc.actions || [];
+            activeInc.actions.push({
+              t: Date.now(), actor: 'Communication Engine', type: 'REAL_SMS_SENT', contactId: c.id,
+              details: result && result.sent ? `Real SMS dispatched to ${c.name} (${c.phone}) via Twilio`
+                                              : `SMS not sent to ${c.name} - ${(result && result.error) || 'unknown error'}`
+            });
+            save();
+          }).catch(e => {
+            clearTimeout(timer);
+            const activeInc = getActiveIncident();
+            if (!activeInc || activeInc.id !== inc.id) return;
+            activeInc.actions = activeInc.actions || [];
+            activeInc.actions.push({
+              t: Date.now(), actor: 'Communication Engine', type: 'REAL_SMS_SENT', contactId: c.id,
+              details: `SMS not sent to ${c.name} - gateway unreachable (${e.message})`
+            });
+            save();
+          });
+        }
       });
       save();
     }

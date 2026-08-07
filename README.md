@@ -92,7 +92,7 @@ Billi is built to be honest about this everywhere in the UI (look for `CONNECTED
 | Gemini context synthesis, summarization, action recommendations | Real, live, when `GEMINI_API_KEY` is set |
 | Real device GPS, motion, audio recording, speech output | Real, via browser APIs (`web-app/billi-adapters.js`) — needs HTTPS |
 | Video capture | Honestly unavailable in this prototype — never faked |
-| SMS to trusted contacts | Real, via `SmsManager` on the phone's own SIM — but only from the native Android app (`mobile-native/`). The web app alone cannot send SMS (no browser API for it), and no equivalent channel exists for iOS — that's an Apple platform restriction, not a gap this build can close |
+| SMS to trusted contacts | Real, two transports: free via `SmsManager` on the phone's own SIM when the native Android app is installed, or via a Twilio-backed gateway fallback (`communication-engine`, needs `TWILIO_*` env vars) for everyone else — plain browser sessions and all of iOS, which can never get the native path since Apple permits no third-party app to send SMS without a manual tap |
 | Family device invite (parent adds a child's own phone to the same setup) | Real — backend-persisted (`gateway` `/api/v1/household/*`), verified end to end |
 | Push notifications, live 911/CAD dispatch | Simulated — no external integration exists yet |
 | BLE mesh relay | Simulated — strategy selection is real, physical radio relay is not |

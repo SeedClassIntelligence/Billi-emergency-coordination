@@ -285,6 +285,55 @@ app.post("/communication/route", (req: Request, res: Response) => {
   }
 });
 
+/* =====================================================================
+   REAL SMS FALLBACK — Twilio. The native Android app sends SMS for free
+   through the phone's own SIM (see mobile-native/), but that's Android-
+   only: no browser on any platform can send SMS, and Apple permits no
+   third-party app, wrapped or not, to send SMS without a human manually
+   tapping send each time (confirmed while scoping this - Apple's own
+   Emergency SOS does it, but only as first-party OS software with
+   private entitlements no third party can obtain). This is the one real
+   way to still reach an arbitrary number - iOS included - with a real,
+   zero-tap text: a backend gateway sending from a company-owned number.
+   Deliberately NOT used for Android when the native bridge is available
+   (that path is free); this exists specifically to close the gap for
+   everyone else. Config is platform-level, same pattern as
+   GEMINI_API_KEY/ADMIN_KEY - Cloud Run env vars, never baked into the
+   image, real ongoing per-message cost once free trial credit is used.
+   ===================================================================== */
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER;
+
+app.post("/communication/sms/send", async (req: Request, res: Response) => {
+  const { to, message } = req.body || {};
+  if (!to || !message) return res.status(400).json({ error: "to and message required" });
+
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {
+    return res.status(503).json({ sent: false, provider: "twilio", error: "SMS gateway not configured on this deployment" });
+  }
+
+  try {
+    const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
+    const body = new URLSearchParams({ To: to, From: TWILIO_FROM_NUMBER, Body: message });
+    const resp = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+      method: "POST",
+      headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString()
+    });
+    const data: any = await resp.json();
+    if (!resp.ok) {
+      console.error(`[COMMUNICATION_ENGINE] Twilio SMS to ${to} failed: ${data?.message || resp.status}`);
+      return res.status(502).json({ sent: false, provider: "twilio", error: data?.message || `Twilio returned ${resp.status}` });
+    }
+    console.log(`[COMMUNICATION_ENGINE] Real SMS sent via Twilio to ${to} (sid ${data.sid}).`);
+    res.status(201).json({ sent: true, provider: "twilio", sid: data.sid });
+  } catch (err: any) {
+    console.error("[COMMUNICATION_ENGINE] Twilio SMS send error:", err.message);
+    res.status(502).json({ sent: false, provider: "twilio", error: err.message });
+  }
+});
+
 // Query Delivery Status Lifecycle for an Incident
 app.get("/communication/status/:incidentId", (req: Request, res: Response) => {
   const { incidentId } = req.params;

@@ -431,6 +431,25 @@ app.post("/api/v1/context/translate", async (req: Request, res: Response) => {
   res.status(502).json({ error: "context-engine service unavailable" });
 });
 
+// Real SMS fallback (Twilio, via communication-engine) for anyone without
+// the native Android app - most importantly iOS, which can never get the
+// native path. Custom passthrough rather than the fetchService() helper
+// used elsewhere: that helper collapses every non-2xx into one generic
+// "service unavailable", which would hide the honest, specific reason
+// (not configured vs. an actual Twilio failure) this app cares about
+// surfacing everywhere else.
+app.post("/api/v1/sms/send", async (req: Request, res: Response) => {
+  try {
+    const resp = await fetch("http://localhost:8082/communication/sms/send", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req.body)
+    });
+    const data = await resp.json();
+    res.status(resp.status).json(data);
+  } catch (e: any) {
+    res.status(502).json({ sent: false, error: "communication-engine unreachable" });
+  }
+});
+
 // Canonical Emergency Activation Route
 app.post("/api/v1/incidents", async (req: Request, res: Response) => {
   try {
