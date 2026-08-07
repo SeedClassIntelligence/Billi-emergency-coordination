@@ -1041,7 +1041,6 @@
   /* --------------------------- NAV / CHROME --------------------------- */
   const NAV_LINKS = [
     { href: 'dashboard.html', label: 'Command Center' },
-    { href: 'geofence.html',  label: 'Geofences' },
     { href: 'protected.html', label: 'Protected Person' },
     { href: 'network.html',   label: 'Network' },
     { href: 'incident.html',  label: 'Incident' },
