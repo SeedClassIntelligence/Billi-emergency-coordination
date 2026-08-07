@@ -16,10 +16,10 @@
       </div>
 
       <nav class="center-nav-links">
-        <a href="landing.html">Platform</a>
-        <a href="landing.html">Features</a>
+        <a href="#top-nav" onclick="document.getElementById('top-nav').scrollIntoView({behavior:'smooth'}); return false;">Platform</a>
+        <a href="#why-billi" onclick="document.getElementById('why-billi').scrollIntoView({behavior:'smooth'}); return false;">Why Billi</a>
+        <a href="#how-it-works" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'}); return false;">Features</a>
         <a href="#demos-section" onclick="scrollToDemos(); return false;">Live Demos</a>
-        <a href="landing.html">Architecture</a>
       </nav>
 
       <div class="nav-actions flex-row">
@@ -112,8 +112,31 @@
       </div>
     </section>
 
+    <!-- WHY BILLI — MISSION / ORIGIN NARRATIVE -->
+    <section id="why-billi" class="container section-spacing text-center">
+      <div class="section-tag-muted">Why Billi</div>
+      <h2 class="section-title-white">Built for the moments 911 alone doesn't reach</h2>
+      <div style="max-width:720px; margin:0 auto; text-align:left;">
+        <p class="text-muted" style="font-size:0.98rem; line-height:1.75; margin-top:1.25rem;">
+          Traditional emergency response depends on one thing going right: someone making a clear call, describing
+          where they are and what's happening, while it's actively happening. That assumption fails more often than
+          it should. Indoor GPS handed to 911 dispatch is frequently inaccurate. Language barriers make an already-hard
+          call harder. And for a real share of emergencies — a child who can't safely reach for a phone, someone
+          mid-medical-event who can't speak, a person being coerced by whoever's standing next to them — "just call
+          911" was never a plan that could reach them in the first place.
+        </p>
+        <p class="text-muted" style="font-size:0.98rem; line-height:1.75; margin-top:1rem;">
+          Billi starts from a different assumption: the call shouldn't have to be the trigger. A spoken safe word, a
+          held button, a detected fall, a duress PIN entered under threat — any of them set off the same real
+          response. Location, evidence, and a trusted network that already knows the plan start moving immediately,
+          quietly, before anyone has to explain anything out loud. The people it's built for are exactly the people
+          typical emergency response is most likely to miss.
+        </p>
+      </div>
+    </section>
+
     <!-- HOW IT WORKS SECTION -->
-    <section class="container section-spacing text-center">
+    <section id="how-it-works" class="container section-spacing text-center">
       <div class="section-tag-muted">How It Works</div>
       <h2 class="section-title-white">How Billi Protects</h2>
 
@@ -121,21 +144,37 @@
         <div class="card process-step-card text-left">
           <span class="step-num-text">01</span>
           <h3 class="step-title-text">Configure →</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.5;">
+            Set up your trusted network, safe words, medical details, and safe zones once. Every piece becomes part
+            of a real, backend-verified Safety Contract — nothing has to be decided during an actual emergency.
+          </p>
         </div>
 
         <div class="card process-step-card text-left">
           <span class="step-num-text">02</span>
           <h3 class="step-title-text">Detect →</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.5;">
+            Nine different real triggers — a spoken safe word, a held button, a detected fall or crash, a duress PIN
+            — all activate the exact same protected response instantly, whichever one fires.
+          </p>
         </div>
 
         <div class="card process-step-card text-left">
           <span class="step-num-text">03</span>
           <h3 class="step-title-text">Coordinate →</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.5;">
+            Real GPS, audio, and AI-synthesized context reach your trusted network and stay updated live, across
+            every device, for as long as the incident is active.
+          </p>
         </div>
 
         <div class="card process-step-card text-left">
           <span class="step-num-text">04</span>
           <h3 class="step-title-text">Resolve</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.5;">
+            The protected person or an authorized guardian closes it out, leaving a clear, auditable record of what
+            happened, when, and how it ended.
+          </p>
         </div>
       </div>
     </section>
