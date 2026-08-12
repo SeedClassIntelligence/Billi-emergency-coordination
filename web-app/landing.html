@@ -20,6 +20,7 @@
         <a href="#why-billi" onclick="document.getElementById('why-billi').scrollIntoView({behavior:'smooth'}); return false;">Why Billi</a>
         <a href="#features" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'}); return false;">Features</a>
         <a href="compare.html">Compare</a>
+        <a href="#pricing" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'}); return false;">Pricing</a>
         <a href="#demos-section" onclick="scrollToDemos(); return false;">Live Demos</a>
       </nav>
 
@@ -348,6 +349,71 @@
       </div>
     </section>
 
+    <!-- PRICING — one plan, and an honest account of what it delivers today.
+         The disclosure below is not boilerplate: alert delivery genuinely
+         differs by platform right now, and someone buying emergency
+         protection deserves to know that before they pay, not after. -->
+    <section id="pricing" class="container section-spacing text-center">
+      <div class="section-tag-muted">Pricing</div>
+      <h2 class="section-title-white">One plan. One household.</h2>
+      <p class="text-muted margin-top-xs" style="max-width:660px; margin-left:auto; margin-right:auto;">
+        Your family already owns the sensors — phones, watches, tags. You shouldn't pay per person to
+        make them work together. Billi is priced per household, not per protected person.
+      </p>
+
+      <div style="max-width:520px; margin:2rem auto 0;">
+        <div class="card" style="padding:1.75rem; border:1px solid rgba(99,102,241,0.35); box-shadow:0 0 60px rgba(99,102,241,0.12);">
+          <span class="badge badge-indigo" style="font-size:0.65rem;">EARLY ACCESS</span>
+          <h3 class="step-title-text margin-top-xs" style="font-size:1.3rem;">Billi Family</h3>
+          <div style="margin:0.5rem 0 0;">
+            <span style="font-size:2.75rem; font-weight:800; color:#fff;">$14.99</span>
+            <span class="text-muted" style="font-size:0.9rem;">/ month</span>
+          </div>
+          <p class="text-muted" style="font-size:0.78rem; margin-top:0.2rem;">Cancel any time. No contract, no equipment to buy.</p>
+
+          <ul style="margin:1.1rem 0 0 1.1rem; padding:0; color:#cbd5e1; font-size:0.85rem; line-height:2; text-align:left;">
+            <li>Up to <strong>5 protected people</strong> in one household</li>
+            <li>Unlimited trusted-network contacts</li>
+            <li>9 emergency activation paths, including spoken safe words</li>
+            <li>Duress PIN — cancel under coercion without tipping anyone off</li>
+            <li>Live location, movement context, and safe-zone monitoring</li>
+            <li>Automatic audio and photo evidence capture</li>
+            <li>Gemini-assisted incident context and 911-ready handoff packet</li>
+            <li>Full incident history and audit trail</li>
+          </ul>
+
+          <a id="subscribe-btn" class="btn btn-hero-primary margin-top-md" href="#pricing"
+             style="display:inline-block; padding:14px 32px; font-size:1.05rem;">Protect my household →</a>
+          <p class="text-muted" id="subscribe-note" style="font-size:0.72rem; margin-top:0.6rem;"></p>
+        </div>
+      </div>
+
+      <!-- HONEST DELIVERY DISCLOSURE -->
+      <div style="max-width:660px; margin:1.5rem auto 0; padding:1.1rem 1.3rem; border-radius:10px; background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.3); text-align:left;">
+        <strong style="color:#fbbf24; font-size:0.88rem;">Before you subscribe — what Billi does and doesn't do today</strong>
+        <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#cbd5e1; font-size:0.8rem; line-height:1.8;">
+          <li><strong>Text-message alerts work on Android</strong> with the Billi app installed — sent from your
+              own phone's SIM, no third-party gateway. This is the configuration we recommend and have
+              verified on real hardware.</li>
+          <li><strong>On iPhone and in the browser, alert delivery is limited.</strong> Apple permits no app to
+              send a text without a person tapping send, so Billi shows alerts inside the app and we are
+              actively working on carrier-based delivery. If your household is iPhone-only, wait for us —
+              we would rather you didn't pay yet.</li>
+          <li><strong>Watches, BLE tags and smart glasses are represented in the interface but not yet
+              connected as live hardware.</strong> Your phone is the real sensor today.</li>
+          <li><strong>Billi is not a replacement for 911</strong> and is not a professionally monitored alarm
+              service. No one is watching a screen on your behalf. Billi coordinates the people you choose.</li>
+          <li><strong>This is an early-access product.</strong> You are paying to help build it, and to have it
+              before it is finished. We would rather say that plainly than surprise you later.</li>
+        </ul>
+      </div>
+
+      <p class="text-muted margin-top-md" style="font-size:0.8rem;">
+        Schools, campuses and employers need different coverage and pricing —
+        use the feedback button and tell us what you need.
+      </p>
+    </section>
+
     <!-- FOOTER CTA SECTION -->
     <section class="container section-spacing text-center" style="padding-bottom: 5rem;">
       <h2 class="section-title-white" style="font-size: 2.25rem;">Ready to protect what matters?</h2>
@@ -359,6 +425,34 @@
   <script src="app.js"></script>
   <script>
     Billi.mountFeedback();
+
+    /* Checkout link. Paste the Stripe Payment Link URL here once it exists —
+       a Payment Link needs no server-side integration, so this constant is
+       the only change required to start taking real subscriptions.
+       While it is empty the button deliberately does NOT pretend to work:
+       it routes to the feedback widget so an interested household can still
+       raise their hand, rather than dead-ending on a broken checkout. */
+    const STRIPE_PAYMENT_LINK = '';
+
+    (function wireSubscribe() {
+      const btn = document.getElementById('subscribe-btn');
+      const note = document.getElementById('subscribe-note');
+      if (!btn) return;
+      if (STRIPE_PAYMENT_LINK) {
+        btn.href = STRIPE_PAYMENT_LINK;
+        btn.rel = 'noopener';
+        note.innerText = 'Secure checkout through Stripe. Cancel any time.';
+      } else {
+        btn.href = '#pricing';
+        btn.innerText = 'Request early access →';
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const fb = document.querySelector('#billi-fb-widget button, #billi-fb-widget');
+          if (fb && fb.click) fb.click();
+        });
+        note.innerText = 'Checkout is not open yet — tell us about your household and we will reach out.';
+      }
+    })();
   </script>
 </body>
 </html>

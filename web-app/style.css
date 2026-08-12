@@ -1248,6 +1248,27 @@ body.bg-root {
      of scrolling) without improving tappability. */
   .action-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.4rem !important; }
   .action-grid button { padding: 0.55rem 0.4rem !important; font-size: 0.74rem !important; }
+
+  /* Landing navbar on phones. .nav-flex is a non-wrapping space-between row,
+     so the six center links plus two buttons ran to ~664px inside a 375px
+     viewport and pushed the whole page into horizontal scroll — the first
+     thing a visitor on a phone saw was a sideways-sliding landing page.
+     (The in-app header got this treatment earlier; landing.html has its own
+     navbar and was never covered.) Two rows now: brand + buttons stay on
+     the top line, the links become their own horizontally-scrollable strip
+     underneath rather than forcing the document wider. */
+  .top-navbar { padding: 0.75rem 1rem; }
+  .nav-flex { flex-wrap: wrap; row-gap: 0.6rem; }
+  .center-nav-links {
+    order: 3;
+    width: 100%;
+    gap: 1.1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .center-nav-links::-webkit-scrollbar { display: none; }
+  .center-nav-links a { white-space: nowrap; }
 }
 
 /* Tighter default button sizing platform-wide — buttons had grown oversized
