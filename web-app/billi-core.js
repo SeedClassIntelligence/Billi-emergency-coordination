@@ -556,6 +556,92 @@
   }
 
   /* Capability adapters push normalized events here. */
+  /* ------------------------ SAFE-ZONE BREACH DETECTION ------------------
+     Zones carried lat/lng/radius and were drawn on a map, but nothing ever
+     computed whether the protected person was inside one — "geofence" existed
+     only as a trigger label a test button could fire by hand. This is the
+     real evaluation.
+
+     HONEST SCOPE: this runs while Billi is open on the device. A web page
+     cannot watch location after it is closed, so this is not an OS-level
+     background geofence and must not be described as one.
+     ---------------------------------------------------------------------- */
+
+  const EARTH_RADIUS_M = 6371000;
+
+  /* Haversine great-circle distance in metres. */
+  function zoneDistanceMeters(lat1, lng1, lat2, lng2) {
+    const toRad = (d) => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return 2 * EARTH_RADIUS_M * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  /* Classify a fix against every active zone.
+
+     The accuracy band is the safety-critical part. A fix 105m from the centre
+     of a 100m zone, accurate to only 50m, does NOT prove an exit — the person
+     could be well inside. Calling that a breach would wake a family at 2am
+     because GPS drifted. So:
+       distance + accuracy <= radius  -> INSIDE  (certainly within)
+       distance - accuracy >  radius  -> OUTSIDE (certainly beyond)
+       otherwise                      -> UNCERTAIN, previous state is kept
+     Silence on an uncertain fix is correct here: a genuine exit keeps
+     producing fixes and resolves to OUTSIDE within seconds as accuracy
+     improves or distance grows. */
+  function evaluateZones(lat, lng, accuracyMeters, zones) {
+    const acc = Number.isFinite(accuracyMeters) ? Math.max(0, accuracyMeters) : 0;
+    const list = (zones || state.zones || []).filter(z => z.active !== false);
+    return list.map(z => {
+      const distance = Math.round(zoneDistanceMeters(lat, lng, z.lat, z.lng));
+      let presence = 'UNCERTAIN';
+      if (distance + acc <= z.radius) presence = 'INSIDE';
+      else if (distance - acc > z.radius) presence = 'OUTSIDE';
+      return { id: z.id, name: z.name, radius: z.radius, distance, accuracy: acc, presence };
+    });
+  }
+
+  /* Per-zone presence memory. A breach is a TRANSITION (was inside, now
+     certainly outside), never merely "currently outside" — otherwise simply
+     opening Billi away from home would fire an emergency. */
+  const zonePresence = Object.create(null);
+
+  function detectZoneBreaches(evaluations) {
+    const breaches = [];
+    evaluations.forEach(e => {
+      const was = zonePresence[e.id];
+      if (e.presence === 'UNCERTAIN') return;      // hold previous state
+      if (was === 'INSIDE' && e.presence === 'OUTSIDE') breaches.push(e);
+      zonePresence[e.id] = e.presence;
+    });
+    return breaches;
+  }
+
+  function resetZonePresence() {
+    Object.keys(zonePresence).forEach(k => delete zonePresence[k]);
+  }
+
+  /* Called for every location fix while armed. Returns the breach it acted
+     on, or null. Fires the pre-existing 'geofence' trigger, which is already
+     classified as PASSIVE — so it opens the 10-second confirmation window
+     rather than notifying the Trusted Network instantly. A phone in a
+     backpack riding past a zone edge gets those ten seconds to be wrong. */
+  function onZoneFix(lat, lng, accuracyMeters) {
+    if (!state.armed || state.isDemo || state.isViewingOther) return null;
+    if (getActiveIncident()) return null;             // already handling one
+    const breaches = detectZoneBreaches(evaluateZones(lat, lng, accuracyMeters));
+    if (!breaches.length) return null;
+    const b = breaches[0];
+    audit('Billi', 'SAFE_ZONE_EXIT',
+      `Left ${b.name} — ${b.distance} m from centre (zone radius ${b.radius} m, fix accurate to ${b.accuracy} m).`);
+    const inc = triggerIncident('geofence');
+    if (inc) inc.zoneBreach = b;
+    save();
+    return b;
+  }
+
   function pushTelemetry(evt) {
     const inc = getActiveIncident();
     if (!inc) return false;
@@ -1270,6 +1356,7 @@
     subscribeShared, adoptActiveShared, pushTelemetry,
     infoTip, toggleTip,
     checkNamedAlerts, viewNamedAlert,
+    zoneDistanceMeters, evaluateZones, detectZoneBreaches, resetZonePresence, onZoneFix,
     get namedAlert() { return namedAlert; },
     /* Join a live shared incident from a fresh session in a given role. */
     async joinLive(role) {
@@ -1384,4 +1471,37 @@
   setInterval(() => {
     probeBackend().then(l => { if (l.connected) { subscribeShared(); refreshNamedAlertBanner(); } });
   }, 30000);
+
+  /* Safe-zone monitoring, wired here rather than on one page so it stays
+     armed wherever the guardian happens to be in the app — a zone exit does
+     not wait for someone to be looking at protected.html.
+
+     Every location fix, whatever produced it, is evaluated. During an
+     incident the high-accuracy watch feeds this too, which is harmless:
+     onZoneFix() returns early once an incident is open.
+
+     LIMITATION, stated rather than hidden: a browser cannot watch location
+     after its page is closed, so this covers "Billi is open" and not
+     OS-level background geofencing. The Android app keeps it alive while
+     the app is foregrounded. True background monitoring needs a native
+     service and is not built. */
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('billi:adapter', (e) => {
+      const evt = e && e.detail;
+      if (!evt || evt.event_type !== 'LOCATION_UPDATED') return;
+      const d = evt.data || evt;
+      if (!Number.isFinite(d.latitude) || !Number.isFinite(d.longitude)) return;
+      try { onZoneFix(d.latitude, d.longitude, d.accuracy_meters); } catch (err) { /* never break the page on a bad fix */ }
+    });
+
+    /* Start watching once the account is armed and has at least one zone.
+       No zones means nothing to breach, so no reason to hold GPS open. */
+    setTimeout(() => {
+      if (!state.armed || state.isDemo || state.isViewingOther) return;
+      if (!(state.zones || []).some(z => z.active !== false)) return;
+      if (window.BilliAdapters && BilliAdapters.Location.armZoneWatch) {
+        BilliAdapters.Location.armZoneWatch();
+      }
+    }, 1200);
+  }
 })();

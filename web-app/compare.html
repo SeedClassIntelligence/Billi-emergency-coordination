@@ -83,7 +83,7 @@
       ['AI reasoning', 'None, or an unexplained black box', 'Live Gemini reasoning — and it tells you honestly when live AI isn\'t available instead of pretending'],
       ['Reaching people without the app', 'Push notification only — hopes the other person has it installed', 'Real SMS through the phone\'s own SIM (Android), or a real carrier gateway fallback for everyone else'],
       ['Coordination', 'A one-way alert', 'One live incident every guardian device sees and updates in real time, together'],
-      ['Wandering & geofencing', 'Sometimes offered as a paid add-on', 'Real GPS safe zones with exit-breach alerts, built in from the start'],
+      ['Wandering & geofencing', 'Sometimes offered as a paid add-on', 'Real GPS safe zones with exit-breach alerts, built in from the start (active while Billi is open)'],
       ['Transparency', 'Marketing describes what the product should do', 'Every capability is labeled CONNECTED, SIMULATED, or LOCAL directly in the product — you always know what\'s actually real']
     ];
     document.getElementById('compare-rows').innerHTML = COMPARE_ROWS.map(([label, them, us], i) => `
@@ -95,7 +95,7 @@
 
     const WHO_FOR = [
       ['🧒', 'Children', 'A spoken safe word, hold-to-activate SOS, and safe zones for school and home boundaries — with an exit-breach alert if a zone is left unexpectedly.'],
-      ['🧩', 'Children with autism', 'The same safe-zone exit-breach alert is exactly the mechanism used for elopement risk — a real, serious concern, not an edge case Billi treats as secondary.'],
+      ['🧩', 'Children with autism', 'The same safe-zone exit-breach alert is exactly the mechanism used for elopement risk — a real, serious concern, not an edge case Billi treats as secondary. It runs while Billi is open on the device; always-on background monitoring is not built yet.'],
       ['👵', 'Elderly family members', 'Real fall detection covers the moment something happens. Safe-zone wandering alerts cover the moment someone leaves and can\'t explain why — dementia-related wandering, not just falls.'],
       ['✈️', 'Travelers & tourists', 'Safe zones for unfamiliar areas, duress protection that works even without local language fluency, and real GPS that doesn\'t depend on the destination\'s own emergency infrastructure.'],
       ['🏫', 'Students & campuses', 'Silent activation, real-time responder coordination, and a Living Emergency Packet that hands responders real context instead of a bare address.'],

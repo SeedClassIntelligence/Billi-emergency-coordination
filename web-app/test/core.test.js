@@ -144,3 +144,96 @@ describe('accidental-trigger safe-fail (passive vs. deliberate triggers)', () =>
     }
   });
 });
+
+/* Safe-zone breach detection. This logic decides whether to wake a family in
+   the middle of the night, so both directions matter equally: a real exit must
+   fire, and GPS jitter must not. Testable without hardware — the maths takes
+   coordinates, not a device. */
+describe('safe-zone exit-breach detection', () => {
+  const SCHOOL = { id: 'z_school', name: 'Pine Middle School', lat: 37.7753, lng: -122.4201, radius: 100, active: true };
+
+  function zonedAccount() {
+    minimalAccount();
+    Billi.state.armed = true;
+    Billi.state.zones = [{ ...SCHOOL }];
+    Billi.save();
+    Billi.resetZonePresence();
+  }
+
+  test('Haversine distance is accurate against a known separation', () => {
+    // Pine Middle School -> Grandma Clara's, from the platform fixtures.
+    const d = Billi.zoneDistanceMeters(37.7753, -122.4201, 37.7792, -122.4208);
+    assert.ok(d > 400 && d < 460, `expected ~435 m, got ${Math.round(d)} m`);
+    assert.equal(Math.round(Billi.zoneDistanceMeters(37.7753, -122.4201, 37.7753, -122.4201)), 0);
+  });
+
+  test('a confident fix inside the radius reads INSIDE, a confident fix well beyond reads OUTSIDE', () => {
+    zonedAccount();
+    assert.equal(Billi.evaluateZones(37.7753, -122.4201, 5)[0].presence, 'INSIDE');
+    assert.equal(Billi.evaluateZones(37.7792, -122.4208, 5)[0].presence, 'OUTSIDE');
+  });
+
+  test('a fix near the boundary with poor accuracy is UNCERTAIN, never a breach', () => {
+    zonedAccount();
+    // ~105 m out but accurate only to 50 m: the person may still be inside.
+    const e = Billi.evaluateZones(37.77625, -122.4201, 50)[0];
+    assert.equal(e.presence, 'UNCERTAIN', `expected UNCERTAIN, got ${e.presence} at ${e.distance} m`);
+    assert.equal(Billi.detectZoneBreaches([e]).length, 0, 'an uncertain fix must never count as a breach');
+  });
+
+  test('a breach requires a transition — being outside from the very first fix does not fire', () => {
+    zonedAccount();
+    assert.equal(Billi.onZoneFix(37.7792, -122.4208, 5), null,
+      'opening Billi already away from a zone must not trigger an emergency');
+    assert.ok(!Billi.getActiveIncident(), 'no incident should exist');
+  });
+
+  test('inside then confidently outside fires a geofence incident with the breach recorded', () => {
+    zonedAccount();
+    Billi.onZoneFix(37.7753, -122.4201, 5);          // establish presence: inside
+    const breach = Billi.onZoneFix(37.7792, -122.4208, 5); // leave
+    assert.ok(breach, 'a genuine inside -> outside transition must fire');
+    assert.equal(breach.name, SCHOOL.name);
+    const inc = Billi.getActiveIncident();
+    assert.ok(inc, 'a breach must open an incident');
+    assert.equal(inc.zoneBreach.id, SCHOOL.id, 'the incident should record which zone was left');
+  });
+
+  test('a geofence breach is PASSIVE — it opens the confirmation window instead of notifying instantly', () => {
+    zonedAccount();
+    Billi.onZoneFix(37.7753, -122.4201, 5);
+    Billi.onZoneFix(37.7792, -122.4208, 5);
+    const inc = Billi.getActiveIncident();
+    assert.equal(inc.confirmedAt, null, 'a sensor-inferred breach must not confirm instantly');
+    assert.ok(inc.confirmWindowMs > 0, 'the accidental-trigger window must apply to geofence exits');
+  });
+
+  test('jitter across the boundary does not re-fire once an incident is already open', () => {
+    zonedAccount();
+    Billi.onZoneFix(37.7753, -122.4201, 5);
+    Billi.onZoneFix(37.7792, -122.4208, 5);
+    const firstId = Billi.getActiveIncident().id;
+    assert.equal(Billi.onZoneFix(37.7753, -122.4201, 5), null, 'must not act while an incident is open');
+    assert.equal(Billi.onZoneFix(37.7792, -122.4208, 5), null);
+    assert.equal(Billi.getActiveIncident().id, firstId, 'no second incident may be created');
+  });
+
+  test('demo runs and unarmed accounts never fire a real geofence emergency', () => {
+    zonedAccount();
+    Billi.state.armed = false; Billi.save();
+    Billi.onZoneFix(37.7753, -122.4201, 5);
+    assert.equal(Billi.onZoneFix(37.7792, -122.4208, 5), null, 'unarmed must not fire');
+
+    zonedAccount();
+    Billi.state.isDemo = true; Billi.save();
+    Billi.onZoneFix(37.7753, -122.4201, 5);
+    assert.equal(Billi.onZoneFix(37.7792, -122.4208, 5), null, 'demo mode must not fire a real emergency');
+  });
+
+  test('inactive zones are ignored entirely', () => {
+    zonedAccount();
+    Billi.state.zones = [{ ...SCHOOL, active: false }];
+    Billi.save();
+    assert.equal(Billi.evaluateZones(37.7792, -122.4208, 5).length, 0);
+  });
+});

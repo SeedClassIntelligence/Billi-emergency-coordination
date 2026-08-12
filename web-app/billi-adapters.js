@@ -68,6 +68,22 @@
         { enableHighAccuracy: false, maximumAge: 60000, timeout: 15000 });
       return true;
     },
+    /* Continuous low-power watch for safe-zone monitoring while armed.
+       armLowPower() above is a single getCurrentPosition, which cannot
+       detect a zone exit — a breach is a TRANSITION, so it needs a
+       stream of fixes, not one. Deliberately low accuracy and a long
+       maximumAge: crossing a 100m boundary does not need metre-level
+       precision, and this runs for hours rather than the minutes an
+       incident lasts. Only starts if at least one active zone exists. */
+    armZoneWatch() {
+      if (!navigator.geolocation) { this.status = 'UNSUPPORTED'; return false; }
+      if (this.mode === 'INCIDENT_HIGH_ACCURACY') return true; // incident wins
+      this.stop();
+      this.mode = 'ARMED_ZONE_WATCH'; this.status = 'ACQUIRING';
+      this.watchId = navigator.geolocation.watchPosition(this._handle, this._fail,
+        { enableHighAccuracy: false, maximumAge: 30000, timeout: 30000 });
+      return true;
+    },
     startIncident() {
       if (!navigator.geolocation) { this.status = 'UNSUPPORTED'; return false; }
       this.stop();

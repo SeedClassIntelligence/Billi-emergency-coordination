@@ -192,7 +192,11 @@ edges. Everything below was verified on the deployed system.
 - Real GPS, motion classification, microphone capture and camera capture from the phone
 - Real SMS from the phone's own SIM on Android via `SmsManager` — no third-party gateway
 - Real 13-service backend with persisted incidents, timelines and packets
-- Real safe zones with live map, address search and exit-breach detection
+- Real safe zones with live map, address search, and genuine exit-breach
+  detection — Haversine distance against the live GPS stream, with an
+  accuracy band so a jittery fix near a boundary is never treated as an exit.
+  Works while Billi is open on the device; OS-level background geofencing
+  would need a native service and is not built.
 - Household invite so a second real device joins the same protected household
 
 **Simulated or not yet built — and labelled as such in the product**
