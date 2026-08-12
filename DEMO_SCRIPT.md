@@ -39,6 +39,33 @@ Every one of these has an honest, clearly-labeled deterministic fallback (`aiPro
 "deterministic-fallback"` vs `"gemini-live"`) — nothing in the UI ever pretends a rule-based
 answer came from the model.
 
+## Where to demo from
+
+**Live, no setup required: <https://billi-platform-467802610371.us-central1.run.app/landing.html>**
+
+This is the same 13-service platform this repo runs locally, deployed to Cloud Run — judges can
+open it cold with nothing installed. Every page referenced in the walkthrough below works there:
+`landing.html`, `demo-live.html`, `incident.html`, `protected.html`, `admin.html`. The Android APK
+is served from the same host at `/billi.apk` and is hardcoded to load this URL, so the app and the
+browser hit identical backends.
+
+**Cold start is real and will bite you.** The service scales to zero, so the first request after an
+idle period returns `{"error":"gateway unreachable through cloud proxy"}` for anywhere from 15
+seconds to about a minute while the 13 internal services boot. Open the URL a couple of minutes
+before you present. If you're handing the link to someone who'll click it unattended, keep an
+instance warm for the judging window instead:
+
+```bash
+gcloud run services update billi-platform --region us-central1 --min-instances=1
+```
+
+Set it back to `--min-instances=0` afterward — that flag is the only setting here that costs money
+while idle.
+
+Demo locally instead (`npm start`) only if you specifically need real device GPS/mic/camera over the
+HTTPS LAN URL. For everything else the live URL is the better showing, because it proves the thing
+actually runs somewhere other than your laptop.
+
 ## Which "demo" is which (read this before recording — this is the confusing part)
 
 Three different screens in this repo could all reasonably be called "the demo." Only one is the
@@ -143,10 +170,48 @@ silently break or fake it.
 
 ## Before you demo
 
-- Confirm `.env`'s `GEMINI_API_KEY` is set and has headroom (test with one `curl` call to
-  `/api/v1/context/summarize` a few minutes before — see README's Quick Start).
-- Run `npm start` and wait for `✓ BILLI PLATFORM READY — 13/13 services connected`.
-- If demoing on a phone for real GPS/camera/mic, use the HTTPS LAN URL printed at startup and
-  accept the self-signed certificate warning in advance, not live in front of judges.
+**Verify Gemini against whatever you're actually demoing from.** This matters more than it sounds:
+the key is supplied two different ways, so a working local setup proves nothing about the live URL.
+Locally it comes from the gitignored repo-root `.env`; on Cloud Run it's a runtime env var set at
+deploy time. Production once ran for days on the literal placeholder string `YOUR_GEMINI_API_KEY`
+while local was fine — every AI card silently served its deterministic fallback, and nothing in the
+UI looked broken.
+
+Run this against the host you'll present from, and confirm `"aiProvider":"gemini-live"`:
+
+```bash
+curl -s -X POST https://billi-platform-467802610371.us-central1.run.app/api/v1/context/summarize \
+  -H "Content-Type: application/json" \
+  -d '{"incidentId":"PROBE","protectedPerson":{"name":"Maya Johnson","age":11},"timelineEvents":[{"event":"Maya: Help me!"}]}'
+```
+
+A sub-second response reading `"deterministic-fallback"` means no successful model call happened —
+either the key is wrong or quota is tapped. A real call takes several seconds. To inspect the key
+Cloud Run is actually holding (prints only that one variable, truncated, so nothing else leaks):
+
+```bash
+gcloud run services describe billi-platform --region us-central1 \
+  --format='value(spec.template.spec.containers[0].env)' | tr ';' '\n' | grep GEMINI_API_KEY | cut -c1-52
+```
+
+To replace it, use an interactive prompt rather than pasting the key into a command — `-s` keeps it
+off screen, and `--update-env-vars` merges instead of wiping the other variables the way
+`--set-env-vars` would:
+
+```bash
+read -s -p "Paste Gemini key: " K && echo && gcloud run services update billi-platform \
+  --region us-central1 --update-env-vars GEMINI_API_KEY="$K"
+```
+
+Note that `gcloud run deploy --image` carries the existing environment forward unchanged, so
+redeploying does **not** fix or alter a bad key.
+
+**The rest:**
+
+- Warm the live URL (see "Where to demo from" above) or start `npm start` locally and wait for
+  `✓ BILLI PLATFORM READY — 13/13 services connected`.
+- If demoing on a phone for real GPS/camera/mic, either install `/billi.apk` or use the HTTPS LAN
+  URL printed at startup — and accept the self-signed certificate warning in advance, not live in
+  front of judges.
 - Have a fresh browser profile or `Billi.resetPlatform()` ready so you're not demoing on top of
   leftover test data.

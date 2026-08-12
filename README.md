@@ -10,8 +10,12 @@ from activation through resolution — with live Gemini AI assisting every step 
 — public, no setup required, no login gate. Share this link with anyone and they can create
 their own account and test the full platform immediately. Runs scale-to-zero on Cloud Run:
 every service ships pre-compiled (no on-the-fly TypeScript transpilation), so a cold start
-brings all 13 internal services up in well under 30 seconds, not the 1-3 minutes an interpreted
-boot used to take. See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough.
+brings all 13 internal services up in roughly 15-20 seconds rather than the 1-3 minutes an
+interpreted boot used to take. The first request after a brand-new image is deployed is slower
+(around a minute, since the image also has to be pulled), and until the stack is up the gateway
+returns `{"error":"gateway unreachable through cloud proxy"}` — so open the link a couple of
+minutes ahead if you're presenting, or keep an instance warm. See
+[DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough and the pre-demo checklist.
 
 The landing page also has a **📱 Download Android App** button — a native shell (see
 [mobile-native/](mobile-native/)) that wraps the same live site and adds the one thing a
