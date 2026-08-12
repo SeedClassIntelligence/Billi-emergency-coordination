@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["--yes", "http-server", "web-app", "-p", "8099", "-c-1"],
       "port": 8099
+    },
+    {
+      "name": "billi-services",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["start-all.js"],
+      "port": 8080
     }
   ]
 }

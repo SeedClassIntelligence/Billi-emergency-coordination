@@ -63,57 +63,23 @@
             <span class="dot yellow-dot"></span>
             <span class="dot green-dot"></span>
           </div>
-          <div class="window-url-bar">guardiancommand.com</div>
+          <div class="window-url-bar">billi-platform-467802610371.us-central1.run.app</div>
           <div style="width: 40px;"></div>
         </div>
-        <div class="window-content-grid">
-          <div class="window-map-pane">
-            <div class="mapbox-dark-canvas" style="height: 100%; border-radius: 8px;">
-              <div class="map-grid-pattern"></div>
-              <div class="map-radar-sweep" id="mockup-radar"></div>
-              <div class="map-ripple" id="mockup-ripple"></div>
-              <div class="map-pulsing-pin" id="mockup-pin" style="background: #a855f7; box-shadow: 0 0 20px #a855f7; opacity: 0; transition: opacity 0.5s ease, box-shadow 0.5s ease;"></div>
-              <div class="map-person-tag" id="mockup-tag" style="background: rgba(15,23,42,0.9); border: 1px solid rgba(168,85,247,0.4); opacity: 0; transition: opacity 0.5s ease;">📍 Location Locked</div>
-            </div>
-          </div>
-          <div class="window-control-pane">
-            <div class="window-pane-header">The Instant Billi Activates</div>
-            <div class="margin-top-xs" id="core-action-rows" style="display:flex; flex-direction:column; gap:0.5rem;">
-              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                <span style="font-size:0.78rem; color:#e2e8f0;">📍 GPS Location</span>
-                <span class="flex-row" style="gap:0.4rem; align-items:center;">
-                  <span class="row-scan-dot" id="anim-gps"></span>
-                  <span class="core-action-badge" id="core-badge-gps" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
-                </span>
-              </div>
-              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                <span style="font-size:0.78rem; color:#e2e8f0;">🎙️ Audio Capture</span>
-                <span class="flex-row" style="gap:0.4rem; align-items:center;">
-                  <span class="audio-wave" id="anim-audio"><span></span><span></span><span></span><span></span></span>
-                  <span class="core-action-badge" id="core-badge-audio" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
-                </span>
-              </div>
-              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                <span style="font-size:0.78rem; color:#e2e8f0;">📸 Photo Evidence</span>
-                <span class="flex-row" style="gap:0.4rem; align-items:center;">
-                  <span class="photo-flash" id="anim-photo"></span>
-                  <span class="core-action-badge" id="core-badge-photo" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
-                </span>
-              </div>
-              <div class="flex-between" style="padding:0.5rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                <span style="font-size:0.78rem; color:#e2e8f0;">💬 Alert Message</span>
-                <span class="flex-row" style="gap:0.4rem; align-items:center;">
-                  <span class="msg-ping" id="anim-message"></span>
-                  <span class="core-action-badge" id="core-badge-message" style="font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; transition: background 0.4s ease, color 0.4s ease;">PENDING</span>
-                </span>
-              </div>
-            </div>
-            <p class="text-muted" id="mockup-caption" style="font-size:0.74rem; margin-top:0.7rem; min-height:2.2em; line-height:1.4; transition: opacity 0.3s ease;">
-              Every core action starts the instant Billi is triggered — no waiting, no sequence to follow.
-            </p>
-          </div>
-        </div>
+        <!-- Real screen capture of the running platform, not an illustration:
+             armed → hold-SOS → the four core actions live → Guardian Command
+             Center → guardian acknowledges. Recorded against the actual
+             13-service backend, so the incident/packet IDs, the Trusted
+             Network response matrix, and the LIVE GEMINI analysis in these
+             frames are all genuine output. Regenerate by re-recording the
+             same walkthrough rather than editing the frames. -->
+        <img class="window-media" src="media/billi-hero-sequence.gif"
+             alt="Screen recording of Billi running: the protected person's screen shows Billi armed, then after a hold-to-activate SOS all four core actions go live — location acquired, audio evidence active, photo evidence active, trusted network delivered. The Guardian Command Center then shows the incident lifecycle advancing to guardian acknowledged, the trusted network response matrix, and a live Gemini audio sentiment analysis.">
       </div>
+      <p class="text-muted text-center" style="max-width:640px; margin:0.9rem auto 0; font-size:0.78rem; line-height:1.5;">
+        Actual screen capture of Billi running against its live backend — the incident IDs, the trusted-network
+        delivery states, and the Gemini analysis above are real output, not a mockup.
+      </p>
 
       <!-- 3 PERFORMANCE STAT CARDS -->
       <div class="grid grid-3 container margin-top-lg">
@@ -393,138 +359,6 @@
   <script src="app.js"></script>
   <script>
     Billi.mountFeedback();
-
-    /* Hero mockup — illustrates the actual four core actions that fire
-       the instant Billi activates (GPS, audio, photo, alert message),
-       matching the real truth-state pattern already used in
-       protected.html/incident.html (core.gps/core.audio/core.video/
-       core.network), not an invented scenario story. Purely
-       illustrative timing here (the mockup already shows fake
-       "guardiancommand.com" browser chrome) - the STATES and their
-       order are real, the exact seconds are compressed for a landing
-       page loop, not measured from the live app. */
-    const CORE_ACTION_TIMELINE = [
-      { t: 0,    gps: 'ACQUIRING', audio: 'STARTING', photo: 'PENDING',   message: 'QUEUED',
-        caption: 'Every core action starts the instant Billi is triggered — no waiting, no sequence to follow.' },
-      { t: 1400, gps: 'ACQUIRED',  audio: 'STARTING', photo: 'STARTING', message: 'QUEUED',
-        caption: 'GPS locks first — usually under two seconds, even before anything else finishes starting up.' },
-      { t: 2800, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'STARTING', message: 'SENT',
-        caption: 'Audio capture goes active and the alert is already sent — real evidence, not a delayed report after the fact.' },
-      { t: 4200, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'CAPTURED', message: 'SENT',
-        caption: 'A photo is sealed as evidence, timestamped and tied to this exact moment.' },
-      { t: 5600, gps: 'ACQUIRED',  audio: 'ACTIVE',   photo: 'CAPTURED', message: 'DELIVERED',
-        caption: 'The trusted network has it — location, audio, photo, and context, all live, all at once.' }
-    ];
-    const CORE_ACTION_HOLD_MS = 3200; // pause at fully-active before looping
-    const CORE_ACTION_STATE_COLOR = {
-      PENDING: ['rgba(148,163,184,0.15)', '#94a3b8'], QUEUED: ['rgba(148,163,184,0.15)', '#94a3b8'],
-      ACQUIRING: ['rgba(245,158,11,0.2)', '#fbbf24'], STARTING: ['rgba(245,158,11,0.2)', '#fbbf24'], SENT: ['rgba(245,158,11,0.2)', '#fbbf24'],
-      ACQUIRED: ['rgba(16,185,129,0.2)', '#34d399'], ACTIVE: ['rgba(16,185,129,0.2)', '#34d399'],
-      CAPTURED: ['rgba(16,185,129,0.2)', '#34d399'], DELIVERED: ['rgba(16,185,129,0.2)', '#34d399']
-    };
-
-    function setCoreBadge(id, state) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const [bg, fg] = CORE_ACTION_STATE_COLOR[state] || CORE_ACTION_STATE_COLOR.PENDING;
-      el.innerText = state;
-      el.style.background = bg;
-      el.style.color = fg;
-    }
-
-    let mockupLockFired = false;
-    let mockupPhotoFired = false;
-
-    function applyCoreActionFrame(frame) {
-      setCoreBadge('core-badge-gps', frame.gps);
-      setCoreBadge('core-badge-audio', frame.audio);
-      setCoreBadge('core-badge-photo', frame.photo);
-      setCoreBadge('core-badge-message', frame.message);
-
-      const pin = document.getElementById('mockup-pin');
-      const tag = document.getElementById('mockup-tag');
-      const radar = document.getElementById('mockup-radar');
-      const ripple = document.getElementById('mockup-ripple');
-      const gpsDot = document.getElementById('anim-gps');
-
-      if (frame.gps === 'ACQUIRING') {
-        radar.classList.add('active');
-        gpsDot.classList.add('scanning');
-      } else if (frame.gps === 'ACQUIRED') {
-        radar.classList.remove('active');
-        gpsDot.classList.remove('scanning');
-        pin.style.opacity = '1';
-        tag.style.opacity = '1';
-        if (!mockupLockFired) {
-          mockupLockFired = true;
-          ripple.classList.remove('firing');
-          void ripple.offsetWidth; // restart the CSS animation from scratch
-          ripple.classList.add('firing');
-        }
-      }
-
-      // Audio — waveform runs for the whole duration capture is actually
-      // active, not a one-shot; there's no discrete "done" moment for
-      // ongoing audio the way there is for a GPS lock or a photo.
-      const audioWave = document.getElementById('anim-audio');
-      audioWave.classList.toggle('active', frame.audio === 'STARTING' || frame.audio === 'ACTIVE');
-
-      // Photo — a soft priming pulse while starting, then one real
-      // shutter-flash exactly when it's sealed as evidence.
-      const photoFlash = document.getElementById('anim-photo');
-      if (frame.photo === 'STARTING') {
-        photoFlash.classList.add('priming');
-        photoFlash.classList.remove('flashing');
-      } else if (frame.photo === 'CAPTURED') {
-        photoFlash.classList.remove('priming');
-        if (!mockupPhotoFired) {
-          mockupPhotoFired = true;
-          photoFlash.classList.remove('flashing');
-          void photoFlash.offsetWidth;
-          photoFlash.classList.add('flashing');
-        }
-      }
-
-      // Message — pulses while queued/sent (in transit), settles to a
-      // solid dot once actually delivered.
-      const msgPing = document.getElementById('anim-message');
-      msgPing.classList.toggle('sending', frame.message === 'QUEUED' || frame.message === 'SENT');
-      msgPing.classList.toggle('delivered', frame.message === 'DELIVERED');
-
-      const caption = document.getElementById('mockup-caption');
-      caption.style.opacity = '0';
-      setTimeout(() => { caption.innerText = frame.caption; caption.style.opacity = '1'; }, 250);
-    }
-
-    function resetCoreActionMockup() {
-      ['gps', 'audio', 'photo', 'message'].forEach(k => setCoreBadge(`core-badge-${k}`, k === 'message' ? 'QUEUED' : 'PENDING'));
-      const pin = document.getElementById('mockup-pin');
-      const tag = document.getElementById('mockup-tag');
-      const radar = document.getElementById('mockup-radar');
-      const ripple = document.getElementById('mockup-ripple');
-      if (pin) { pin.style.opacity = '0'; tag.style.opacity = '0'; }
-      if (radar) radar.classList.remove('active');
-      if (ripple) ripple.classList.remove('firing');
-      document.getElementById('anim-gps')?.classList.remove('scanning');
-      document.getElementById('anim-audio')?.classList.remove('active');
-      document.getElementById('anim-photo')?.classList.remove('priming', 'flashing');
-      document.getElementById('anim-message')?.classList.remove('sending', 'delivered');
-      mockupLockFired = false;
-      mockupPhotoFired = false;
-    }
-
-    (function startCoreActionLoop() {
-      if (!document.getElementById('mockup-pin')) return;
-      function playOnce() {
-        CORE_ACTION_TIMELINE.forEach(frame => setTimeout(() => applyCoreActionFrame(frame), frame.t));
-        const lastT = CORE_ACTION_TIMELINE[CORE_ACTION_TIMELINE.length - 1].t;
-        setTimeout(() => {
-          resetCoreActionMockup();
-          setTimeout(playOnce, 600);
-        }, lastT + CORE_ACTION_HOLD_MS);
-      }
-      playOnce();
-    })();
   </script>
 </body>
 </html>
