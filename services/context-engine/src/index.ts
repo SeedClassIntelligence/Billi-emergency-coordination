@@ -33,6 +33,59 @@ const PORT = process.env.PORT || 8089;
  * ENGINE DECIDES — this service never executes actions itself.
  */
 
+/* --- MODEL SELECTION ------------------------------------------------------
+ * Free-tier Gemini quota is enforced PER MODEL — two separate caps, both
+ * real: requests-per-minute and requests-per-day. Running all six routes on
+ * one model meant one shared daily pool, and a day of demo testing emptied
+ * it. Splitting the routes across two models gives two independent pools.
+ *
+ * PRIMARY carries the two calls whose reasoning quality is actually on show:
+ * the activation synthesis that feeds the orchestration rule engine, and the
+ * audio sentiment analysis the demo is built around. LIGHT carries the
+ * higher-frequency, lower-stakes work — the summary card, translation, setup
+ * review, photo description. gemini-3.5-flash-lite was verified against this
+ * key to handle all of it: plain text, structured responseSchema output, and
+ * image input.
+ *
+ * Both are overridable by env, so upgrading to a paid tier before submission
+ * is a config change, not a code change — set both to the same premium model
+ * and every route uses it.
+ */
+const MODEL_PRIMARY = process.env.GEMINI_MODEL_PRIMARY || "gemini-3.5-flash";
+const MODEL_LIGHT = process.env.GEMINI_MODEL_LIGHT || "gemini-3.5-flash-lite";
+
+/* A quota rejection names its own retry delay and quota id — treat only that
+ * as "try the other model", never a genuine bad request or auth failure. */
+function isQuotaError(e: unknown): boolean {
+  const s = String((e as { status?: number })?.status ?? "") + " " + String(e);
+  return s.includes("429") || s.includes("RESOURCE_EXHAUSTED");
+}
+
+/**
+ * Run a Gemini call on its tier's model, and if that model's quota is spent,
+ * run it once on the other tier's model before giving up. Staying on Gemini
+ * with a smaller model is a better answer than dropping to the deterministic
+ * fallback, and the caller is told which model actually served the response
+ * so nothing has to be guessed about downstream.
+ */
+async function generateLive(
+  ai: GoogleGenAI,
+  tier: "PRIMARY" | "LIGHT",
+  request: Record<string, unknown>
+): Promise<{ result: { text?: string }; model: string }> {
+  const first = tier === "PRIMARY" ? MODEL_PRIMARY : MODEL_LIGHT;
+  const second = tier === "PRIMARY" ? MODEL_LIGHT : MODEL_PRIMARY;
+  try {
+    const result = await ai.models.generateContent({ ...request, model: first } as never);
+    return { result, model: first };
+  } catch (e) {
+    if (!isQuotaError(e) || second === first) throw e;
+    console.warn(`[CONTEXT_ENGINE] ${first} quota exhausted — retrying on ${second}`);
+    const result = await ai.models.generateContent({ ...request, model: second } as never);
+    return { result, model: second };
+  }
+}
+
 // --- Lazy Gemini client (same pattern as the legacy reference server) ---
 let geminiClient: GoogleGenAI | null = null;
 let geminiInitAttempted = false;
@@ -71,6 +124,8 @@ interface ContextResponse {
   recommendations: AiRecommendation[];
   suggestedTransport: string;
   aiProvider: "gemini-live" | "deterministic-fallback";
+  /* Which Gemini model actually served this — the tiers can fail over. */
+  aiModel?: string;
 }
 
 const ACTIONS = ["SWITCH_TO_MESH", "ALERT_GUARDIAN", "ACTIVATE_MIC", "DISPATCH_EMS", "INCREASE_GPS_POLLING", "TRIGGER_SILENT_MODE"];
@@ -128,8 +183,7 @@ app.post("/context/synthesize", async (req: Request, res: Response) => {
     }
 
     try {
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "PRIMARY", {
         contents: `You are the Billi Emergency Context Engine. Synthesize raw mobile sensor telemetry into operational context and candidate action recommendations for a live safety incident.
 
 SENSOR TELEMETRY:
@@ -168,8 +222,8 @@ Analyze the sensor inputs against the authorized safety protocol and produce a s
       const text = result.text;
       if (!text) throw new Error("Empty response from Gemini");
       const parsed = JSON.parse(text.trim());
-      const response: ContextResponse = { ...parsed, aiProvider: "gemini-live" };
-      console.log(`[CONTEXT_ENGINE] Synthesized (LIVE GEMINI): severity=${response.severity}`);
+      const response: ContextResponse = { ...parsed, aiProvider: "gemini-live", aiModel: usedModel };
+      console.log(`[CONTEXT_ENGINE] Synthesized (LIVE GEMINI / ${usedModel}): severity=${response.severity}`);
       return res.status(200).json(response);
     } catch (aiError) {
       console.error("[CONTEXT_ENGINE] Gemini call failed, using deterministic fallback:", aiError);
@@ -200,8 +254,7 @@ app.post("/context/summarize", async (req: Request, res: Response) => {
     }
 
     try {
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "LIGHT", {
         contents: `You are the Billi Cognitive Co-Dispatch Engine. Write a professional, scannable, 1-2 sentence operational summary of this active emergency incident for guardians and responders.
 
 Protected person: ${JSON.stringify(protectedPerson || {})}
@@ -212,8 +265,8 @@ Timeline events (chronological): ${JSON.stringify(events.slice(-15))}
 State only confirmed operational facts. Do not speculate or diagnose. Do not use alarmist language.`
       });
       const summary = (result.text || "").trim() || fallbackSummary();
-      console.log(`[CONTEXT_ENGINE] Summarized (LIVE GEMINI) incident ${incidentId}`);
-      return res.status(200).json({ incidentId, summary, aiProvider: "gemini-live" });
+      console.log(`[CONTEXT_ENGINE] Summarized (LIVE GEMINI / ${usedModel}) incident ${incidentId}`);
+      return res.status(200).json({ incidentId, summary, aiProvider: "gemini-live", aiModel: usedModel });
     } catch (aiError) {
       console.error("[CONTEXT_ENGINE] Gemini summarize failed, using deterministic fallback:", aiError);
       return res.status(200).json({ incidentId, summary: fallbackSummary(), aiProvider: "deterministic-fallback" });
@@ -244,6 +297,8 @@ interface AnalysisResponse {
   distressLevel: string;
   translation?: string;
   aiProvider: "gemini-live" | "deterministic-fallback";
+  /* Which Gemini model actually served this — the tiers can fail over. */
+  aiModel?: string;
 }
 
 function deterministicAnalyze(incidentData: any): AnalysisResponse {
@@ -291,8 +346,7 @@ If a target translation language code is provided, translate the summary directl
 - Timeline events (chronological): ${JSON.stringify((incidentData.events || []).slice(-15))}
 - Target translation language: ${incidentData.targetLanguage || "none"}`;
 
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "PRIMARY", {
         contents: userPrompt,
         config: {
           systemInstruction: systemPrompt,
@@ -318,8 +372,8 @@ If a target translation language code is provided, translate the summary directl
       const text = result.text;
       if (!text) throw new Error("Empty response from Gemini");
       const parsed = JSON.parse(text.trim());
-      const response: AnalysisResponse = { ...parsed, aiProvider: "gemini-live" };
-      console.log(`[CONTEXT_ENGINE] Analyzed (LIVE GEMINI): risk=${response.riskClassification}, distressVerified=${response.isRealDistressVerified}`);
+      const response: AnalysisResponse = { ...parsed, aiProvider: "gemini-live", aiModel: usedModel };
+      console.log(`[CONTEXT_ENGINE] Analyzed (LIVE GEMINI / ${usedModel}): risk=${response.riskClassification}, distressVerified=${response.isRealDistressVerified}`);
       return res.status(200).json(response);
     } catch (aiError) {
       console.error("[CONTEXT_ENGINE] Gemini analyze failed, using deterministic fallback:", aiError);
@@ -350,8 +404,7 @@ app.post("/context/analyze-photo", async (req: Request, res: Response) => {
     }
 
     try {
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "LIGHT", {
         contents: [
           { text: `You are the Billi Emergency Context Engine. This photo was captured automatically during an active safety incident (trigger: ${activationMethod || "unknown"}, protected person: ${(protectedPerson && protectedPerson.name) || "unknown"}).
 
@@ -361,7 +414,7 @@ Describe what is visible in 2-3 objective, factual sentences for a guardian or r
       });
       const description = (result.text || "").trim() || fallbackText;
       console.log("[CONTEXT_ENGINE] Photo analyzed (LIVE GEMINI VISION)");
-      return res.status(200).json({ description, aiProvider: "gemini-live" });
+      return res.status(200).json({ description, aiProvider: "gemini-live", aiModel: usedModel });
     } catch (aiError) {
       console.error("[CONTEXT_ENGINE] Gemini photo analysis failed, using deterministic fallback:", aiError);
       return res.status(200).json({ description: fallbackText, aiProvider: "deterministic-fallback" });
@@ -381,6 +434,8 @@ interface SetupReviewResponse {
   summary: string;
   recommendations: { priority: "high" | "medium" | "low"; recommendation: string }[];
   aiProvider: "gemini-live" | "deterministic-fallback";
+  /* Which Gemini model actually served this — the tiers can fail over. */
+  aiModel?: string;
 }
 
 function deterministicReviewSetup(readiness: any[]): SetupReviewResponse {
@@ -411,8 +466,7 @@ app.post("/context/review-setup", async (req: Request, res: Response) => {
     }
 
     try {
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "LIGHT", {
         contents: `You are the Billi Cognitive Co-Dispatch Engine reviewing a guardian's safety setup BEFORE any emergency — this is a setup/onboarding review, not an active incident.
 
 Protected person configured: ${protectedPerson ? "yes" : "no"}
@@ -451,7 +505,7 @@ Identify the most impactful gaps first, in plain language for a worried guardian
       const text = result.text;
       if (!text) throw new Error("Empty response from Gemini");
       const parsed = JSON.parse(text.trim());
-      const response: SetupReviewResponse = { ...parsed, aiProvider: "gemini-live" };
+      const response: SetupReviewResponse = { ...parsed, aiProvider: "gemini-live", aiModel: usedModel };
       console.log(`[CONTEXT_ENGINE] Setup review (LIVE GEMINI): ${response.recommendations.length} recommendation(s)`);
       return res.status(200).json(response);
     } catch (aiError) {
@@ -477,13 +531,12 @@ app.post("/context/translate", async (req: Request, res: Response) => {
     }
 
     try {
-      const result = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const { result, model: usedModel } = await generateLive(ai, "LIGHT", {
         contents: `Translate the following emergency-response text directly into language code "${lang}". Output ONLY the translation, no commentary:\n\n${text}`
       });
       const translated = (result.text || "").trim() || `[Translated to ${lang}]: ${text}`;
       console.log(`[CONTEXT_ENGINE] Translated (LIVE GEMINI) to ${lang}`);
-      return res.status(200).json({ original: text, targetLanguage: lang, translated, aiProvider: "gemini-live" });
+      return res.status(200).json({ original: text, targetLanguage: lang, translated, aiProvider: "gemini-live", aiModel: usedModel });
     } catch (aiError) {
       console.error("[CONTEXT_ENGINE] Gemini translate failed, using deterministic fallback:", aiError);
       const translated = `[Translated to ${lang}]: ${text}`;

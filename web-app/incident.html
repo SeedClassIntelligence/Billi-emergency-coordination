@@ -75,7 +75,7 @@
     /* Live Gemini summary: fetched async through the gateway; the local
        deterministic v.aiSummary is the instant, always-available default
        until (if) a real call resolves. Honestly labelled either way. */
-    const geminiState = { provider: 'deterministic-fallback', text: null, label: 'Deterministic fallback — checking live Gemini…', fetchedFor: null };
+    const geminiState = { provider: 'deterministic-fallback', text: null, model: null, label: 'Deterministic fallback — checking live Gemini…', fetchedFor: null };
 
     /* ---- Gemini call budget -------------------------------------------
        The free tier allows 5 requests per minute per model, shared by every
@@ -103,7 +103,10 @@
       if (inc.geminiSummary && geminiState.fetchedFor !== key) {
         geminiState.provider = inc.geminiSummary.aiProvider;
         geminiState.text = inc.geminiSummary.summary;
-        geminiState.label = geminiState.provider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback — live Gemini not connected';
+        geminiState.model = inc.geminiSummary.aiModel || null;
+        geminiState.label = geminiState.provider === 'gemini-live'
+          ? (geminiState.model ? `LIVE GEMINI · ${geminiState.model}` : 'LIVE GEMINI')
+          : 'Deterministic fallback — live Gemini not connected';
         if (inc.geminiSummary.fetchedFor === key) { geminiState.fetchedFor = key; return; }
       }
       if (geminiState.fetchedFor === key) return;
@@ -129,11 +132,17 @@
         }
         geminiState.provider = data.aiProvider || 'deterministic-fallback';
         geminiState.text = data.summary || null;
-        geminiState.label = geminiState.provider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback — live Gemini not connected';
+        /* Name the model that actually answered. The routes fail over between
+           models when one's quota is spent, so "LIVE GEMINI" alone would hide
+           which one served this. */
+        geminiState.model = data.aiModel || null;
+        geminiState.label = geminiState.provider === 'gemini-live'
+          ? (geminiState.model ? `LIVE GEMINI · ${geminiState.model}` : 'LIVE GEMINI')
+          : 'Deterministic fallback — live Gemini not connected';
         /* Cache a live result on the incident. A fallback is not cached —
            it is worth asking again on the next lifecycle change. */
         if (geminiState.provider === 'gemini-live' && geminiState.text) {
-          inc.geminiSummary = { summary: geminiState.text, aiProvider: geminiState.provider, fetchedFor: geminiState.fetchedFor };
+          inc.geminiSummary = { summary: geminiState.text, aiProvider: geminiState.provider, aiModel: geminiState.model, fetchedFor: geminiState.fetchedFor };
           Billi.save();
         }
         const chip = document.getElementById('gemini-chip');
@@ -330,7 +339,7 @@
             <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);">
               <div class="flex-between">
                 <span class="panel-section-title" style="font-size:0.9rem;">🎙 Audio sentiment analysis</span>
-                <span class="sim-chip ${inc.geminiAnalysis && inc.geminiAnalysis.aiProvider === 'gemini-live' ? 'connected' : 'local'}">${inc.geminiAnalysis ? (inc.geminiAnalysis.aiProvider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback') : 'Analyzing…'}</span>
+                <span class="sim-chip ${inc.geminiAnalysis && inc.geminiAnalysis.aiProvider === 'gemini-live' ? 'connected' : 'local'}">${inc.geminiAnalysis ? (inc.geminiAnalysis.aiProvider === 'gemini-live' ? ('LIVE GEMINI' + (inc.geminiAnalysis.aiModel ? ' · ' + inc.geminiAnalysis.aiModel : '')) : 'Deterministic fallback') : 'Analyzing…'}</span>
               </div>
               ${inc.geminiAnalysis ? `
               <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
