@@ -1,32 +1,136 @@
-# Billi — Emergency Coordination Platform
+# Billi
 
-**The protected person is the persistent entity.** Billi coordinates a protected person's
-devices, trusted network, and responders into one shared, continuously-updated incident —
-from activation through resolution — with live Gemini AI assisting every step of the way.
+**Lone-worker protection for the smallest businesses in the economy.**
 
-## Live demo
+A rideshare driver alone in a car with a stranger. A home health aide entering an unfamiliar
+home. A contractor on a site with nobody else there. A trucker parked overnight three hundred
+miles from anyone who knows him. These people work alone, they *are* the business, and none of
+them has what a corporate employee has — a security desk, a duress alarm, a colleague who
+notices they didn't come back.
 
-**[billi-platform-467802610371.us-central1.run.app](https://billi-platform-467802610371.us-central1.run.app)**
-— public, no setup required, no login gate. Share this link with anyone and they can create
-their own account and test the full platform immediately. Runs scale-to-zero on Cloud Run:
-every service ships pre-compiled (no on-the-fly TypeScript transpilation), so a cold start
-brings all 13 internal services up in roughly 15-20 seconds rather than the 1-3 minutes an
-interpreted boot used to take. The first request after a brand-new image is deployed is slower
-(around a minute, since the image also has to be pulled), and until the stack is up the gateway
-returns `{"error":"gateway unreachable through cloud proxy"}` — so open the link a couple of
-minutes ahead if you're presenting, or keep an instance warm. See
-[DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a guided walkthrough and the pre-demo checklist.
+Billi gives them one. **One trigger fires four things at once** — location, audio evidence,
+photo evidence, and the trusted network — while live Gemini reasoning assesses the situation and
+a separate deterministic rule engine decides what actually executes.
 
-The landing page also has a **📱 Download Android App** button — a native shell (see
-[mobile-native/](mobile-native/)) that wraps the same live site and adds the one thing a
-browser categorically can't do: sending a real SMS through the phone's own SIM the moment an
-incident triggers, no third-party gateway involved. It's sideloaded (not on the Play Store
-yet), so Android will show an "unknown developer" warning — the landing page walks through
-exactly what to tap.
+**AI recommends. The rules decide.**
 
-Every page also has a floating 💬 feedback button, backed by a real inbox
-(`GET /api/v1/tester-feedback`, admin-key gated — see `.env.example`) — testers can report
-what's broken or confusing without leaving the app.
+The same platform protects families, on the same account. The architecture doesn't change: the
+protected person is the persistent entity, and everything else exists to serve that one
+individual.
+
+![Billi running: armed, then hold-to-activate SOS, all four core actions live, the Guardian Command Center, and live Gemini analysis of the incident](web-app/media/billi-hero-sequence.gif)
+
+*Real screen capture against the live backend — the incident IDs, trusted-network delivery
+states and Gemini analysis in those frames are genuine output, not a mockup.*
+
+---
+
+## Try it — no install, no login gate
+
+**<https://billi-platform-467802610371.us-central1.run.app/landing.html>**
+
+Anyone can create an account and run a real incident end to end. Each link below launches that
+scenario immediately, drops you on the protected person's real screen, and walks you through the
+actual product with a guide bar naming what to watch. 60–90 seconds each.
+
+| Scenario | Who's alone | What it proves |
+|---|---|---|
+| **[01 — Rideshare driver](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=1)** | Andre, night shift, passenger in the car | Safe word · duress defense · coerced cancellation |
+| **[02 — A child](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=2)** | Maya, 11, left her school safe zone | Safe word · the full 45-second escalation ladder |
+| **[03 — A fall at home](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=3)** | Robert, 78, no answer | Sensor trigger · 10-second safe-fail window · medical dossier |
+| **[04 — Crash on a delivery route](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=4)** | David, contract courier | Automatic activation · signal-loss failover |
+| **[05 — Silent, on campus](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=5)** | Jasmine, 20, after dark | Silent activation · phone power-off fallback |
+| **[06 — Long haul, 2 a.m.](https://billi-platform-467802610371.us-central1.run.app/landing.html?demo=6)** | Ray, 52, owner-operator | Wearable trigger · medical dossier for strangers · 911-ready packet |
+
+Scenario 06 is the one to open if you only open one — it's the only demo where the first person
+to reach the protected person has never met him, which is what the 911-ready packet exists for.
+
+**Cold start is real.** The service scales to zero. The first request after an idle period
+returns a gateway error for 15–60 seconds while all 13 internal services boot. Open the link a
+couple of minutes before presenting, or see [DEPLOY.md](DEPLOY.md) for keeping an instance warm.
+
+**Android app:** the landing page serves `/billi.apk` — a native shell
+([mobile-native/](mobile-native/)) wrapping the same site, adding the one thing no browser can do
+on any platform: sending a real SMS through the phone's own SIM the moment an incident triggers.
+Sideloaded, so Android shows an unknown-developer warning; the install flow walks through it.
+
+---
+
+## Where Gemini actually runs
+
+Six routes in `services/context-engine`, all real `@google/genai` calls, all with a deterministic
+fallback that is **labelled honestly in the UI** rather than silently substituted:
+
+| Route | What it does | Where you see it |
+|---|---|---|
+| `/context/synthesize` | Severity + recommended actions at activation | Feeds the rule engine; `AI_CONTEXT_SYNTHESIS` in the timeline |
+| `/context/analyze` | Structured 911/CAD analysis — risk, category, distress verification, responder directives | "Audio sentiment analysis" card |
+| `/context/summarize` | Plain-language incident summary | "AI-assisted summary" card |
+| `/context/analyze-photo` | **Multimodal** — reasons over a sealed camera frame | Evidence panel |
+| `/context/review-setup` | Reviews your configuration *before* anything goes wrong | Onboarding step 9, Settings |
+| `/context/translate` | Translates Billi's spoken reassurance | Protected person's device |
+
+**AI recommends, the rules decide.** Gemini never executes anything. It returns
+recommendations; `orchestration-engine` validates each one against the Safety Contract the
+guardian configured, and only then approves it. Withhold audio consent and a recommendation to
+open the microphone is refused, no matter how confident the model is.
+
+**Two-model failover.** The free tier caps each model separately (5 requests/minute *and* 20/day,
+per model). Heavy reasoning goes to `GEMINI_MODEL_PRIMARY`, lighter routes to
+`GEMINI_MODEL_LIGHT`, and either falls over to the other before it falls back to deterministic —
+so the daily budget is two pools, not one. Responses carry `aiModel`, so the UI names which model
+answered rather than just claiming "AI".
+
+---
+
+## Architecture
+
+```
+web-app/ (18 pages, plain HTML/CSS/JS, no build step)
+        │  talks only to the gateway — no other service is browser-facing
+        ▼
+services/gateway (:8080)
+        │  also owns shared incidents, /api/v1/household/*, and
+        │  /api/v1/tester-feedback directly (JSON-file persistence)
+        ├─ orchestration-engine (:8081)    state machine, core-actions invariant,
+        │                                   AI-recommendation rule engine
+        ├─ communication-engine (:8082)    transport selection, delivery state, Twilio SMS
+        ├─ incident-timeline (:8083)       append-only event log
+        ├─ feedback-engine (:8084)         post-incident review
+        ├─ identity-service (:8085)        protected-person profiles
+        ├─ safety-protocol (:8086)         Safety Contract rules, geofence evaluation
+        ├─ emergency-packet (:8087)        Living Emergency Packet + CAD serialization
+        ├─ capability-registry (:8088)     device/sensor inventory
+        ├─ context-engine (:8089)          the six Gemini routes above
+        ├─ telemetry-processor (:8090)     real device telemetry ingest
+        ├─ action-execution-engine (:8091) dispatches approved actions
+        └─ observability (:8092)           service health, tracing
+```
+
+Every service is a small Express/TypeScript process with its own atomic-write JSON persistence
+(`.data/` per service) — no external database needed to run the whole platform locally. Guardian,
+protected-person and responder sessions share one incident over SSE, so an acknowledgement on one
+device appears on the others without a refresh.
+
+---
+
+## What's real, and what isn't
+
+| Capability | State |
+|---|---|
+| Incident lifecycle, Safety Contract, trusted network, duress branch, escalation ladder | Real, backend-verified |
+| Shared incident state across guardian / protected / responder sessions | Real — SSE through the gateway |
+| Gemini synthesis, analysis, summarization, photo vision, setup review, translation | Real when `GEMINI_API_KEY` is set; honest labelled fallback otherwise |
+| GPS, motion, audio recording, camera stills, speech output | Real, via browser APIs (`web-app/billi-adapters.js`) — needs HTTPS |
+| Safe zones with exit-breach detection | Real Haversine distance math, accuracy-aware — runs while Billi is open |
+| SMS to trusted contacts | Real. Free via `SmsManager` on the phone's own SIM with the Android app; Twilio gateway fallback otherwise. iOS can never get the native path — Apple permits no third-party app to send SMS without a manual tap |
+| Second-device invite (one account covers work and family) | Real — backend-persisted, verified end to end |
+| Photo evidence | Real capture and real Gemini vision. Image bytes stay on the capturing device; only the AI description crosses the network |
+| Live 911 / CAD dispatch | **Not integrated.** The packet is an export a human hands over |
+| Push notifications, BLE mesh relay | Strategy selection is real; the radio and push transport are not |
+| Watches, BLE tags, smart glasses | Represented in the interface, not connected as live hardware. Your phone is the real sensor |
+
+---
 
 ## Quick start
 
@@ -34,124 +138,72 @@ what's broken or confusing without leaving the app.
 npm start
 ```
 
-That single command boots the entire platform: all 13 backend microservices plus an HTTPS
-server for the web app. Wait for the `✓ BILLI PLATFORM READY — 13/13 services connected`
-banner, then open:
+Boots all 13 services plus an HTTPS server. Wait for
+`✓ BILLI PLATFORM READY — 13/13 services connected`, then open:
 
-- **Phone-ready (HTTPS, unlocks real GPS/mic):** `https://localhost:8443/landing.html`
-- **Desktop (plain HTTP):** open `web-app/landing.html` via your preview tool of choice
+- **Phone-ready (HTTPS, unlocks real GPS/mic/camera):** `https://localhost:8443/landing.html`
+- **Desktop:** `http://localhost:8443/landing.html`
 
-Press `Ctrl+C` to stop everything.
+`Ctrl+C` stops everything.
 
-### Enabling live Gemini
+### Configuration
 
-Copy `.env.example` to `.env` and set `GEMINI_API_KEY` (get one free at
-[aistudio.google.com/apikey](https://aistudio.google.com/apikey)). This is **platform-level
-configuration** — one key powers Gemini for every session and every role (protected person,
-guardian, responder), not something each person running the platform needs to supply
-themselves. Without a key, every AI-assisted route falls back to honest, clearly-labeled
-deterministic logic — nothing ever silently pretends to be AI-generated when it isn't.
+Copy `.env.example` to `.env`:
 
-Also set `ADMIN_KEY` (any long random string) to read back what's been submitted through the
-in-app feedback widget — `GET /api/v1/tester-feedback?key=<value>`. Unset, that route stays
-closed rather than silently open; feedback can still be submitted either way.
+- `GEMINI_API_KEY` — free from [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+  **Platform-level config**, not per-user: one key serves every session and role.
+- `GEMINI_MODEL_PRIMARY` / `GEMINI_MODEL_LIGHT` — optional model overrides. On a paid tier, point
+  both at the same premium model.
+- `ADMIN_KEY` — gates `GET /api/v1/tester-feedback`. Unset, that route stays closed rather than
+  silently open; feedback can still be submitted.
+- `TWILIO_*` — enables the SMS gateway fallback for non-Android devices.
 
-## Architecture
-
-```
-web-app/ (17 pages, plain HTML/CSS/JS)
-        │  talks only to the gateway — no other service is browser-facing
-        ▼
-services/gateway (:8080)
-        │  also owns shared incidents, /api/v1/household/*, and
-        │  /api/v1/tester-feedback directly (JSON-file persistence,
-        │  no separate service) — everything else fans out to:
-        ├─ orchestration-engine (:8081)   state machine, core-actions invariant,
-        │                                  AI-recommendation rule engine
-        ├─ communication-engine (:8082)   transport selection, delivery-state tracking
-        ├─ incident-timeline (:8083)      append-only event log
-        ├─ feedback-engine (:8084)        post-incident review
-        ├─ identity-service (:8085)       protected-person profiles
-        ├─ safety-protocol (:8086)        Safety Contract rules, geofence evaluation
-        ├─ emergency-packet (:8087)       Living Emergency Packet + CAD serialization
-        ├─ capability-registry (:8088)    device/sensor inventory
-        ├─ context-engine (:8089)         live Gemini — synthesis, summarization, translation
-        ├─ telemetry-processor (:8090)    real device telemetry ingest
-        ├─ action-execution-engine (:8091) dispatches approved actions
-        └─ observability (:8092)          service health, tracing
-```
-
-Every service is a small Express/TypeScript process with its own atomic-write JSON persistence
-(`.data/` per service) — no external database required to run the full platform locally.
-
-## What's real vs. simulated
-
-Billi is built to be honest about this everywhere in the UI (look for `CONNECTED` / `SIMULATED`
-/ `LOCAL` / `UNAVAILABLE` labels), not just in this file:
-
-| Capability | State |
-|---|---|
-| Incident lifecycle, Safety Contract, Trusted Network, duress branch, escalation ladder | Real, running, backend-verified |
-| Shared incident state across guardian/protected/responder sessions | Real — SSE-pushed through the gateway |
-| Gemini context synthesis, summarization, action recommendations | Real, live, when `GEMINI_API_KEY` is set |
-| Real device GPS, motion, audio recording, speech output | Real, via browser APIs (`web-app/billi-adapters.js`) — needs HTTPS |
-| Video capture | Honestly unavailable in this prototype — never faked |
-| SMS to trusted contacts | Real, two transports: free via `SmsManager` on the phone's own SIM when the native Android app is installed, or via a Twilio-backed gateway fallback (`communication-engine`, needs `TWILIO_*` env vars) for everyone else — plain browser sessions and all of iOS, which can never get the native path since Apple permits no third-party app to send SMS without a manual tap |
-| Family device invite (parent adds a child's own phone to the same setup) | Real — backend-persisted (`gateway` `/api/v1/household/*`), verified end to end |
-| Push notifications, live 911/CAD dispatch | Simulated — no external integration exists yet |
-| BLE mesh relay | Simulated — strategy selection is real, physical radio relay is not |
-
-See [PLATFORM_DESIGN_BUILD_REPORT.md](PLATFORM_DESIGN_BUILD_REPORT.md) for the full build history
-and verification log, [MOBILE_CAPABILITY_EXECUTION_MATRIX.md](MOBILE_CAPABILITY_EXECUTION_MATRIX.md)
-for the capability-by-capability breakdown of what's wired to native device APIs today versus
-what a native mobile app would still need to add, and [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a
-walkthrough covering exactly where and how Gemini is used, including what to say if its free-tier
-quota is exhausted mid-demo.
-
-## Project structure
-
-```
-.
-├── start-all.js              # One-command startup for all 13 services + HTTPS server (local dev)
-├── start-cloud.js            # Cloud Run entry point — same services, plain-HTTP public server
-├── Dockerfile                # Single-container build: compiles every service, no ts-node-dev at runtime
-├── services/                 # 13 backend microservices (the running architecture)
-├── web-app/                  # Frontend — 17 pages, plain HTML/CSS/JS, no build step
-│   └── billi.apk             # The native Android build, served directly for download
-├── mobile-native/            # Native Android shell (WebView + SmsManager bridge) — see build.sh
-├── packages/                 # Shared TypeScript contracts + demo fixtures
-├── tools/
-│   ├── https-server.js       # HTTPS static server + gateway proxy (local phone testing)
-│   └── cloud-server.js       # Plain-HTTP equivalent for Cloud Run
-├── PLATFORM_DESIGN_BUILD_REPORT.md
-├── MOBILE_CAPABILITY_EXECUTION_MATRIX.md
-└── archive/                  # Earlier architecture generations, superseded — kept for
-                               # reference only, not part of the running platform
-```
-
-`archive/` contains two earlier, no-longer-running attempts (a React+Firebase monolith and a
-2-service Cloud Run design) — kept for reference only; real business logic has been ported out
-of the monolith where useful (e.g. the Gemini 911/CAD analysis schema). A third earlier
-generation — orphaned Firebase Cloud Functions and duplicate Terraform infra — was deleted
-outright as dead code rather than archived, since nothing referenced it. The `services/`
-directory above is the one real, complete, currently running system.
-
-## Running an individual service
-
-Each service can also be started on its own during development:
-
-```bash
-cd services/<service-name>
-npx ts-node-dev --transpile-only src/index.ts
-```
-
-## Tests
+### Tests
 
 ```bash
 npm test
 ```
 
-Runs the safety-critical logic in `billi-core.js` (readiness gating, duress/PIN cancellation,
-the accidental-trigger confirmation window) under Node's built-in test runner — no test
-framework dependency, in keeping with the rest of the project having no build step. See
-`web-app/test/harness.js` for how it loads a `<script>`-tag-style file into a sandboxed context.
+29 tests over the safety-critical logic: readiness gating, the duress/PIN matrix, the
+accidental-trigger confirmation window, safe-zone breach detection, and the scenario/guided-tour
+contract. Node's built-in runner — no test framework, in keeping with the project having no build
+step anywhere.
+
+---
+
+## Project structure
+
+```
+.
+├── start-all.js       # One command, all 13 services + HTTPS server (local dev)
+├── start-cloud.js     # Cloud Run entry point — same services, plain-HTTP server
+├── Dockerfile         # Single container; compiles every service ahead of time
+├── services/          # The 13 backend microservices
+├── web-app/           # Frontend — 18 pages, plain HTML/CSS/JS
+│   ├── billi-core.js      # State engine, incident model, scenario packs, guided tour
+│   ├── billi-adapters.js  # Capability Adapter Layer — real GPS/motion/audio/camera
+│   └── billi.apk          # Native Android build, served for download
+├── mobile-native/     # Android shell (WebView + SmsManager bridge)
+├── packages/          # Shared TypeScript contracts + demo fixtures
+├── product_evidence/  # Real production traces, API records, current-UI capture
+└── tools/             # HTTPS dev server, Cloud Run server
+```
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [XPRIZE_SUBMISSION.md](XPRIZE_SUBMISSION.md) | The submission — business viability, AI-native operations, category impact |
+| [DEMO_SCRIPT.md](DEMO_SCRIPT.md) | Guided walkthrough, every Gemini touchpoint, what to say if quota runs out |
+| [VIDEO_SHOT_LIST.md](VIDEO_SHOT_LIST.md) | Timed 3-minute recording script |
+| [DEPLOY.md](DEPLOY.md) | Cloud Run deploy, in three pastes |
+| [COPY_DIRECTION.md](COPY_DIRECTION.md) | Website copy direction and voice rules |
+| [MOBILE_CAPABILITY_EXECUTION_MATRIX.md](MOBILE_CAPABILITY_EXECUTION_MATRIX.md) | Capability-by-capability: wired to native APIs today vs. what a native app still needs |
+| [PLATFORM_DESIGN_BUILD_REPORT.md](PLATFORM_DESIGN_BUILD_REPORT.md) | Build history and verification log |
+| [product_evidence/](product_evidence/) | Real captured production traces and raw API responses |
+
+`archive/` holds two earlier, no-longer-running generations (a React+Firebase monolith and a
+2-service Cloud Run design), kept for reference — real logic was ported out of the monolith where
+useful, such as the Gemini 911/CAD analysis schema. `infrastructure/` holds cloud architecture
+that is designed but not applied; its README draws the line between what runs and what is
+planned. `services/` is the one complete, currently running system.

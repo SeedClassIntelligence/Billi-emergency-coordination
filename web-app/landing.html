@@ -357,6 +357,15 @@
   <script>
     Billi.mountFeedback();
 
+    /* Deep-link a scenario: landing.html?demo=1 launches it immediately.
+       Lets the README, the submission and a shared link drop someone
+       straight into a specific demonstration instead of "scroll down and
+       find the right card". Ignores anything that isn't a real pack id. */
+    (function launchFromQuery() {
+      const id = parseInt(new URLSearchParams(location.search).get('demo'), 10);
+      if (id && Billi.scenarioPacks[id]) Billi.runDemo(id);
+    })();
+
     /* Install flow: show what Android is about to ask before it asks, then
        start the download and land on the page that keeps the steps in view
        while the file arrives. */
