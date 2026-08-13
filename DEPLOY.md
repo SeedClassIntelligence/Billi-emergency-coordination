@@ -10,13 +10,25 @@ Live service: **billi-platform**, region **us-central1**
 
 ---
 
-## The short version
+## The whole deploy, three pastes
+
+Nothing reaches the live URL until **all three** have run. Pulling the code does
+not deploy it, and the build does not deploy it either — a pull followed by the
+verify step will always report failure, because nothing was deployed in between.
 
 ```bash
-git checkout -B master origin/master && git pull
+cd ~/Billi-emergency-coordination && git checkout -B master origin/master && git pull && git log --oneline -1
 ```
 
-then build, then deploy, then warm it. Each step below is one paste.
+```bash
+gcloud builds submit --tag us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform
+```
+
+```bash
+gcloud run deploy billi-platform --image us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform --region us-central1 --allow-unauthenticated
+```
+
+Then verify (step 4). The sections below explain each one and what to check.
 
 ---
 
@@ -62,7 +74,17 @@ credentials.
 curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "6 Live Demonstrations"
 ```
 
-`1` means the six-scenario build is serving. `0` means the deploy didn't take.
+`1` means the new build is serving. `0` almost always means the build and deploy
+steps above were skipped — check those ran before looking for anything else.
+Straight after a deploy the first request can also take ~40 seconds while the 13
+internal services boot, so if you just deployed, wait a minute and re-run once.
+
+Change the grep string to something only the newest build contains. For the
+current copy rewrite:
+
+```bash
+curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "When you work alone"
+```
 
 ## 5. Confirm Gemini is live *on the deployed host*
 
