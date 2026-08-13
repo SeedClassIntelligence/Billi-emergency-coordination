@@ -75,10 +75,17 @@ on the scenario's own schedule. A guide bar along the bottom names the panel eac
 rings it. Nothing in a demo is a separate re-implementation of the product; it *is* the product,
 with the persona and the timing scripted.
 
-There are **five** scenarios, not nine. The four old capability-only demos (duress, signal loss,
+There are **six** scenarios, not nine. The four old capability-only demos (duress, signal loss,
 phone power-off, escalation ladder) had no person in them — each is now folded into a scenario
 about a real situation, so nothing was lost and every demo carries several capabilities. Each card
 lists what it proves.
+
+**Scenario 06 is the one to show a fleet or trucking audience.** It is also the only scenario that
+ends on the **911-Ready Packet** — a driver alone in a sleeper cab 340 miles from home, where the
+first person to reach him is a truck-stop night manager who has never met him. The packet is what
+carries the nitroglycerin location, the locked cab and the spare key in the wheel well. Say plainly
+that there is no live 911 integration: a human still makes the call and reads the packet out. That
+disclosure lands better than the feature would.
 
 Two older screens still exist and are **not** what a card launches:
 

@@ -251,9 +251,9 @@ describe('safe-zone exit-breach detection', () => {
 describe('scenario packs and the guided demo tour', () => {
   const packs = () => Billi.scenarioPacks;
 
-  test('there are exactly five packs, each with a name, trigger and guided tour', () => {
+  test('there are exactly six packs, each with a name, trigger and guided tour', () => {
     const ids = Object.keys(packs());
-    assert.deepEqual(ids, ['1', '2', '3', '4', '5']);
+    assert.deepEqual(ids, ['1', '2', '3', '4', '5', '6']);
     for (const id of ids) {
       const p = packs()[id];
       assert.ok(p.name, `pack ${id} needs a name`);
@@ -293,6 +293,19 @@ describe('scenario packs and the guided demo tour', () => {
     const inc = Billi.getActiveIncident();
     assert.match(inc.triggerMethod, /Order confirmed/);
     assert.match(inc.triggerDevice, /dash mount/);
+  });
+
+  test('every beat focus names a panel that some page actually anchors', () => {
+    /* A typo here fails silently in the browser: the guide bar renders, the
+       beat reads fine, and nothing scrolls or highlights. These are the
+       data-beat anchors present in protected.html and incident.html. */
+    const ANCHORS = new Set(['core', 'confirm', 'situation', 'map', 'escalation',
+      'ai', 'network', 'evidence', 'timeline', 'medical', 'actions']);
+    for (const [id, p] of Object.entries(packs())) {
+      for (const b of p.beats) {
+        assert.ok(ANCHORS.has(b.focus), `pack ${id} points at unknown anchor "${b.focus}"`);
+      }
+    }
   });
 
   test('a scenario that narrates a covert activation actually runs silently', () => {

@@ -353,7 +353,7 @@
 
           <div>
             <!-- 4. GUARDIAN RESPONSE CONTROLS -->
-            <div class="card" style="padding:1rem;">
+            <div class="card" style="padding:1rem;" data-beat="actions">
               <div class="panel-section-title" style="font-size:0.92rem;">Guardian response — ${guardianName}</div>
               <div class="grid grid-2 action-grid margin-top-xs" style="gap:0.45rem;">
                 <button class="btn btn-danger" ${resolved || v.escalation.acknowledged ? 'disabled style="opacity:0.5;"' : ''} onclick="act('ack')">✓ I AM RESPONDING</button>
@@ -401,7 +401,7 @@
             </div>
 
             <!-- MEDICAL -->
-            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(239,68,68,0.25);">
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(239,68,68,0.25);" data-beat="medical">
               <div class="panel-section-title" style="font-size:0.92rem;">⚕ Medical dossier (authorized)</div>
               <div style="font-size:0.8rem; color:#e2e8f0; margin-top:0.3rem;">
                 ${m.conditions} · Allergies: ${m.allergies}<br>

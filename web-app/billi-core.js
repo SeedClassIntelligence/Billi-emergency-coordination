@@ -288,6 +288,46 @@
         { at: 38, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'Raised voices, closing footsteps, a silent activation and a phone going offline — it weighs the pattern, and states it as interpretation, not fact.' },
         { at: 50, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only, including the device handover — this is what the 911-ready packet is built from.' }
       ]
+    },
+    6: {
+      name: 'Scenario 06 — Long Haul: Alone in the Sleeper Cab', trigger: 'wearable',
+      covers: 'Deliberate wearable trigger · medical dossier for strangers · 911-ready packet handoff',
+      /* The only scenario where the person who reaches him first has never
+         met him and never will again. That is what the packet is for, and
+         no other scenario makes the handoff the point. */
+      persona: { name: 'Ray Delgado', age: 52, facility: 'Owner-operator — sleeper cab, 340 miles from home' },
+      medical: {
+        conditions: 'Coronary artery disease · stent placed 2023',
+        allergies: 'Sulfa drugs',
+        medications: 'Metoprolol 50 mg · aspirin 81 mg · nitroglycerin spray',
+        equipment: 'Nitroglycerin spray — center console, driver side',
+        physician: 'Dr. Whitaker — Cardiology Associates, +1 (555) 774-2200',
+        instructions: 'CHEST PAIN PROTOCOL. Nitroglycerin spray is in the center console, driver side. The cab is locked — spare key is in a magnetic box inside the rear driver-side wheel well. DOT medical card is in the driver door pocket. Truck: white Freightliner Cascadia, unit 4471, Kettle Ridge Logistics.'
+      },
+      contacts: [
+        { id: 'c_maria', name: 'Maria Delgado', role: 'Primary Guardian', relationship: 'Wife', priority: 1, phone: '+1 (555) 662-1180', channels: ['Push', 'SMS', 'Call'], canAcknowledge: true, canResolve: true, medicalAccess: true, evidenceAccess: true, locationAccess: true, duressVisibility: true, availability: 'Asleep — 2:14 a.m. her time' },
+        { id: 'c_dispatch', name: 'Kettle Ridge Dispatch', role: 'Caregiver', relationship: '24/7 dispatcher — knows his route and unit number', priority: 2, phone: '+1 (555) 880-4400', channels: ['SMS', 'Call'], canAcknowledge: true, canResolve: false, medicalAccess: true, evidenceAccess: false, locationAccess: true, duressVisibility: false, availability: 'On shift' },
+        { id: 'c_stop', name: 'Petro Stop 42 — Night Manager', role: 'Caregiver', relationship: 'Nearest person on scene — ~200 ft away, has never met him', priority: 3, phone: '+1 (555) 903-7788', channels: ['Call'], canAcknowledge: true, canResolve: false, medicalAccess: true, evidenceAccess: false, locationAccess: true, duressVisibility: false, availability: 'Overnight shift' }
+      ],
+      path: [{ lat: 38.9717, lng: -95.2353, speed: 0, label: 'Parked — Petro Stop 42, row C, I-70 Exit 204' }],
+      transcripts: [
+        'Cab interior. Engine off. Reefer unit running outside.',
+        'Labored breathing. Movement against the bunk.',
+        'Ray: "…can\'t… get a breath…"',
+        'No further speech. Breathing continues, shallow.'
+      ],
+      preEvents: [
+        { dt: -2820, actor: 'Kettle Ridge Dispatch', label: 'Hours-of-service break started — unit 4471 stationary at Exit 204' },
+        { dt: -180, actor: 'Apple Watch Ultra 2', label: 'Elevated heart rate sustained 3 minutes — 128 bpm at rest (context only, not a trigger)' },
+        { dt: 0, actor: 'Apple Watch Ultra 2', label: 'DOUBLE-TAP GESTURE — deliberate activation, no phone interaction required' }
+      ],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'core', title: 'Two taps on a watch', watch: 'He never reached his phone. A deliberate gesture fires instantly — no confirmation window, because he chose it. Location, audio and the Trusted Network go at once.' },
+        { at: 13, page: 'incident.html', focus: 'medical', title: 'Written for a stranger', watch: 'Nitro spray in the center console. The cab is locked and the spare key is in the wheel well. Nobody within 300 miles knows any of that — which is the entire reason it is written down before the emergency, not during it.' },
+        { at: 26, page: 'incident.html', focus: 'network', title: 'His wife, his dispatcher, and the nearest human', watch: 'Work and family on one account. Dispatch knows the unit number and the row he parked in; the night manager is 200 feet away and has never met him. All three reached together.' },
+        { at: 38, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'A stationary truck, a sustained heart rate, laboured breathing and speech that stops — it weighs them together and says what it thinks, labelled as interpretation.' },
+        { at: 50, page: 'incident.html', focus: 'actions', title: 'The handoff', watch: 'Export 911-Ready Packet builds the CAD-format handoff — identity, exact location, medical protocol, evidence, full timeline. There is no live 911 integration: a person still makes the call and reads it out. We would rather say that than imply otherwise.' }
+      ]
     }
   };
 
