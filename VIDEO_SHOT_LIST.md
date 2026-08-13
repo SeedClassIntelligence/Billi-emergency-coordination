@@ -40,17 +40,31 @@ most feature demos only hit the third.
 
 ---
 
-## 0:00 – 0:15 · The problem
+## 0:00 – 0:20 · The problem
 
 **Screen:** `landing.html`, top of page.
 
-> "Emergency response assumes one thing goes right — that someone can make a clear
-> call and describe where they are, while it's happening. For a child who can't
-> reach a phone, someone who can't speak, or someone being coerced by whoever's
-> standing next to them, that was never a plan that could reach them.
-> Billi starts somewhere else: the call isn't the trigger."
+Say this in your own words — it is your story and it will sound like it:
+
+> "Billi started with bullying. A kid being hurt where no adult can see it, who
+> can't call for help without making it worse. That's why Billi has a safe word,
+> silent activation, and a duress PIN that looks like you're giving in.
+>
+> Then I drove for Uber, and it was the same problem wearing different clothes.
+> Alone in a car with a stranger, on a route nobody's watching, and no one who'd
+> know if the trip ended somewhere wrong. It's the same for truckers, home health
+> aides, contractors, anyone closing up at midnight.
+>
+> Different jobs, one problem: a person is alone, something goes wrong, and nobody
+> who cares about them knows in time. And almost every one of those people is a
+> small business — a driver, an aide, a solo agent. They *are* the business, and
+> the safety infrastructure a corporate employer buys was never available to them."
 
 Let the hero footage play behind you. It is real screen capture of the product.
+
+**Why this opening:** the category is Small Business Services. Establishing in the
+first twenty seconds that your buyer is a sole proprietor — and that you were one —
+is what makes the rest of the video count against the right criterion.
 
 ---
 
@@ -147,9 +161,15 @@ Let the countdown ring drain.
 
 **Screen:** `landing.html` → **Pricing**.
 
-> "Billi Family is fourteen ninety-nine a month, per household — not per person,
-> because your family already owns the sensors. That's priced against Life360
-> Gold deliberately."
+> "Fourteen ninety-nine a month, per account — up to five people. That's roughly a
+> tenth of what a commercial lone-worker monitoring contract costs, and it clears
+> on a personal card with no purchase order. That matters, because the reason
+> people who work alone go without this isn't that they don't want it — it's that
+> every existing option is sold through a procurement process they're too small
+> to enter.
+>
+> And one account covers work and family. A driver protected on the road can
+> extend it to their kid without buying a second product."
 
 Point at the Android requirement notice:
 
