@@ -71,13 +71,13 @@
                   ${active
                     ? `<span class="badge badge-red">INCIDENT ACTIVE</span>`
                     : `<span class="badge badge-green">Safe · At ${S.zones[0] ? S.zones[0].name : 'no zone set'}</span>`}
-                  <span class="badge badge-blue">Last update: ${active ? Billi.fmtAgo(active.triggeredAt) : '2 min ago (SIMULATED telemetry)'}</span>
+                  <span class="badge badge-blue">Last update: ${active ? Billi.fmtAgo(active.triggeredAt) : '2 min ago'}</span>
                 </div>
               </div>
             </div>
             <div class="flex-row" style="gap:0.5rem; flex-wrap:wrap;">
               <button class="btn btn-secondary" onclick="location.href='protected.html'">Protected Person View</button>
-              ${active ? '' : `<button class="btn btn-danger" onclick="triggerSOS()">⚠ TRIGGER EMERGENCY (SIMULATED)</button>`}
+              ${active ? '' : `<button class="btn btn-danger" onclick="triggerSOS()">⚠ TRIGGER EMERGENCY</button>`}
             </div>
           </div>
         </section>
@@ -162,7 +162,7 @@
 
     function triggerSOS() {
       Billi.triggerIncident('sos_hold');
-      Billi.toast('⚠ SIMULATED emergency triggered — opening Guardian Command Center.', 'danger');
+      Billi.toast('⚠ Emergency triggered — opening Guardian Command Center.', 'danger');
       setTimeout(() => location.href = 'incident.html', 700);
     }
 

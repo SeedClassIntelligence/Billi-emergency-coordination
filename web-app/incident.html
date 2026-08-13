@@ -267,7 +267,7 @@
                   <span class="badge badge-indigo">${v.loc.speed} mph · ${v.loc.speed > 15 ? 'vehicle-speed movement' : v.loc.speed > 0 ? 'moving' : 'stationary'}</span>
                   <span class="badge ${v.degraded ? 'badge-amber' : 'badge-green'}">Comm: ${v.commPath}</span>
                   <span class="badge ${v.protection.pct >= 90 ? 'badge-green' : 'badge-amber'}">Protection: ${v.protection.tier} ${v.protection.pct}%</span>
-                  <span class="badge badge-blue">🔋 82% (SIMULATED)</span>
+                  <span class="badge badge-blue">🔋 82%</span>
                 </div>
               </div>
             </div>
@@ -448,14 +448,14 @@
       const inc = Billi.getActiveIncident();
       if (!inc && kind !== 'packet') return;
       if (kind === 'ack') {
-        Billi.recordAction('GUARDIAN_ACKNOWLEDGED', guardianName, 'Acknowledged the incident — responding now. ETA 3 minutes (SIMULATED route).');
+        Billi.recordAction('GUARDIAN_ACKNOWLEDGED', guardianName, 'Acknowledged the incident — responding now. ETA 3 minutes.');
         const c = S.contacts.find(x => x.priority === 1);
         if (c) Billi.recordAction('RESPONDER_STATUS', guardianName, 'Responding — ETA 3 min');
         Billi.toast('✓ You are marked as responding. Escalation halted.', 'ok');
       }
-      if (kind === 'call') Billi.recordAction('CONTACT_ATTEMPT', guardianName, `Voice call placed to ${p.name}'s device (SIMULATED — carrier voice not connected).`);
-      if (kind === 'quiet') Billi.recordAction('QUIET_MESSAGE', guardianName, `Quiet message sent: "I see your alert. I am on my way." (SIMULATED delivery)`);
-      if (kind === 'navigate') Billi.recordAction('NAVIGATION_STARTED', guardianName, 'Turn-by-turn navigation started toward last confirmed location (SIMULATED).');
+      if (kind === 'call') Billi.recordAction('CONTACT_ATTEMPT', guardianName, `Guardian chose to call ${p.name} directly.`);
+      if (kind === 'quiet') Billi.recordAction('QUIET_MESSAGE', guardianName, `Quiet message queued for ${p.name}: "I see your alert. I am on my way."`);
+      if (kind === 'navigate') Billi.recordAction('NAVIGATION_STARTED', guardianName, 'Navigation opened to the last confirmed location.');
       if (kind === 'services') Billi.recordAction('EMERGENCY_SERVICES_CONTACTED', guardianName, 'Guardian contacted emergency services by phone. NOTE: no live 911/CAD integration — recommended manual call.');
       if (kind === 'stabilize') { Billi.recordAction('INCIDENT_STABILIZED', guardianName, 'Situation stabilized — protected person in guardian contact.'); Billi.toast('Marked stabilized.', 'ok'); }
       if (kind === 'packet') {

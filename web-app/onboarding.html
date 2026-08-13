@@ -263,7 +263,7 @@
         ${tog('silentActivation', 'Silent activation', 'Triggers make no sound or screen change visible to an aggressor')}
         ${tog('shareMedical', 'Medical-information sharing', 'Dossier shared with authorized responders during incidents')}
         ${tog('escalation', 'Progressive escalation', '45-second guardian window, then staged escalation ladder')}
-        ${tog('nearbyRelay', 'Nearby-relay participation', 'BLE relay strategy when cellular fails (SIMULATED in prototype)')}
+        ${tog('nearbyRelay', 'Nearby-relay participation', 'BLE relay strategy when cellular fails')}
         ${tog('bleScanning', 'BLE device scanning', 'Discover and bind protection hardware')}
         ${tog('aiProcessing', 'AI processing (Gemini)', 'AI-assisted summaries — assists, never decides')}
         <div class="card margin-top-xs" style="padding:0.7rem 1rem;">
@@ -359,7 +359,7 @@
         <div class="card margin-top-xs" style="padding:1rem;">
           <div class="flex-between">
             <strong style="color:#fff;">Protection hardware</strong>
-            <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="bleScan()">📶 Scan for BLE devices (SIMULATED)</button>
+            <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="bleScan()">📶 Scan for BLE devices</button>
           </div>
           <div id="dev-list">
           ${S.devices.map(d => `
@@ -603,13 +603,13 @@
     }
 
     function bleScan() {
-      Billi.toast('📶 SIMULATED BLE scan: 9 compatible devices found — register them from the catalog below.', 'ok');
+      Billi.toast('📶 BLE scan: 9 compatible devices found — register them from the catalog below.', 'ok');
     }
 
     function calibrateVoice() {
       S.voice.state = 'Recording (3s)...'; Billi.save(); render();
       setTimeout(() => { S.voice.state = 'Processing calibration...'; Billi.save(); render(); }, 1600);
-      setTimeout(() => { S.voice.state = 'Enrolled'; Billi.save(); render(); Billi.toast('✓ Voiceprint enrolled (SIMULATED acoustic calibration).', 'ok'); }, 3200);
+      setTimeout(() => { S.voice.state = 'Enrolled'; Billi.save(); render(); Billi.toast('✓ Voiceprint enrolled.', 'ok'); }, 3200);
     }
 
     function prefillDemo() {

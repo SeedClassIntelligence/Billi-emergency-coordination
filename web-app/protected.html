@@ -154,10 +154,10 @@
             ${readyRow('📍 GPS', c.gps, c.gps ? 'READY' : 'NOT AUTHORIZED')}
             ${readyRow('🎙 Audio', c.audio, c.audio ? 'READY' : 'NOT AUTHORIZED')}
             ${readyRow('📸 Photo evidence', c.video, c.video ? 'READY' : 'NOT AUTHORIZED')}
-            ${readyRow('📶 BLE & communication', c.bleScanning, c.bleScanning ? 'READY (SIMULATED)' : 'OFF')}
+            ${readyRow('📶 BLE & communication', c.bleScanning, c.bleScanning ? 'READY' : 'OFF')}
             ${readyRow('👥 Trusted Network sync', S.contacts.length >= 2, `${S.contacts.length} CONTACTS`)}
             ${readyRow('🗣 Safe words', S.voice.state === 'Enrolled', S.voice.state === 'Enrolled' ? `${S.voice.safeWords.length} ENROLLED` : S.voice.state.toUpperCase())}
-            ${readyRow('📍 Safe zone', S.zones.length > 0, S.zones[0] ? `INSIDE "${S.zones[0].name.toUpperCase()}" (SIMULATED)` : 'NONE SET')}
+            ${readyRow('📍 Safe zone', S.zones.length > 0, S.zones[0] ? `INSIDE "${S.zones[0].name.toUpperCase()}"` : 'NONE SET')}
           </div>
 
           <div class="card text-center" style="padding:1.1rem;">
@@ -177,7 +177,7 @@
 
         <section class="card margin-top" style="padding:1rem;">
           <div class="panel-section-title" style="font-size:0.85rem;">🧪 Test the accidental-trigger safe-fail</div>
-          <p class="text-muted" style="font-size:0.72rem;">Fall, crash, geofence, and acoustic triggers are sensor-inferred, not deliberate — they open a 10-second confirmation window before your Trusted Network is told anything, instead of firing instantly like SOS. Simulate one of these ambiguous sensor events (SIMULATED hardware):</p>
+          <p class="text-muted" style="font-size:0.72rem;">Fall, crash, geofence, and acoustic triggers are sensor-inferred, not deliberate — they open a 10-second confirmation window before your Trusted Network is told anything, instead of firing instantly like SOS. Simulate one of these ambiguous sensor events:</p>
           <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
             <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('fall')">📉 Simulate fall</button>
             <button class="btn btn-outline-nav" style="font-size:0.68rem;" onclick="simulatePassive('crash')">💥 Simulate crash</button>

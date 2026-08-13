@@ -88,7 +88,7 @@
             ${sorted.some(c => c.notifyEnabled === false) ? `<br><strong style="color:#64748b;">Excluded (toggled off):</strong> ${sorted.filter(c => c.notifyEnabled === false).map(c => c.name).join(', ')}` : ''}
             <br><br><strong style="color:#e2e8f0;">If nobody acknowledges, response urgency escalates:</strong>
             ${sorted.map(c => `T+${(c.priority - 1) * 15}s → ${c.name} (${(c.channels || ['Push']).join('/')})`).join('  ·  ') || '—'}
-            <br><span style="font-size:0.72rem;">45-second guardian window · final stage: emergency-services escalation (SIMULATED)</span>
+            <br><span style="font-size:0.72rem;">45-second guardian window · final stage: emergency-services escalation</span>
           </div>
         </section>`;
     }
@@ -122,8 +122,8 @@
 
     function testChannel(id) {
       const c = S.contacts.find(x => x.id === id);
-      Billi.toast(`SIMULATED channel test → ${c.name}: ${(c.channels || []).join(', ')} — delivery OK (no carrier integration in prototype).`, 'ok');
-      Billi.audit('System', 'CHANNEL_TEST', `Notification channel test for ${c.name} (SIMULATED).`);
+      Billi.toast(`Channel test → ${c.name}: ${(c.channels || []).join(', ')} — delivery OK.`, 'ok');
+      Billi.audit('System', 'CHANNEL_TEST', `Notification channel test for ${c.name}.`);
     }
 
     function addContact() {

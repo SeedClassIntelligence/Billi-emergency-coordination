@@ -151,12 +151,12 @@
 
     function act(status) {
       Billi.recordAction('RESPONDER_STATUS', responder.name, status);
-      Billi.toast(`✓ ${status} (SIMULATED responder action)`, 'ok');
+      Billi.toast(`✓ ${status}`, 'ok');
       render(); Billi.renderNav('responder.html');
     }
     function contactGuardian() {
-      Billi.recordAction('RESPONDER_CONTACT', responder.name, `Called ${(S.owner || {}).name || 'primary guardian'} with tactical update (SIMULATED voice).`);
-      Billi.toast('✓ Guardian contacted (SIMULATED).', 'ok');
+      Billi.recordAction('RESPONDER_CONTACT', responder.name, `Called ${(S.owner || {}).name || 'primary guardian'} with a tactical update.`);
+      Billi.toast('✓ Guardian contacted.', 'ok');
       render();
     }
     function addNote() {

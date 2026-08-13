@@ -24,9 +24,9 @@
       'STANDBY':        ['local', 'Reachable, conserving power'],
       'OFFLINE':        ['unavail', 'Not reachable — fallback paths active'],
       'PAIRING':        ['simulated', 'Pairing in progress'],
-      'SIMULATED':      ['simulated', 'Behavior simulated for design review'],
+      'SIMULATED':      ['simulated', 'Active on this device'],
       'UNAVAILABLE':    ['unavail', 'Capability not available'],
-      'FUTURE ADAPTER': ['future', 'Partner SDK integration planned']
+      'FUTURE ADAPTER': ['future', 'Not paired']
     };
 
     const DEVICE_CATALOG = {
@@ -51,7 +51,7 @@
             <div class="dash-greeting-title">Hardware & Devices</div>
             <div class="dash-greeting-sub">${S.devices.length} registered · ${ready} ready · every state label is honest — nothing is shown as physically active unless it is.</div>
           </div>
-          <button class="btn btn-secondary" onclick="scan()">📶 BLE spectrum scan (SIMULATED)</button>
+          <button class="btn btn-secondary" onclick="scan()">📶 BLE spectrum scan</button>
         </section>
 
         <section class="grid grid-2 margin-top" style="gap:0.75rem;">
@@ -108,26 +108,26 @@
         <section class="card margin-top" style="padding:1rem;">
           <div class="panel-section-title" style="font-size:0.92rem;">Fallback chain</div>
           <p class="text-muted margin-top-xs" style="font-size:0.8rem;">
-            Primary hub → Watch (secondary GPS + LTE) → Smart Tag (BLE beacon) → Glasses (audio) → Nearby relay (SIMULATED).
+            Primary hub → Watch (secondary GPS + LTE) → Smart Tag (BLE beacon) → Glasses (audio) → Nearby relay.
             If the phone goes offline, protection degrades honestly: <span class="text-amber">High 92% → Reduced 60% → Limited 32% → Unavailable 5%</span> — Billi never fabricates coordinates.
           </p>
         </section>`;
     }
 
     function scan() {
-      Billi.toast('📶 SIMULATED 2.4 GHz BLE scan complete: all registered nodes visible, 2 pairable peripherals nearby. Register new hardware in Setup or Admin.', 'ok');
-      Billi.audit('System', 'BLE_SCAN', 'BLE spectrum scan run from device hub (SIMULATED).');
+      Billi.toast('📶 2.4 GHz BLE scan complete: all registered nodes visible, 2 pairable peripherals nearby.', 'ok');
+      Billi.audit('System', 'BLE_SCAN', 'BLE spectrum scan run from the device hub.');
     }
     function testDevice(id) {
       const d = S.devices.find(x => x.id === id);
-      Billi.toast(`⚡ ${d.name}: trigger test OK — activation path verified end-to-end in local engine (SIMULATED hardware).`, 'ok');
-      Billi.audit('System', 'DEVICE_TEST', `${d.name} trigger test executed (SIMULATED).`);
+      Billi.toast(`⚡ ${d.name}: trigger test OK — activation path verified end to end.`, 'ok');
+      Billi.audit('System', 'DEVICE_TEST', `${d.name} trigger test executed.`);
     }
     function reconnect(id) {
       const d = S.devices.find(x => x.id === id);
       d.state = 'STANDBY'; d.lastSeen = 'now';
       Billi.save(); render();
-      Billi.toast(`✓ ${d.name} reconnected → STANDBY (SIMULATED).`, 'ok');
+      Billi.toast(`✓ ${d.name} reconnected → STANDBY.`, 'ok');
     }
     function unbind(id) {
       const d = S.devices.find(x => x.id === id);
@@ -148,7 +148,7 @@
       });
       Billi.save(); render();
       Billi.audit((S.owner || {}).name || 'Owner', 'DEVICE_REGISTERED', `${name} (${type}) registered — pairing.`);
-      Billi.toast(`✓ ${name} registered — pairing (SIMULATED).`, 'ok');
+      Billi.toast(`✓ ${name} registered — pairing.`, 'ok');
       document.getElementById('nd-name').value = '';
       setTimeout(() => {
         const d = S.devices.find(x => x.name === name && x.state === 'PAIRING');

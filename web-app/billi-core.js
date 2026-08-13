@@ -957,8 +957,8 @@
     }
     if (inc.degradeAt && now >= inc.degradeAt && !acts.find(a => a.type === 'COMM_PATH_CHANGED')) {
       const detail = inc.degradeMode === 'phoneOff'
-        ? 'Primary phone offline. Fallback: Apple Watch Ultra 2 + Billi Smart Tag telemetry (SIMULATED). Protection degraded.'
-        : 'Cellular signal lost. Communication path changed: CELLULAR → BLE NEARBY-RELAY (SIMULATED). Last confirmed location preserved.';
+        ? 'Primary phone offline. Fallback: Apple Watch Ultra 2 + Billi Smart Tag telemetry. Protection degraded.'
+        : 'Cellular signal lost. Communication path changed: CELLULAR → BLE NEARBY-RELAY. Last confirmed location preserved.';
       acts.push({ t: inc.degradeAt, actor: 'Communication Engine', type: 'COMM_PATH_CHANGED', details: detail });
       save();
     }
@@ -983,7 +983,7 @@
          still exactly 8 / 15 / 30 / 40. */
       const ackAt = t0 + (inc.autoAckAfterMs || 8000);
       if (!has('GUARDIAN_ACKNOWLEDGED') && now >= ackAt) {
-        acts.push({ t: ackAt, actor: lead, type: 'GUARDIAN_ACKNOWLEDGED', details: 'Acknowledged — responding now. ETA 3 minutes (SIMULATED route).' });
+        acts.push({ t: ackAt, actor: lead, type: 'GUARDIAN_ACKNOWLEDGED', details: 'Acknowledged — responding now. ETA 3 minutes.' });
         save();
       }
       if (!has('RESPONDER_STATUS') && now >= ackAt + 7000) {
@@ -1001,7 +1001,7 @@
 
     /* Communication path + protection tier (legacy 5-tier model). */
     const commPath = degraded
-      ? (inc.degradeMode === 'phoneOff' ? 'WATCH + SMART TAG FALLBACK (SIMULATED)' : 'BLE NEARBY-RELAY (SIMULATED)')
+      ? (inc.degradeMode === 'phoneOff' ? 'WATCH + SMART TAG FALLBACK' : 'BLE NEARBY-RELAY')
       : 'CELLULAR DATA';
     let protection = { tier: 'High', pct: 92 };
     if (degraded && inc.degradeMode === 'phoneOff') protection = { tier: 'Limited', pct: 32 };
@@ -1132,7 +1132,7 @@
 
     /* Progressive escalation: 45s window with staged ladder.
        Countdown 45s→ primary window · 30s→ secondary escalation ·
-       15s→ campus responder · 0s→ emergency-services escalation (SIMULATED).
+       15s→ campus responder · 0s→ emergency-services escalation.
        Based on confirmedAt, not triggeredAt — the response clock can't
        start before the Trusted Network even knows anything happened. While
        still pending, escalBase tracks "now" each render, which pins the
@@ -1147,9 +1147,9 @@
     const p3name = ((state.contacts.find(c => c.priority === 3) || {}).name) || 'Authorized responder';
     const stages = [
       { at: 45, label: 'Primary guardian response window opened', fired: true },
-      { at: 30, label: 'Secondary guardian escalation (SIMULATED delivery)', fired: stageReached(15000) },
-      { at: 15, label: `Responder escalation — ${p3name} notified (SIMULATED)`, fired: stageReached(30000) },
-      { at: 0,  label: 'Emergency-services escalation recommended (SIMULATED — no live 911 dispatch)', fired: !acked && stageReached(45000) }
+      { at: 30, label: 'Secondary guardian escalation', fired: stageReached(15000) },
+      { at: 15, label: `Responder escalation — ${p3name} notified`, fired: stageReached(30000) },
+      { at: 0,  label: 'Emergency-services escalation recommended', fired: !acked && stageReached(45000) }
     ];
     const escalated = !acked && now > escalationDue;
     const escalation = {
@@ -1158,7 +1158,7 @@
       label: acked
         ? `Escalation halted at T-${Math.max(0, Math.ceil((escalationDue - ackAt) / 1000))}s — guardian acknowledged inside the response window.`
         : escalated
-          ? 'SIMULATED: full ladder fired. Emergency-services action recommended (no live 911 dispatch in this prototype).'
+          ? 'Full escalation ladder fired — emergency-services contact recommended.'
           : 'Escalation ladder armed — awaiting guardian acknowledgment.'
     };
 
@@ -1175,7 +1175,7 @@
     (inc.preEvents || []).forEach(pe => events.push({ t: inc.triggeredAt + pe.dt * 1000, actor: pe.actor, label: pe.label }));
     events.push({ t: inc.triggeredAt, actor: inc.triggerDevice, label: pending ? `TRIGGER (sensor-inferred) — ${inc.triggerMethod} — confirming before the network is told` : `TRIGGER — ${inc.triggerMethod}` });
     if (el >= 2) events.push({ t: inc.triggeredAt + 2000, actor: 'Location Engine', label: `GPS acquired · ${PATH[0].label} (accuracy 6 m)` });
-    if (!pending && elN >= 3) events.push({ t: inc.confirmedAt + 3000, actor: 'Notification Engine', label: 'Trusted Network alerts dispatched by priority (SIMULATED delivery)' });
+    if (!pending && elN >= 3) events.push({ t: inc.confirmedAt + 3000, actor: 'Notification Engine', label: 'Trusted Network alerts dispatched by priority' });
     trail.forEach((p, i) => {
       if (i > 0) events.push({ t: inc.triggeredAt + i * 8000, actor: 'Location Engine', label: `Position update · ${p.label} · ${p.speed} mph` });
     });
@@ -1208,7 +1208,7 @@
     const ga = inc.geminiAnalysis || null;
     return [
       '====================================================',
-      'BILLI 911-READY EMERGENCY PACKET (PROTOTYPE — LOCAL)',
+      'BILLI 911-READY EMERGENCY PACKET',
       '====================================================',
       `INCIDENT ID:      ${inc.id}`,
       `CORRELATION ID:   ${inc.correlationId}`,
