@@ -175,20 +175,24 @@ evidence against the speed change in the location trail.
 
 ### Where this came from
 
-Billi began as a tool for Black long-haul truckers.
+Billi started with bullying — a child being hurt where no adult could see it, and no way for that
+child to summon help without making the situation worse. Hence the safe word, the silent
+activation, the duress PIN that looks like compliance.
 
-Driving unfamiliar routes alone, overnight, through parts of the country where stopping is not
-safe — sundown towns among them — is a working condition, not an abstraction. Drivers went
-missing, and the people who cared about them had no way to know when to start looking, or where.
-The gap was never a lack of concern. It was that nobody held the driver's location, nobody was
-told when the check-in did not come, and by the time anyone realised, the trail was cold.
+What became clear while building it is that the same shape appears everywhere someone is alone and
+cannot safely ask for help. Rideshare driving, most directly: I drove for Uber myself, and a
+driver is alone in a vehicle with a stranger, on a route nobody is watching, with no colleague who
+notices when the trip ends somewhere wrong. Long-haul trucking carries the same exposure, and for
+Black drivers routed through parts of the country where stopping is not safe, worse. Home health
+aides entering unfamiliar homes alone. Contractors on empty sites. Retail workers closing at
+midnight.
 
-That is a small-business problem. Most American truckers are owner-operators or run two- and
-three-truck outfits — they *are* the business, and the safety infrastructure a corporate fleet
-buys is out of reach.
+These look like different problems and are one problem: **a person is alone, something goes wrong,
+and nobody who cares about them knows in time.**
 
-Everything else Billi protects — the agent, the aide, the contractor, the family — is the same
-mechanism pointed somewhere new.
+Almost all of them are also small businesses. A rideshare driver is a sole proprietor. So is an
+owner-operator trucker, a solo agent, an independent aide. They *are* the business, and the safety
+infrastructure a corporate employer provides was never available to them.
 
 ### The category problem
 
