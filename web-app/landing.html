@@ -17,7 +17,7 @@
 
       <nav class="center-nav-links">
         <a href="#top-nav" onclick="document.getElementById('top-nav').scrollIntoView({behavior:'smooth'}); return false;">Platform</a>
-        <a href="#why-billi" onclick="document.getElementById('why-billi').scrollIntoView({behavior:'smooth'}); return false;">Why Billi</a>
+        <a href="compare.html#why-billi">Why Billi</a>
         <a href="#features" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'}); return false;">Features</a>
         <a href="compare.html">Compare</a>
         <a href="#pricing" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'}); return false;">Pricing</a>
@@ -33,10 +33,6 @@
 
   <!-- MAIN LANDING PAGE CONTAINER (SURFACE 1) -->
   <main>
-    <div style="max-width:720px; margin:1rem auto 0; padding:0.85rem 1.1rem; border-radius:10px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); font-size:0.82rem; color:#fbbf24; text-align:center;">
-      🧪 <strong>You're testing a live prototype.</strong> GPS, microphone, camera, and (via the Android app) real SMS are genuinely active — not simulated. Use your own real information, and only add trusted contacts who've agreed to receive a test alert.
-    </div>
-
     <section class="hero-wrapper text-center">
       <h1 class="hero-title-main">Safety Coordination<br>Platform</h1>
       <p class="hero-subheadline-1">Every second accounted for. Every person protected.</p>
@@ -45,15 +41,7 @@
       <div class="hero-cta-group flex-row justify-center">
         <button class="btn btn-hero-primary" onclick="scrollToDemos()">Explore Live Demos →</button>
         <button class="btn btn-hero-secondary" onclick="window.location.href='auth.html'">Create Account</button>
-        <a class="btn btn-hero-secondary" href="/billi.apk" download>📱 Download Android App</a>
-      </div>
-      <div style="max-width:520px; margin:12px auto 0; padding:0.9rem 1.1rem; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); font-size:0.8rem; text-align:left; color:#cbd5e1;">
-        <strong style="color:#e2e8f0;">Installing the Android app (not on the Play Store yet):</strong>
-        <ol style="margin:0.4rem 0 0 1.1rem; padding:0; line-height:1.6;">
-          <li>Tap the download button above, open the file, then tap <strong>Install anyway</strong> when Android warns about an unrecognized developer — expected for an app outside the Play Store, not a sign anything's wrong.</li>
-          <li>On first launch, allow the SMS, Location, Microphone, and Camera prompts — these power the app's real features.</li>
-          <li>If SMS specifically gets blocked ("for your protection"): Settings → Apps → Billi → ⋮ menu → <strong>Allow restricted settings</strong>, then go back and allow SMS. This is a standard Android safeguard for sideloaded apps requesting SMS access, not a Billi bug.</li>
-        </ol>
+        <button class="btn btn-hero-secondary" onclick="openInstallModal()">📱 Get the Android App</button>
       </div>
 
       <!-- PRODUCT SHOWCASE BROWSER MOCKUP WINDOW -->
@@ -99,31 +87,6 @@
       </div>
     </section>
 
-    <!-- WHY BILLI — MISSION / ORIGIN NARRATIVE -->
-    <section id="why-billi" class="container section-spacing text-center">
-      <div class="section-tag-muted">Why Billi</div>
-      <h2 class="section-title-white">Built for the moments 911 alone doesn't reach</h2>
-      <div style="max-width:720px; margin:0 auto; text-align:left;">
-        <p class="text-muted" style="font-size:0.98rem; line-height:1.75; margin-top:1.25rem;">
-          Traditional emergency response depends on one thing going right: someone making a clear call, describing
-          where they are and what's happening, while it's actively happening. That assumption fails more often than
-          it should. Indoor GPS handed to 911 dispatch is frequently inaccurate. Language barriers make an already-hard
-          call harder. And for a real share of emergencies — a child who can't safely reach for a phone, someone
-          mid-medical-event who can't speak, a person being coerced by whoever's standing next to them — "just call
-          911" was never a plan that could reach them in the first place.
-        </p>
-        <p class="text-muted" style="font-size:0.98rem; line-height:1.75; margin-top:1rem;">
-          Billi starts from a different assumption: the call shouldn't have to be the trigger. A spoken safe word, a
-          held button, a detected fall, a duress PIN entered under threat — any of them set off the same real
-          response. Location, evidence, and a trusted network that already knows the plan start moving immediately,
-          quietly, before anyone has to explain anything out loud. The people it's built for are exactly the people
-          typical emergency response is most likely to miss.
-        </p>
-        <p class="text-center margin-top">
-          <a href="compare.html" style="color:#a5b4fc; font-weight:600; font-size:0.9rem;">Is this just another safety app? See how Billi actually compares →</a>
-        </p>
-      </div>
-    </section>
 
     <!-- HOW IT WORKS SECTION -->
     <section id="how-it-works" class="container section-spacing text-center">
@@ -178,7 +141,7 @@
       <div class="grid grid-4 text-left">
         <div class="card process-step-card">
           <h3 class="step-title-text" style="font-size:0.95rem;">🛰️ Real Device Sensing</h3>
-          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Real GPS, motion, and audio capture through the browser or native app — never simulated.</p>
+          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Real GPS, motion, and audio capture through the browser or the native Android app.</p>
         </div>
         <div class="card process-step-card">
           <h3 class="step-title-text" style="font-size:0.95rem;">🧠 Gemini AI Reasoning</h3>
@@ -204,10 +167,6 @@
           <h3 class="step-title-text" style="font-size:0.95rem;">🔄 Live Multi-Device Sync</h3>
           <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Guardian, protected person, and responder sessions all see the same incident update in real time, on every device.</p>
         </div>
-        <div class="card process-step-card">
-          <h3 class="step-title-text" style="font-size:0.95rem;">✅ Honest Labeling, Always</h3>
-          <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">Every capability is marked CONNECTED, SIMULATED, or LOCAL right in the product — nothing ever pretends to be real when it isn't.</p>
-        </div>
       </div>
     </section>
 
@@ -216,9 +175,9 @@
       <div class="section-tag-muted">6 Live Demonstrations</div>
       <h2 class="section-title-white">Watch Billi Work — Six Real Situations</h2>
       <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto; margin-bottom:2.5rem;">
-        These are not slideshows. Each one runs the actual product — the protected person's phone, then the
-        Guardian Command Center — on the real engine, with live Gemini reasoning over the incident as it unfolds.
-        A guide along the bottom tells you which panel to watch and why. Roughly 60–90 seconds each.
+        Each one runs the actual product — the protected person's phone, then the Guardian Command Center —
+        with live Gemini reasoning over the incident as it unfolds. A guide along the bottom tells you what to
+        watch. Roughly 60–90 seconds each.
       </p>
 
       <div class="grid grid-3 text-left">
@@ -283,71 +242,14 @@
           <div class="scenario-cta margin-top" style="color:#ea580c;">Launch Demo &rarr;</div>
         </div>
 
-        <!-- WHAT YOU ARE ACTUALLY LOOKING AT -->
-        <div class="card" style="border:1px dashed rgba(148,163,184,0.35); background:rgba(255,255,255,0.02);">
-          <div class="scenario-tag text-muted">HOW TO READ THESE</div>
-          <h3 class="scenario-card-title margin-top-xs" style="font-size:1rem;">Real engine, honest labels</h3>
-          <p class="scenario-desc">Every demo runs the same code a paying account runs. Telemetry and responder movement are marked
-            <span class="sim-chip simulated">SIMULATED</span> because there is no real person in danger — but the incident
-            state machine, the escalation ladder, the Safety Contract rules and the Gemini calls are all genuinely live.
-            When the AI card says <span class="sim-chip connected">LIVE GEMINI</span>, that response was generated seconds ago.</p>
-          <p class="scenario-desc" style="margin-top:0.5rem;">Demos never touch your account and never text a real phone number.</p>
-        </div>
       </div>
     </section>
 
-    <!-- ROADMAP — where we came from, where we're going -->
-    <section class="container section-spacing text-center">
-      <div class="section-tag-muted">Roadmap</div>
-      <h2 class="section-title-white">Where We Came From, Where We're Going</h2>
-      <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto;">
-        Built in the open, honestly labeled at every stage — including how far away the bigger pieces still are.
-      </p>
-
-      <div class="grid grid-3 margin-top-md text-left">
-        <div class="card process-step-card" style="border-top:3px solid #10b981;">
-          <span class="badge badge-green" style="font-size:0.65rem;">BUILT</span>
-          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Where We Came From</h3>
-          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
-            <li>Real 13-service backend + live Gemini AI reasoning</li>
-            <li>Real GPS, motion, audio, and camera capture</li>
-            <li>Real safe zones — live map, address search, exit-breach alerts</li>
-            <li>Native Android app with real SMS via the phone's own SIM</li>
-            <li>Second-device invite — one account covers work and family</li>
-            <li>Public deployment, security hardening, a real feedback loop</li>
-          </ul>
-        </div>
-
-        <div class="card process-step-card" style="border-top:3px solid #f59e0b;">
-          <span class="badge" style="font-size:0.65rem; background:rgba(245,158,11,0.2); color:#fbbf24;">IN PROGRESS</span>
-          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Where We're Going — Soon</h3>
-          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
-            <li>Nearby-user proximity alerts for active incidents</li>
-            <li>Continued security &amp; reliability hardening</li>
-            <li>Play Store submission — removing the sideload install step</li>
-            <li>More real-device verification with active testers</li>
-          </ul>
-        </div>
-
-        <div class="card process-step-card" style="border-top:3px solid #6366f1;">
-          <span class="badge badge-indigo" style="font-size:0.65rem;">THE BIGGER VISION</span>
-          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Beyond That</h3>
-          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
-            <li>True native apps — reliable background location, not a browser</li>
-            <li>Real physical tracking hardware for genuine redundancy</li>
-            <li>An actual 911 / CAD dispatch integration, not a hand-off packet</li>
-            <li>Production-grade backend infrastructure at scale</li>
-            <li>Satellite fallback for true off-grid coverage</li>
-          </ul>
-          <p class="text-muted" style="font-size:0.72rem; margin-top:0.6rem; font-style:italic;">Real, deliberately larger undertakings — tracked separately from what's already shipping.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRICING — one plan, and an honest account of what it delivers today.
+ — one plan, and an honest account of what it delivers today.
          The disclosure below is not boilerplate: alert delivery genuinely
          differs by platform right now, and someone buying emergency
          protection deserves to know that before they pay, not after. -->
+    <!-- PRICING — one plan, honest about what it delivers today. -->
     <section id="pricing" class="container section-spacing text-center">
       <div class="section-tag-muted">Pricing</div>
       <h2 class="section-title-white">One plan. Up to five people.</h2>
@@ -385,17 +287,6 @@
             <li>Full incident history and audit trail</li>
           </ul>
 
-          <!-- Requirement stated at the button, not only in the disclosure box
-               below it: people subscribe before they read boxes, and an
-               iPhone-only household that pays today gets alerts that never
-               leave the app. Carrier-based delivery is in registration and
-               will not land within days, so this stays until a real SMS to a
-               non-Android household has actually been verified. -->
-          <div style="margin-top:1rem; padding:0.6rem 0.8rem; border-radius:8px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.28); font-size:0.78rem; color:#cbd5e1; text-align:left;">
-            <strong style="color:#34d399;">Requires an Android phone</strong> for the protected person —
-            that is where Billi sends real text alerts today. iPhone support is in progress;
-            if everyone you'd protect is on iPhone, please don't subscribe yet.
-          </div>
 
           <a id="subscribe-btn" class="btn btn-hero-primary margin-top-md" href="#pricing"
              style="display:inline-block; padding:14px 32px; font-size:1.05rem;">Start protecting →</a>
@@ -403,24 +294,6 @@
         </div>
       </div>
 
-      <!-- HONEST DELIVERY DISCLOSURE -->
-      <div style="max-width:660px; margin:1.5rem auto 0; padding:1.1rem 1.3rem; border-radius:10px; background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.3); text-align:left;">
-        <strong style="color:#fbbf24; font-size:0.88rem;">Before you subscribe — what Billi does and doesn't do today</strong>
-        <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#cbd5e1; font-size:0.8rem; line-height:1.8;">
-          <li><strong>Text-message alerts work on Android</strong> with the Billi app installed — sent from your
-              own phone's SIM, no third-party gateway. This is the configuration we recommend and have
-              verified on real hardware.</li>
-          <li><strong>On iPhone and in the browser, alert delivery is limited.</strong> Apple permits no app to
-              send a text without a person tapping send, so Billi shows alerts inside the app and we are
-              actively working on carrier-based delivery. If everyone you'd protect is on iPhone, wait for us —
-              we would rather you didn't pay yet.</li>
-          <li><strong>Watches, BLE tags and smart glasses are represented in the interface but not yet
-              connected as live hardware.</strong> Your phone is the real sensor today.</li>
-          <li><strong>Billi is not a replacement for 911</strong> and is not a professionally monitored alarm
-              service. No one is watching a screen on your behalf. Billi coordinates the people you choose.</li>
-          <li><strong>This is an early-access product.</strong> You are paying to help build it, and to have it
-              before it is finished. We would rather say that plainly than surprise you later.</li>
-        </ul>
       </div>
 
       <div style="max-width:660px; margin:1.5rem auto 0; padding:1rem 1.2rem; border-radius:10px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.25); text-align:left;">
@@ -437,6 +310,9 @@
         Fleets, brokerages, home-care agencies, campuses and employers need multi-seat coverage —
         use the feedback button and tell us how many people you need to protect.
       </p>
+      <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
+        <a href="compare.html#included" style="color:#94a3b8;">What's included, and what's still coming →</a>
+      </p>
     </section>
 
     <!-- FOOTER CTA SECTION -->
@@ -446,10 +322,57 @@
     </section>
   </main>
 
+
+  <!-- ANDROID INSTALL MODAL — the install steps used to sit permanently under
+       the hero. They belong at the moment someone actually chooses to install,
+       not in front of every visitor who never will. -->
+  <div class="modal-overlay" id="install-modal" style="display:none;" onclick="if(event.target===this) closeInstallModal()">
+    <div class="modal-dialog-card" style="max-width:520px; text-align:left;">
+      <div class="flex-between" style="align-items:flex-start; gap:1rem;">
+        <div>
+          <h3 style="color:#fff; margin:0;">📱 Install Billi for Android</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.25rem;">Not on the Play Store yet, so there are two extra taps.</p>
+        </div>
+        <button class="btn btn-outline-nav" style="font-size:0.8rem; padding:0.3rem 0.6rem;" onclick="closeInstallModal()">✕</button>
+      </div>
+
+      <ol style="margin:1rem 0 0 1.15rem; padding:0; color:#cbd5e1; font-size:0.86rem; line-height:1.7;">
+        <li style="margin-bottom:0.5rem;">Open the downloaded file and tap <strong style="color:#e2e8f0;">Install anyway</strong> when Android warns about an unrecognized developer.</li>
+        <li style="margin-bottom:0.5rem;">On first launch, allow <strong style="color:#e2e8f0;">SMS, Location, Microphone and Camera</strong> — these are what Billi actually uses in an emergency.</li>
+        <li>If SMS gets blocked: <strong style="color:#e2e8f0;">Settings → Apps → Billi → ⋮ → Allow restricted settings</strong>.</li>
+      </ol>
+
+      <div class="flex-row margin-top" style="gap:0.5rem; justify-content:flex-end;">
+        <button class="btn btn-outline-nav" onclick="closeInstallModal()">Not now</button>
+        <button class="btn btn-primary" onclick="startAndroidDownload()">Download &amp; continue →</button>
+      </div>
+      <p class="text-muted" style="font-size:0.72rem; margin-top:0.7rem;">Requires Android. These steps stay available on the next page.</p>
+    </div>
+  </div>
+
   <script src="billi-core.js"></script>
   <script src="app.js"></script>
   <script>
     Billi.mountFeedback();
+
+    /* Install flow: show what Android is about to ask before it asks, then
+       start the download and land on the page that keeps the steps in view
+       while the file arrives. */
+    function openInstallModal() { document.getElementById('install-modal').style.display = 'flex'; }
+    function closeInstallModal() { document.getElementById('install-modal').style.display = 'none'; }
+    function startAndroidDownload() {
+      const a = document.createElement('a');
+      a.href = '/billi.apk';
+      a.download = 'billi.apk';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      /* Give the download a moment to be handed to the browser before the
+         navigation, so it is never cancelled mid-handoff. */
+      setTimeout(() => { location.href = 'thank-you.html'; }, 700);
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeInstallModal(); });
+
 
     /* Checkout link. Paste the Stripe Payment Link URL here once it exists —
        a Payment Link needs no server-side integration, so this constant is

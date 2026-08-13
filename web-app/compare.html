@@ -15,8 +15,9 @@
       </div>
       <nav class="center-nav-links">
         <a href="landing.html">Platform</a>
-        <a href="landing.html#why-billi">Why Billi</a>
+        <a href="#why-billi">Why Billi</a>
         <a href="landing.html#features">Features</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="compare.html">Compare</a>
       </nav>
       <div class="nav-actions flex-row">
@@ -30,6 +31,59 @@
     <section class="hero-wrapper text-center">
       <h1 class="hero-title-main" style="font-size:2.4rem;">Is Billi Just Another<br>Safety App?</h1>
       <p class="hero-subheadline-1">Short answer: no. Here's what's actually different — not just claimed, but built.</p>
+    </section>
+
+
+    <!-- WHY BILLI — moved off the landing page. Rebuilt as the three specific
+         assumptions traditional response makes, because "911 doesn't always
+         reach people" is only convincing when you name how it fails. -->
+    <section id="why-billi" class="container section-spacing text-center">
+      <div class="section-tag-muted">Why Billi</div>
+      <h2 class="section-title-white">Built for the moments 911 alone doesn't reach</h2>
+      <p class="text-muted margin-top-xs" style="max-width:700px; margin-left:auto; margin-right:auto;">
+        Calling for help assumes three things go right at once. Each one fails often enough to matter.
+      </p>
+
+      <div class="grid grid-3 margin-top-md text-left">
+        <div class="card process-step-card" style="border-top:3px solid rgba(239,68,68,0.55);">
+          <h3 class="step-title-text" style="font-size:0.95rem;">📍 That they know where you are</h3>
+          <p class="text-muted" style="font-size:0.84rem; margin-top:0.4rem; line-height:1.6;">
+            Indoor location handed to dispatch is frequently inaccurate. "Somewhere in this building"
+            costs minutes that a person having a cardiac event does not have.
+          </p>
+          <p style="font-size:0.8rem; margin-top:0.6rem; color:#a5b4fc;">
+            <strong>Billi:</strong> location, evidence and context start moving on the trigger itself.
+          </p>
+        </div>
+
+        <div class="card process-step-card" style="border-top:3px solid rgba(239,68,68,0.55);">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🗣 That you can speak</h3>
+          <p class="text-muted" style="font-size:0.84rem; margin-top:0.4rem; line-height:1.6;">
+            A child who can't safely reach for a phone. Someone mid-medical-event. A driver with a
+            passenger listening. A call was never a plan that could reach them.
+          </p>
+          <p style="font-size:0.8rem; margin-top:0.6rem; color:#a5b4fc;">
+            <strong>Billi:</strong> a spoken safe word, a held button, a detected fall — same response.
+          </p>
+        </div>
+
+        <div class="card process-step-card" style="border-top:3px solid rgba(239,68,68,0.55);">
+          <h3 class="step-title-text" style="font-size:0.95rem;">🌐 That you'll be understood</h3>
+          <p class="text-muted" style="font-size:0.84rem; margin-top:0.4rem; line-height:1.6;">
+            A language barrier turns an already-hard call into an impossible one, at the exact moment
+            precision matters most.
+          </p>
+          <p style="font-size:0.8rem; margin-top:0.6rem; color:#a5b4fc;">
+            <strong>Billi:</strong> structured context, in writing, to people who already know the plan.
+          </p>
+        </div>
+      </div>
+
+      <p class="text-muted margin-top-md" style="max-width:700px; margin-left:auto; margin-right:auto; font-size:0.92rem; line-height:1.7;">
+        Billi starts from a different assumption: <strong style="color:#e2e8f0;">the call shouldn't have to be
+        the trigger.</strong> The people it's built for are exactly the people typical emergency response is
+        most likely to miss.
+      </p>
     </section>
 
     <!-- COMPARISON TABLE -->
@@ -60,6 +114,99 @@
       </p>
 
       <div class="grid grid-3 margin-top-md text-left" id="who-for-grid"></div>
+    </section>
+
+
+    <!-- ROADMAP — moved off the landing page. -->
+    <section id="roadmap" class="container section-spacing text-center">
+      <div class="section-tag-muted">Roadmap</div>
+      <h2 class="section-title-white">Where We Came From, Where We're Going</h2>
+      <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto;">
+        Built in the open, honestly labeled at every stage — including how far away the bigger pieces still are.
+      </p>
+
+      <div class="grid grid-3 margin-top-md text-left">
+        <div class="card process-step-card" style="border-top:3px solid #10b981;">
+          <span class="badge badge-green" style="font-size:0.65rem;">BUILT</span>
+          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Where We Came From</h3>
+          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
+            <li>Real 13-service backend + live Gemini AI reasoning</li>
+            <li>Real GPS, motion, audio, and camera capture</li>
+            <li>Real safe zones — live map, address search, exit-breach alerts</li>
+            <li>Native Android app with real SMS via the phone's own SIM</li>
+            <li>Second-device invite — one account covers work and family</li>
+            <li>Public deployment, security hardening, a real feedback loop</li>
+          </ul>
+        </div>
+
+        <div class="card process-step-card" style="border-top:3px solid #f59e0b;">
+          <span class="badge" style="font-size:0.65rem; background:rgba(245,158,11,0.2); color:#fbbf24;">IN PROGRESS</span>
+          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Where We're Going — Soon</h3>
+          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
+            <li>Nearby-user proximity alerts for active incidents</li>
+            <li>Continued security &amp; reliability hardening</li>
+            <li>Play Store submission — removing the sideload install step</li>
+            <li>More real-device verification with active testers</li>
+          </ul>
+        </div>
+
+        <div class="card process-step-card" style="border-top:3px solid #6366f1;">
+          <span class="badge badge-indigo" style="font-size:0.65rem;">THE BIGGER VISION</span>
+          <h3 class="step-title-text margin-top-xs" style="font-size:0.95rem;">Beyond That</h3>
+          <ul style="margin:0.6rem 0 0 1.1rem; padding:0; color:#94a3b8; font-size:0.8rem; line-height:1.9;">
+            <li>True native apps — reliable background location, not a browser</li>
+            <li>Real physical tracking hardware for genuine redundancy</li>
+            <li>An actual 911 / CAD dispatch integration, not a hand-off packet</li>
+            <li>Production-grade backend infrastructure at scale</li>
+            <li>Satellite fallback for true off-grid coverage</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- WHAT'S INCLUDED — the purchase disclosure, moved off the landing page
+         and collapsed. The content is unchanged; only its placement and
+         visual weight are. Linked from the pricing section. -->
+    <section id="included" class="container section-spacing text-center" style="padding-top:0;">
+      <div class="section-tag-muted">Included</div>
+      <h2 class="section-title-white">What's in it today</h2>
+
+      <div class="grid grid-3 margin-top-md text-left">
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">📱 Real alerts on Android</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.6;">
+            Text alerts sent from the phone's own SIM with the Billi app installed — no third-party
+            gateway in between. Verified on real hardware.
+          </p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">📍 Your phone is the sensor</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.6;">
+            GPS, microphone, camera and accelerometer — the hardware you already own, working
+            together. Nothing extra to buy.
+          </p>
+        </div>
+        <div class="card process-step-card">
+          <h3 class="step-title-text" style="font-size:0.95rem;">👥 One account, five people</h3>
+          <p class="text-muted" style="font-size:0.82rem; margin-top:0.4rem; line-height:1.6;">
+            Priced per account, not per protected person. Work and family on the same seat.
+          </p>
+        </div>
+      </div>
+
+      <details class="quiet-details">
+        <summary>Platform differences and current limits</summary>
+        <ul>
+          <li><strong>On iPhone and in the browser, alert delivery is limited.</strong> Apple permits no app to
+              send a text without a person tapping send, so alerts appear inside the app. Carrier-based
+              delivery is in progress.</li>
+          <li><strong>Watches, BLE tags and smart glasses appear in the interface but aren't connected as live
+              hardware yet.</strong> Your phone is the real sensor today.</li>
+          <li><strong>Billi is not a replacement for 911</strong> and is not a professionally monitored alarm
+              service. Billi coordinates the people you choose.</li>
+        </ul>
+      </details>
     </section>
 
     <!-- FOOTER CTA -->

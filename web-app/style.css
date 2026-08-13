@@ -1395,3 +1395,42 @@ body.has-demo-guide #billi-fb-panel { bottom: 230px !important; }
   from { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
   to   { box-shadow: 0 0 0 16px rgba(99, 102, 241, 0); }
 }
+
+/* ==========================================================================
+   QUIET DETAILS
+   Disclosures that need to stay available without dominating the page. The
+   content is unchanged — only its visual weight is. Collapsed by default,
+   reads as a link rather than a warning panel.
+   ========================================================================== */
+.quiet-details {
+  max-width: 660px;
+  margin: 1.25rem auto 0;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem 0.9rem;
+}
+.quiet-details > summary {
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0;
+  list-style: none;
+}
+.quiet-details > summary::-webkit-details-marker { display: none; }
+.quiet-details > summary::before {
+  content: "ⓘ";
+  margin-right: 0.45rem;
+  color: #6366f1;
+}
+.quiet-details[open] > summary { color: #cbd5e1; margin-bottom: 0.35rem; }
+.quiet-details ul {
+  margin: 0 0 0.5rem 1.1rem;
+  padding: 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  line-height: 1.75;
+}
+.quiet-details p { color: #94a3b8; font-size: 0.8rem; line-height: 1.7; margin: 0 0 0.5rem; }
