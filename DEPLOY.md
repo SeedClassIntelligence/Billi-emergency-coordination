@@ -29,37 +29,34 @@ cd ~/Billi-emergency-coordination && git checkout -B master origin/master && git
 Check the top commit matches what you expect. If it doesn't, nothing after
 this point is deploying what you think it is.
 
-## 2. Find the image path you're already using
+## 2. Build
 
-Don't guess this — ask the running service:
-
-```bash
-gcloud run services describe billi-platform --region us-central1 --format='value(spec.template.spec.containers[0].image)'
-```
-
-Copy what it prints. It looks like `gcr.io/billi-503602/billi-platform` or a
-`...-docker.pkg.dev/...` path. That exact string is `<IMAGE>` below.
-
-## 3. Build
+The image path, confirmed against the running service on 2026-08-13:
 
 ```bash
-gcloud builds submit --tag <IMAGE>
+gcloud builds submit --tag us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform
 ```
 
 Takes a few minutes and streams the build log live. If it fails, the reason is
 in that stream — `gcloud builds log` tends to come back empty, so read it here.
 
-## 4. Deploy
+If that path is ever wrong, ask the running service rather than guessing:
 
 ```bash
-gcloud run deploy billi-platform --image <IMAGE> --region us-central1 --allow-unauthenticated
+gcloud run services describe billi-platform --region us-central1 --format='value(spec.template.spec.containers[0].image)'
+```
+
+## 3. Deploy
+
+```bash
+gcloud run deploy billi-platform --image us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform --region us-central1 --allow-unauthenticated
 ```
 
 `--image` carries the existing environment variables forward unchanged. That
 means a redeploy will **not** fix a bad key, and also will not wipe the Twilio
 credentials.
 
-## 5. Confirm the new code is actually live
+## 4. Confirm the new code is actually live
 
 ```bash
 curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "6 Live Demonstrations"
@@ -67,7 +64,7 @@ curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | g
 
 `1` means the six-scenario build is serving. `0` means the deploy didn't take.
 
-## 6. Confirm Gemini is live *on the deployed host*
+## 5. Confirm Gemini is live *on the deployed host*
 
 A working local `.env` proves nothing about Cloud Run — the key gets there a
 completely different way. This once ran for days on the literal placeholder
