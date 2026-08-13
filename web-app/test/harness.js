@@ -29,6 +29,9 @@ function loadBilli() {
   const code = fs.readFileSync(path.join(__dirname, '..', 'billi-core.js'), 'utf8');
   const sandbox = {
     localStorage: makeLocalStorage(),
+    /* The guided demo tour keeps its position here rather than in module
+       scope, because advancing a beat is often a page navigation. */
+    sessionStorage: makeLocalStorage(),
     document: {
       getElementById: () => null,
       addEventListener: () => {},

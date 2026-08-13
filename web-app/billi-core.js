@@ -112,18 +112,90 @@
   const CONFIRM_WINDOW_MS = 10000;
 
   /* ---------------------------------------------------------------------
-     NINE-SCENARIO OUTCOME PACKS (demonstration blueprint)
-     Each pack answers: how activated, what Billi did immediately, what it
-     kept gathering, how the network coordinated, and the safety outcome.
+     SCENARIO PACKS (demonstration blueprint)
+
+     Five packs, not nine. The earlier set had four "capability" scenarios
+     (duress, signal loss, phone power-off, escalation ladder) with no
+     person in them — they demonstrated a mechanism with nobody it was
+     happening to. Each of those is now folded into a scenario about a real
+     situation, so every pack answers the same five questions: who is alone,
+     how it activated, what Billi did immediately, how the network
+     coordinated, and how it ended. Nothing was dropped; `covers` names the
+     capabilities each one now carries.
+
      Personas other than the Maya fixture exist ONLY inside demonstrations.
+
+     `beats` is the guided tour: each beat moves the viewer to a real
+     product page and points at the panel that is doing the thing being
+     described. `at` is seconds since trigger. See demoGuide().
      --------------------------------------------------------------------- */
   const SCENARIO_PACKS = {
     1: {
-      name: 'Scenario 01 — Protect a Child', trigger: 'safe_word',
-      preEvents: [{ dt: 0, actor: 'Ray-Ban Meta Glasses', label: 'Phrase matched: "Blue Folder" (enrolled voiceprint verified)' }]
+      name: 'Scenario 01 — Working Alone: Rideshare Driver', trigger: 'safe_word',
+      covers: 'Safe word · duress defense · coerced cancellation',
+      effects: { duressAfter: 16 },
+      persona: { name: 'Andre Whitfield', age: 36, facility: 'Driving — contract rideshare, night shift' },
+      voice: { state: 'Enrolled', safeWords: ['Order confirmed'] },
+      contract: { spokenMode: 'silent' },
+      triggerOverride: { device: 'iPhone 15 Pro (dash mount)', method: 'Spoken safe word "Order confirmed"' },
+      medical: { conditions: 'None documented', allergies: 'None documented', medications: '—', equipment: 'Dash camera (road + cabin)', physician: 'Dr. Salas — Eastside Family Medicine', instructions: 'DO NOT CALL HIS PHONE OPENLY — a passenger is in the vehicle with him. Grey 2019 Camry, plate 8LKW332. Dash cabin camera is recording.' },
+      contacts: [
+        { id: 'c_dana', name: 'Dana Whitfield', role: 'Primary Guardian', relationship: 'Wife', priority: 1, phone: '+1 (555) 240-6612', channels: ['Push', 'SMS', 'Call'], canAcknowledge: true, canResolve: true, medicalAccess: true, evidenceAccess: true, locationAccess: true, duressVisibility: true, availability: 'Available' },
+        { id: 'c_nia', name: 'Nia Whitfield', role: 'Secondary Guardian', relationship: 'Sister', priority: 2, phone: '+1 (555) 240-9047', channels: ['SMS', 'Call'], canAcknowledge: true, canResolve: false, medicalAccess: false, evidenceAccess: true, locationAccess: true, duressVisibility: true, availability: 'Available' },
+        { id: 'c_desk', name: 'Metro Non-Emergency Desk', role: 'Campus Safety', relationship: 'Police non-emergency line', priority: 3, phone: '+1 (555) 311-0000', channels: ['SMS'], canAcknowledge: true, canResolve: false, medicalAccess: false, evidenceAccess: false, locationAccess: true, duressVisibility: true, availability: '24/7' }
+      ],
+      path: [
+        { lat: 37.7599, lng: -122.4148, speed: 24, label: 'On assigned route — Mission St southbound' },
+        { lat: 37.7561, lng: -122.4102, speed: 31, label: 'Off assigned route — turned east, not the drop-off' },
+        { lat: 37.7514, lng: -122.4031, speed: 38, label: 'Continuing away from destination — Bayshore' },
+        { lat: 37.7466, lng: -122.3968, speed: 12, label: 'Slowing — industrial frontage road, no through traffic' }
+      ],
+      transcripts: [
+        'Trip audio. Two occupants. Driver and one rear passenger.',
+        'Passenger: "Change of plan. Keep driving. Don\'t stop."',
+        'Andre: "Order confirmed." (enrolled safe phrase — spoken naturally, no reaction from passenger)',
+        'Passenger: "Who are you talking to? Put the phone down. Cancel it."',
+        '[Screen shows cancellation. Recording continues.]'
+      ],
+      preEvents: [
+        { dt: -40, actor: 'Rideshare App', label: 'Trip in progress — one passenger, destination 19th & Valencia' },
+        { dt: -8, actor: 'Billi', label: 'ROUTE DEVIATION — vehicle heading away from the destination for 8 minutes' },
+        { dt: 0, actor: 'iPhone 15 Pro (dash mount)', label: 'Phrase matched: "Order confirmed" (enrolled voiceprint verified) — no outward change on screen' }
+      ],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'core', title: "Andre's phone, from the outside", watch: 'Nothing on this screen tells the passenger anything. Location, audio evidence and the Trusted Network all started the moment the phrase matched.' },
+        { at: 15, page: 'incident.html', focus: 'situation', title: 'He was forced to cancel', watch: 'His screen now shows a believable "Emergency cancelled". Guardians see this red duress banner instead. Location and audio never stopped.' },
+        { at: 26, page: 'incident.html', focus: 'network', title: 'Who was reached, and who moved', watch: 'Everyone was alerted at once. The medical note tells them not to call his phone — because calling it would tell the passenger.' },
+        { at: 36, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'A written summary, then a structured read of the evidence audio — risk level, category, and whether the distress looks genuine.' },
+        { at: 48, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only. Route deviation, safe word, coerced cancellation, every response — this is what the 911-ready packet is built from.' }
+      ]
     },
     2: {
-      name: 'Scenario 02 — Help After a Fall', trigger: 'fall',
+      name: 'Scenario 02 — Protect a Child', trigger: 'safe_word',
+      covers: 'Safe word · geofence context · the full 45-second escalation ladder',
+      /* Nobody acknowledges for 48 seconds, so the escalation ladder runs all
+         the way out on camera — the capability the old standalone "Scenario 09"
+         demonstrated with no person attached to it. */
+      effects: { autoAckAfter: 48 },
+      preEvents: [
+        { dt: -30, actor: 'Billi Geofence Engine', label: 'SAFE ZONE EXIT — left "Pine Middle School" boundary during school hours' },
+        { dt: 0, actor: 'Ray-Ban Meta Glasses', label: 'Phrase matched: "Blue Folder" (enrolled voiceprint verified) — silent activation, no outward change' }
+      ],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'core', title: "Maya's phone — she said a phrase", watch: 'No button, no screen she had to unlock and look at. Location, audio evidence and the Trusted Network all started on the words alone. Her account keeps spoken reassurance on, so Billi answers her out loud.' },
+        { at: 13, page: 'incident.html', focus: 'escalation', title: 'Nobody has acknowledged yet', watch: 'Deliberately unacknowledged. Watch the ladder fire at T-30, T-15 and T-0 — each stage widens the circle instead of waiting on the first person.' },
+        { at: 30, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'Written summary, then a structured read of the evidence audio — risk level, category, and whether the distress looks genuine.' },
+        { at: 52, page: 'incident.html', focus: 'network', title: 'The ladder worked', watch: 'The response matrix shows who was reached at each rung, and who finally moved.' },
+        { at: 66, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only. Safe-zone exit, safe word, every escalation rung and every response — this is what the 911-ready packet is built from.' }
+      ]
+    },
+    3: {
+      name: 'Scenario 03 — Help After a Fall', trigger: 'fall',
+      covers: 'Sensor-inferred trigger · 10-second safe-fail window · medical dossier',
+      /* A fall is inferred, not declared — so this demo runs the real
+         confirmation window instead of skipping it the way demos normally do.
+         Robert does not answer, and silence escalates. */
+      effects: { confirmWindow: true },
       persona: { name: 'Robert Ellis', age: 78, facility: 'Lives alone — 48 Cedar Ave' },
       medical: { conditions: 'Hypertension · prior fall (2025)', allergies: 'Penicillin', medications: 'Lisinopril 10 mg daily', equipment: 'Medical alert wristband', physician: 'Dr. Chen — Cedar Medical', instructions: "Spare key with neighbor Tom (46 Cedar Ave). Preferred hospital: St. Mary's. Check for head injury after falls." },
       contacts: [
@@ -142,11 +214,22 @@
         { dt: -15, actor: 'Apple Watch Ultra 2', label: 'HARD FALL detected — impact 2.4g, body motion stopped' },
         { dt: -15, actor: 'Billi', label: '15-second unresponsive countdown started on watch' },
         { dt: 0, actor: 'Billi', label: 'No response within countdown — emergency activation' }
+      ],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'confirm', title: 'A fall is a guess, so Billi asks first', watch: 'A phone in a bag can read as a fall. Nothing has gone to his family yet — but location and audio are already recording either way. Ten seconds.' },
+        { at: 12, page: 'protected.html', focus: 'core', title: 'Silence escalates. It never cancels.', watch: 'Robert never answered, so Billi treated it as real and alerted the network. A deliberate trigger — hold-to-SOS, safe word — never waits at all.' },
+        { at: 26, page: 'incident.html', focus: 'network', title: 'Daughter, neighbor, nurse line', watch: 'All alerted together, in one incident. The neighbor with the spare key matters more than the ambulance in the first two minutes.' },
+        { at: 38, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'It has the medical dossier — hypertension, prior fall, penicillin allergy — and reasons about the silence after the impact, not just the impact.' },
+        { at: 50, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only, including the unanswered confirmation window itself — a responder can see exactly how the decision was made.' }
       ]
     },
-    3: {
-      name: 'Scenario 03 — Vehicle Crash', trigger: 'crash',
-      persona: { name: 'David Reyes', age: 41, facility: 'Vehicle — Interstate 80 East' },
+    4: {
+      name: 'Scenario 04 — Vehicle Crash on a Delivery Route', trigger: 'crash',
+      covers: 'Automatic activation · signal-loss failover · protection tier',
+      /* Rural dead zone mid-incident: the old standalone "Scenario 07" made
+         this a demo about a tunnel with nobody in it. It belongs here. */
+      effects: { degradeAfter: 20, degradeMode: 'cellLost' },
+      persona: { name: 'David Reyes', age: 41, facility: 'Independent contract courier — box truck, I-80 corridor' },
       medical: { conditions: 'Type 1 diabetes', allergies: 'None documented', medications: 'Insulin pump (abdomen)', equipment: 'Blood glucose kit in glovebox', physician: 'Dr. Okafor — Bayside Endocrinology', instructions: 'Check insulin pump after impact. Glucose kit in glovebox. Notify spouse Anna immediately.' },
       contacts: [
         { id: 'c_anna', name: 'Anna Reyes', role: 'Primary Guardian', relationship: 'Spouse', priority: 1, phone: '+1 (555) 410-8821', channels: ['Push', 'SMS', 'Call'], canAcknowledge: true, canResolve: true, medicalAccess: true, evidenceAccess: true, locationAccess: true, duressVisibility: true, availability: 'Available' },
@@ -164,27 +247,22 @@
         { dt: -2, actor: 'Vehicle Unit', label: 'AIRBAG_DEPLOYED · DRIVER_SEAT_OCCUPIED' },
         { dt: -1, actor: 'Vehicle Unit', label: 'VEHICLE_STOPPED — sudden deceleration 47 → 0 mph' },
         { dt: 0, actor: 'Billi', label: 'Automatic emergency activation — no manual phone interaction required' }
+      ],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'core', title: 'Nobody tapped anything', watch: 'David is unconscious. The vehicle reported the impact and Billi activated on its own — location, audio, and the Trusted Network, all without a human hand.' },
+        { at: 13, page: 'incident.html', focus: 'network', title: 'Wife, brother, roadside desk', watch: 'One incident, everyone in it. His insulin pump and glucose kit are on the medical card a responder can actually read.' },
+        { at: 25, page: 'incident.html', focus: 'situation', title: 'The signal just died', watch: 'Rural dead zone. Comm path switched to nearby-relay and the protection tier dropped — honestly, on screen, instead of the map quietly freezing.' },
+        { at: 36, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'It has the impact data, the airbag signal, the silence from the driver seat and the voice outside the vehicle — and weighs them together.' },
+        { at: 48, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only, including the moment the network degraded — a responder can see what was known and when.' }
       ]
     },
-    4: {
-      name: 'Scenario 04 — Medical Emergency', trigger: 'acoustic',
-      persona: { name: 'Lisa Tran', age: 29, facility: 'Office — 400 Mission St, 4th floor' },
-      medical: { conditions: 'Severe asthma', allergies: 'Aspirin', medications: 'Rescue inhaler — handbag, front pocket', equipment: 'Rescue inhaler', physician: 'Dr. Novak — Mission Pulmonology', instructions: 'Help her sit upright. Inhaler in handbag front pocket — 4 puffs. Call emergency services if no improvement within 5 minutes.' },
-      contacts: [
-        { id: 'c_grace', name: 'Grace Tran', role: 'Primary Guardian', relationship: 'Sister', priority: 1, phone: '+1 (555) 512-7734', channels: ['Push', 'SMS', 'Call'], canAcknowledge: true, canResolve: true, medicalAccess: true, evidenceAccess: true, locationAccess: true, duressVisibility: true, availability: 'Available' },
-        { id: 'c_ben', name: 'Ben Ortiz', role: 'Secondary Guardian', relationship: 'Partner', priority: 2, phone: '+1 (555) 513-2280', channels: ['SMS', 'Call'], canAcknowledge: true, canResolve: true, medicalAccess: true, evidenceAccess: false, locationAccess: true, duressVisibility: true, availability: 'Available' },
-        { id: 'c_aid', name: 'Office First-Aid Desk', role: 'Caregiver', relationship: 'Building floor 1 — trained first aider', priority: 3, phone: '+1 (555) 900-1000', channels: ['Call'], canAcknowledge: true, canResolve: false, medicalAccess: true, evidenceAccess: false, locationAccess: true, duressVisibility: false, availability: 'Business hours' }
-      ],
-      path: [{ lat: 37.7897, lng: -122.3972, speed: 0, label: 'Office 4th floor — stationary' }],
-      transcripts: [
-        'Acoustic spike >80 dB — labored breathing pattern detected.',
-        'Wheezing and fragmented speech: "…can\'t… breathe…"',
-        'Second person present: "Where is your inhaler?"'
-      ],
-      preEvents: [{ dt: -1, actor: 'Sennheiser Accentum', label: 'Acoustic distress pattern matched — breathing distress indicators' }]
-    },
     5: {
-      name: 'Scenario 05 — Campus Emergency (Silent)', trigger: 'tag',
+      name: 'Scenario 05 — Silent Call for Help on Campus', trigger: 'tag',
+      covers: 'Silent activation · tactile trigger · phone power-off fallback',
+      /* The phone goes dark mid-incident and the watch + tag carry it — the
+         old standalone "Scenario 08", now happening to someone. */
+      effects: { degradeAfter: 22, degradeMode: 'phoneOff' },
+      contract: { spokenMode: 'silent' },
       persona: { name: 'Jasmine Cole', age: 20, facility: 'Riverside University — North Quad' },
       medical: { conditions: 'None documented', allergies: 'None documented', medications: '—', equipment: '—', physician: 'Student Health Center', instructions: 'SILENT RESPONSE REQUESTED — do not call her device openly. Approach discreetly.' },
       contacts: [
@@ -202,28 +280,24 @@
         'Two voices detected, one raised. Footsteps closing.',
         'Door sound. Ambient noise level increased.'
       ],
-      preEvents: [{ dt: 0, actor: 'Billi Smart Tag', label: 'SILENT activation — device shows neutral screen, no spoken output, haptic-only confirmation' }]
-    },
-    6: {
-      name: 'Scenario 06 — Coercive Duress Defense', trigger: 'safe_word',
-      effects: { duressAfter: 12 },
-      preEvents: [{ dt: 0, actor: 'Ray-Ban Meta Glasses', label: 'Phrase matched: "Blue Folder" — aggressor unaware activation occurred' }]
-    },
-    7: {
-      name: 'Scenario 07 — Signal Loss Failover', trigger: 'safe_word',
-      effects: { degradeAfter: 15, degradeMode: 'cellLost' },
-      preEvents: [{ dt: 0, actor: 'Billi', label: 'Active incident will enter a cellular dead zone (tunnel) — watch the communication path' }]
-    },
-    8: {
-      name: 'Scenario 08 — Phone Power-Off Fallback', trigger: 'tag',
-      effects: { degradeAfter: 15, degradeMode: 'phoneOff' },
-      preEvents: [{ dt: 0, actor: 'Billi', label: 'Primary phone will go offline mid-incident — fallback devices take over' }]
-    },
-    9: {
-      name: 'Scenario 09 — 45s Progressive Escalation', trigger: 'sos_hold',
-      preEvents: [{ dt: 0, actor: 'Billi', label: 'Demonstration: do NOT acknowledge — watch the full escalation ladder fire at T-30 / T-15 / T-0' }]
+      preEvents: [{ dt: 0, actor: 'Billi Smart Tag', label: 'SILENT activation — device shows neutral screen, no spoken output, haptic-only confirmation' }],
+      beats: [
+        { at: 0, page: 'protected.html', focus: 'core', title: 'A squeeze in a pocket', watch: 'No screen, no sound, no spoken reassurance — silent mode was configured in advance, so nothing about this is visible to whoever is near her.' },
+        { at: 13, page: 'incident.html', focus: 'network', title: 'Mother and campus officer together', watch: 'Both alerted at once. Her medical card carries one instruction that matters more than any of the rest: do not call her device openly.' },
+        { at: 27, page: 'incident.html', focus: 'situation', title: 'Her phone just went dark', watch: 'Battery dead, or taken. The watch and smart tag keep the incident alive — degraded, and labeled as degraded, rather than simply ending.' },
+        { at: 38, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'Raised voices, closing footsteps, a silent activation and a phone going offline — it weighs the pattern, and states it as interpretation, not fact.' },
+        { at: 50, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only, including the device handover — this is what the 911-ready packet is built from.' }
+      ]
     }
   };
+
+  /* Fallback tour for a pack that defines no beats of its own. */
+  const DEFAULT_BEATS = [
+    { at: 0, page: 'protected.html', focus: 'core', title: 'The protected person\'s phone', watch: 'One trigger — location, audio evidence, photo evidence and the Trusted Network all fire at once.' },
+    { at: 13, page: 'incident.html', focus: 'network', title: 'One shared incident', watch: 'Who was alerted and who acknowledged — the same live record on every device.' },
+    { at: 26, page: 'incident.html', focus: 'ai', title: 'Gemini reads the live incident', watch: 'A written summary, then a structured read of the evidence audio.' },
+    { at: 40, page: 'incident.html', focus: 'timeline', title: 'The record', watch: 'Append-only — this is what the 911-ready packet is built from.' }
+  ];
 
   /* --------------------------- STORE --------------------------- */
   function blankState() {
@@ -663,9 +737,13 @@
     opts = opts || {};
     if (getActiveIncident()) return getActiveIncident();
     const trig = TRIGGER_METHODS[triggerKey] || TRIGGER_METHODS.sos_hold;
-    /* Demos always fire live instantly — evaluators should never sit through
-       a confirmation window. Real passive triggers get one. */
-    const needsConfirm = PASSIVE_TRIGGERS.has(triggerKey) && !state.isDemo && !opts.scenario;
+    /* Demos fire live instantly by default — an evaluator should not sit
+       through a confirmation window they did not ask to see. The one
+       exception is a scenario whose whole point IS the safe-fail window
+       (opts.confirmWindow), which runs the real thing rather than
+       describing it. */
+    const needsConfirm = PASSIVE_TRIGGERS.has(triggerKey) &&
+      (opts.confirmWindow || (!state.isDemo && !opts.scenario));
     const now = Date.now();
     const inc = {
       id: `BIL-2026-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -674,8 +752,13 @@
       confirmedAt: needsConfirm ? null : now,
       confirmWindowMs: CONFIRM_WINDOW_MS,
       triggerKey,
-      triggerDevice: trig.device,
-      triggerMethod: trig.method,
+      /* A scenario may name its own device/phrasing (a driver's dash-mounted
+         phone, not the fixture's glasses). It has to be applied HERE, before
+         the incident is shared to the gateway — mergeShared() Object.assigns
+         the gateway's copy back over the local one, so anything overridden
+         after sharing gets silently reverted a second later. */
+      triggerDevice: (opts.triggerOverride && opts.triggerOverride.device) || trig.device,
+      triggerMethod: (opts.triggerOverride && opts.triggerOverride.method) || trig.method,
       scenario: opts.scenario || null,
       duress: false,
       duressAt: null,
@@ -855,19 +938,23 @@
     if (inc.scenario && !inc.resolved) {
       const t0 = inc.confirmedAt || inc.triggeredAt;
       const lead = (state.contacts[0] || {}).name || 'Trusted Contact';
-      if (!has('GUARDIAN_ACKNOWLEDGED') && now >= t0 + 8000) {
-        acts.push({ t: t0 + 8000, actor: lead, type: 'GUARDIAN_ACKNOWLEDGED', details: 'Acknowledged — responding now. ETA 3 minutes (SIMULATED route).' });
+      /* ackAt is per-scenario (see runDemo). Every later stage keeps its
+         original spacing relative to it, so the default 8s schedule is
+         still exactly 8 / 15 / 30 / 40. */
+      const ackAt = t0 + (inc.autoAckAfterMs || 8000);
+      if (!has('GUARDIAN_ACKNOWLEDGED') && now >= ackAt) {
+        acts.push({ t: ackAt, actor: lead, type: 'GUARDIAN_ACKNOWLEDGED', details: 'Acknowledged — responding now. ETA 3 minutes (SIMULATED route).' });
         save();
       }
-      if (!has('RESPONDER_STATUS') && now >= t0 + 15000) {
-        acts.push({ t: t0 + 15000, actor: lead, type: 'RESPONDER_STATUS', details: 'Responding — ETA 3 min' });
+      if (!has('RESPONDER_STATUS') && now >= ackAt + 7000) {
+        acts.push({ t: ackAt + 7000, actor: lead, type: 'RESPONDER_STATUS', details: 'Responding — ETA 3 min' });
         save();
       }
-      if (!has('INCIDENT_STABILIZED') && now >= t0 + 30000) {
-        acts.push({ t: t0 + 30000, actor: lead, type: 'INCIDENT_STABILIZED', details: 'Situation stabilized — protected person in guardian contact.' });
+      if (!has('INCIDENT_STABILIZED') && now >= ackAt + 22000) {
+        acts.push({ t: ackAt + 22000, actor: lead, type: 'INCIDENT_STABILIZED', details: 'Situation stabilized — protected person in guardian contact.' });
         save();
       }
-      if (now >= t0 + 40000 && state.activeIncidentId === inc.id) {
+      if (now >= ackAt + 32000 && state.activeIncidentId === inc.id) {
         resolveIncident(lead, 'Reunited safely — demo scenario complete.', 'Protected person confirmed safe');
       }
     }
@@ -1190,6 +1277,141 @@
     mountFeedback();
   }
 
+  /* ---------------------------------------------------------------------
+     GUIDED DEMO TOUR
+
+     A demo runs inside the real product, not beside it: the same
+     protected.html and Guardian Command Center a paying account uses, with
+     a bar along the bottom saying which panel is doing the thing being
+     described right now. It moves the viewer between real pages on the
+     scenario's own schedule and highlights the panel each beat is about
+     (elements marked data-beat="..." in the page).
+
+     Kept in sessionStorage, not module scope, because a beat change often
+     IS a page navigation — module state would not survive it.
+     --------------------------------------------------------------------- */
+  const GUIDE_BEAT_KEY = 'billi_demo_beat';   // manual "Next" position
+  const GUIDE_NAV_KEY = 'billi_demo_nav';     // last beat we navigated for
+  let guideTimer = null;
+  let guideFocused = null;
+  let guidePage = '';
+
+  function demoBeatsFor(inc) {
+    const pack = SCENARIO_PACKS[inc.demoPackId];
+    return (pack && pack.beats && pack.beats.length) ? pack.beats : DEFAULT_BEATS;
+  }
+
+  function sessionNum(key) {
+    const raw = sessionStorage.getItem(key);
+    const n = raw === null ? -1 : parseInt(raw, 10);
+    return isNaN(n) ? -1 : n;
+  }
+
+  /* Start the guide on a page. Idempotent — safe to call on every render. */
+  function demoGuide(page) {
+    if (guideTimer) clearInterval(guideTimer);
+    guidePage = page;
+    const tick = () => renderGuide(page);
+    tick();
+    guideTimer = setInterval(tick, 1000);
+  }
+
+  function guideHost() {
+    let el = document.getElementById('billi-demo-guide');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'billi-demo-guide';
+      el.className = 'demo-guide';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  function renderGuide(page) {
+    const inc = getActiveIncident() || (state.incidents && state.incidents[0]);
+    const on = state.isDemo && inc && inc.scenario;
+    const host = document.getElementById('billi-demo-guide');
+    if (!on) {
+      if (host) host.remove();
+      document.body.classList.remove('has-demo-guide');
+      return;
+    }
+    const el = guideHost();
+    document.body.classList.add('has-demo-guide');
+
+    const beats = demoBeatsFor(inc);
+    const elapsed = (Date.now() - inc.triggeredAt) / 1000;
+    let autoIdx = 0;
+    beats.forEach((b, i) => { if (elapsed >= b.at) autoIdx = i; });
+    /* "Next" can run ahead of the clock, never behind it — the incident is
+       genuinely progressing in real time underneath, so rewinding would
+       point at a panel that has already moved on. */
+    const idx = Math.max(autoIdx, Math.min(sessionNum(GUIDE_BEAT_KEY), beats.length - 1));
+    const beat = beats[idx];
+    const done = !!inc.resolved && idx >= beats.length - 1;
+
+    /* Move to the page this beat lives on — but only once per beat, so a
+       viewer who navigates somewhere themselves is not dragged back. */
+    if (beat.page && beat.page !== page && sessionNum(GUIDE_NAV_KEY) !== idx) {
+      sessionStorage.setItem(GUIDE_NAV_KEY, String(idx));
+      location.href = beat.page;
+      return;
+    }
+    sessionStorage.setItem(GUIDE_NAV_KEY, String(idx));
+
+    /* Highlight the panel this beat is about. The pages re-render wholesale
+       every couple of seconds, so the class has to be re-applied every tick;
+       the scroll only happens when the target actually changes. */
+    const target = beat.focus ? document.querySelector(`[data-beat="${beat.focus}"]`) : null;
+    if (target) {
+      document.querySelectorAll('.beat-focus').forEach(n => { if (n !== target) n.classList.remove('beat-focus'); });
+      target.classList.add('beat-focus');
+      const key = `${idx}:${beat.focus}`;
+      if (guideFocused !== key) {
+        guideFocused = key;
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    const pack = SCENARIO_PACKS[inc.demoPackId] || {};
+    el.innerHTML = `
+      <div class="demo-guide-inner">
+        <div class="demo-guide-head">
+          <span class="demo-guide-scenario">${inc.scenario || 'Demonstration'}</span>
+          <span class="demo-guide-dots">${beats.map((b, i) =>
+            `<span class="demo-guide-dot ${i < idx ? 'done' : i === idx ? 'current' : ''}" title="${b.title}"></span>`).join('')}</span>
+          <span class="demo-guide-count">${idx + 1} / ${beats.length}</span>
+        </div>
+        <div class="demo-guide-body">
+          <div>
+            <div class="demo-guide-title">${done ? 'Demonstration complete' : beat.title}</div>
+            <div class="demo-guide-watch">${done
+              ? `${pack.covers ? pack.covers + '. ' : ''}Everything above ran on the real engine — the same screens a paying account uses.`
+              : beat.watch}</div>
+          </div>
+          <div class="demo-guide-actions">
+            ${done
+              ? `<button class="btn btn-secondary demo-guide-btn" onclick="Billi.runDemo(${inc.demoPackId || 1})">↻ Replay</button>
+                 <button class="btn btn-primary demo-guide-btn" onclick="location.href='landing.html#demos-section'">← All scenarios</button>`
+              : `<button class="btn btn-secondary demo-guide-btn" onclick="Billi.exitDemo()">✕ Exit demo</button>
+                 <button class="btn btn-primary demo-guide-btn" ${idx >= beats.length - 1 ? 'disabled style="opacity:0.45;"' : ''} onclick="Billi.demoNextBeat()">Next →</button>`}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function demoNextBeat() {
+    const inc = getActiveIncident() || (state.incidents && state.incidents[0]);
+    if (!inc) return;
+    const beats = demoBeatsFor(inc);
+    const elapsed = (Date.now() - inc.triggeredAt) / 1000;
+    let autoIdx = 0;
+    beats.forEach((b, i) => { if (elapsed >= b.at) autoIdx = i; });
+    const cur = Math.max(autoIdx, Math.min(sessionNum(GUIDE_BEAT_KEY), beats.length - 1));
+    sessionStorage.setItem(GUIDE_BEAT_KEY, String(Math.min(cur + 1, beats.length - 1)));
+    renderGuide(guidePage);
+  }
+
   /* Floating "send feedback" widget for the testing phase — a real inbox
      (persisted server-side via gateway, not a mailto: or a fake toast),
      reachable from every page (authenticated pages get it automatically
@@ -1303,6 +1525,8 @@
        the demo-mode banner — restores the real account (or a fresh one if
        none exists yet) and routes exactly like a normal login would. */
     exitDemo() {
+      sessionStorage.removeItem(GUIDE_BEAT_KEY);
+      sessionStorage.removeItem(GUIDE_NAV_KEY);
       restoreRealAccount();
       state.session.authed = true;
       save();
@@ -1315,9 +1539,13 @@
       location.href = 'landing.html';
     },
 
-    /* Evaluator demonstrations: each of the nine packs proves a distinct
-       outcome — persona, activation gate, telemetry, and network included.
-       Demos are sandboxed: they never permanently overwrite a real account. */
+    /* Evaluator demonstrations: each pack proves a distinct outcome —
+       persona, activation gate, telemetry, and network included. Demos are
+       sandboxed: they never permanently overwrite a real account.
+
+       A demo lands on the REAL product screens (protected.html, then the
+       Guardian Command Center) with the guide bar narrating it — not on a
+       separate summary page that describes the product from outside it. */
     runDemo(id) {
       const pack = SCENARIO_PACKS[id] || SCENARIO_PACKS[1];
       backupRealAccountIfNeeded();
@@ -1327,6 +1555,13 @@
       applyFixturePrefill();
       if (pack.persona) state.protectedPerson = { ...pack.persona };
       if (pack.medical) state.medical = { ...state.medical, ...pack.medical };
+      if (pack.voice) state.voice = { ...state.voice, ...pack.voice };
+      /* A scenario that describes a covert activation has to actually BE
+         covert — the fixture's default spokenMode is 'reassurance', which
+         speaks aloud, and a demo narrating "nothing tells the passenger
+         anything" over an audible announcement would be describing
+         something the product wasn't doing. */
+      if (pack.contract) state.contract = { ...state.contract, ...pack.contract };
       if (pack.contacts) {
         state.contacts = pack.contacts.map(c => ({ ...c }));
         const p1 = state.contacts.find(c => c.priority === 1);
@@ -1335,15 +1570,27 @@
       state.setup.complete = true;
       state.armed = true;
       audit('Evaluator', 'DEMO_LAUNCHED', `Demonstration started: ${pack.name}`);
-      const inc = triggerIncident(pack.trigger, { scenario: pack.name });
+      const fx = pack.effects || {};
+      const inc = triggerIncident(pack.trigger, {
+        scenario: pack.name,
+        confirmWindow: !!fx.confirmWindow,
+        triggerOverride: pack.triggerOverride
+      });
+      inc.demoPackId = id;
       if (pack.path) inc.path = pack.path;
       if (pack.transcripts) inc.transcripts = pack.transcripts;
       if (pack.preEvents) inc.preEvents = pack.preEvents;
-      const fx = pack.effects || {};
       if (fx.duressAfter) inc.autoDuressAt = inc.triggeredAt + fx.duressAfter * 1000;
       if (fx.degradeAfter) { inc.degradeAt = inc.triggeredAt + fx.degradeAfter * 1000; inc.degradeMode = fx.degradeMode || 'cellLost'; }
+      /* When the guardian stand-in acknowledges. Default 8s; a scenario that
+         is specifically about the escalation ladder pushes it out past 45s so
+         the ladder actually runs. Everything downstream keeps its relative
+         spacing off this moment. */
+      inc.autoAckAfterMs = (fx.autoAckAfter || 8) * 1000;
+      sessionStorage.removeItem(GUIDE_BEAT_KEY);
+      sessionStorage.removeItem(GUIDE_NAV_KEY);
       save();
-      location.href = 'demo-live.html';
+      location.href = (pack.beats && pack.beats[0] && pack.beats[0].page) || 'protected.html';
     },
 
     applyFixturePrefill, readiness, activatePlatform,
@@ -1351,6 +1598,8 @@
     enterDuress, cancelWithoutPin, resolveIncident, buildPacket,
     confirmEmergency, dismissFalseAlarm,
     renderNav, requireSetup, mountFeedback,
+    demoGuide, demoNextBeat,
+    get scenarioPacks() { return SCENARIO_PACKS; },
     get link() { return link; },
     probeBackend, fetchRemoteCad,
     subscribeShared, adoptActiveShared, pushTelemetry,

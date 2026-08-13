@@ -237,3 +237,87 @@ describe('safe-zone exit-breach detection', () => {
     assert.equal(Billi.evaluateZones(37.7792, -122.4208, 5).length, 0);
   });
 });
+
+/* ------------------------------------------------------------------------
+   SCENARIO PACKS + GUIDED DEMO TOUR
+
+   Five packs replaced nine, with the four person-less capability demos
+   folded into scenarios about real situations. These lock in the parts that
+   are easy to break silently: that every pack still carries a guided tour,
+   that a demo can never be mistaken for a real incident by the code paths
+   that gate on that, and that the one scenario built around the safe-fail
+   window genuinely runs it instead of describing it.
+   ------------------------------------------------------------------------ */
+describe('scenario packs and the guided demo tour', () => {
+  const packs = () => Billi.scenarioPacks;
+
+  test('there are exactly five packs, each with a name, trigger and guided tour', () => {
+    const ids = Object.keys(packs());
+    assert.deepEqual(ids, ['1', '2', '3', '4', '5']);
+    for (const id of ids) {
+      const p = packs()[id];
+      assert.ok(p.name, `pack ${id} needs a name`);
+      assert.ok(p.trigger, `pack ${id} needs a trigger`);
+      assert.ok(Array.isArray(p.beats) && p.beats.length >= 4, `pack ${id} needs a guided tour`);
+      assert.ok(p.covers, `pack ${id} must state which capabilities it proves`);
+    }
+  });
+
+  test('every beat points at a real page and starts on the protected person', () => {
+    const PAGES = new Set(['protected.html', 'incident.html']);
+    for (const [id, p] of Object.entries(packs())) {
+      assert.equal(p.beats[0].page, 'protected.html', `pack ${id} must open on the protected person's screen`);
+      let last = -1;
+      for (const b of p.beats) {
+        assert.ok(PAGES.has(b.page), `pack ${id} beat points at unknown page ${b.page}`);
+        assert.ok(b.title && b.watch, `pack ${id} beat needs a title and a what-to-watch line`);
+        assert.ok(b.at > last, `pack ${id} beats must be in ascending time order`);
+        last = b.at;
+      }
+    }
+  });
+
+  test('a demo tags the incident as a scenario — the flag every real-world guard checks', () => {
+    Billi.runDemo(1);
+    const inc = Billi.getActiveIncident();
+    assert.ok(inc.scenario, 'no scenario tag means real SMS and auto-progress guards would misfire');
+    assert.equal(Billi.state.isDemo, true);
+    assert.equal(inc.demoPackId, 1);
+  });
+
+  test('a pack may rename the trigger, and the rename survives being shared', () => {
+    // The override must be applied inside triggerIncident, before the incident
+    // is pushed to the gateway — mergeShared() assigns the gateway's copy back
+    // over the local one, so a later override is silently reverted.
+    Billi.runDemo(1);
+    const inc = Billi.getActiveIncident();
+    assert.match(inc.triggerMethod, /Order confirmed/);
+    assert.match(inc.triggerDevice, /dash mount/);
+  });
+
+  test('a scenario that narrates a covert activation actually runs silently', () => {
+    for (const id of [1, 5]) {
+      Billi.runDemo(id);
+      assert.equal(Billi.state.contract.spokenMode, 'silent',
+        `pack ${id} describes a covert activation, so it must not speak aloud`);
+    }
+  });
+
+  test('only the safe-fail scenario opens a confirmation window; other demos fire instantly', () => {
+    Billi.runDemo(3); // fall — effects.confirmWindow
+    let inc = Billi.getActiveIncident();
+    assert.equal(inc.confirmedAt, null, 'the safe-fail scenario must run the real window');
+    assert.equal(Billi.incidentView(inc).pendingConfirmation, true);
+
+    Billi.runDemo(4); // crash — also a passive trigger, but no confirmWindow effect
+    inc = Billi.getActiveIncident();
+    assert.ok(inc.confirmedAt, 'a demo without the effect must not sit in a window');
+  });
+
+  test('the acknowledgement clock is per-scenario, so the escalation ladder can run out', () => {
+    Billi.runDemo(2); // holds acknowledgement past the 45s ladder
+    assert.equal(Billi.getActiveIncident().autoAckAfterMs, 48000);
+    Billi.runDemo(1); // default
+    assert.equal(Billi.getActiveIncident().autoAckAfterMs, 8000);
+  });
+});

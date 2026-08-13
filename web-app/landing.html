@@ -211,92 +211,76 @@
       </div>
     </section>
 
-    <!-- 9 LIVE DEMONSTRATIONS GRID -->
+    <!-- LIVE DEMONSTRATIONS GRID — five scenarios, each running the real product -->
     <section id="demos-section" class="container section-spacing text-center">
-      <div class="section-tag-muted">9 Live Demonstrations</div>
-      <h2 class="section-title-white">Experience Billi — 9 Real-World Scenarios</h2>
-      <p class="text-muted margin-top-xs" style="margin-bottom: 2.5rem;">Click any scenario card below to launch the live active incident simulation.</p>
+      <div class="section-tag-muted">5 Live Demonstrations</div>
+      <h2 class="section-title-white">Watch Billi Work — Five Real Situations</h2>
+      <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto; margin-bottom:2.5rem;">
+        These are not slideshows. Each one runs the actual product — the protected person's phone, then the
+        Guardian Command Center — on the real engine, with live Gemini reasoning over the incident as it unfolds.
+        A guide along the bottom tells you which panel to watch and why. Roughly 60–90 seconds each.
+      </p>
 
       <div class="grid grid-3 text-left">
-        <!-- SCENARIO 1 -->
-        <div class="card scenario-card-stripe stripe-blue" onclick="Billi.runDemo(1)" style="cursor: pointer;">
-          <div class="scenario-tag text-blue">SCENARIO 01</div>
-          <h3 class="scenario-card-title margin-top-xs">Protect a Child</h3>
-          <div class="scenario-persona text-blue">Maya Johnson (Age 11)</div>
-          <p class="scenario-desc">Spoken safe word "Blue Folder" matched on Ray-Ban Glasses, geofence exit breach at 42.5 mph, mother response, and 911 CAD packet export.</p>
-          <div class="scenario-cta text-blue margin-top">Launch Demo →</div>
-        </div>
-
-        <!-- SCENARIO 2 -->
-        <div class="card scenario-card-stripe stripe-cyan" onclick="Billi.runDemo(2)" style="cursor: pointer;">
-          <div class="scenario-tag text-cyan">SCENARIO 02</div>
-          <h3 class="scenario-card-title margin-top-xs">Help After a Fall</h3>
-          <div class="scenario-persona text-cyan">Robert Ellis (Age 78)</div>
-          <p class="scenario-desc">Apple Watch Ultra 2 hard fall detection, 15s unresponsive countdown alert, accelerometry telemetry spike, emergency contact dispatch.</p>
-          <div class="scenario-cta text-cyan margin-top">Launch Demo →</div>
-        </div>
-
-        <!-- SCENARIO 3 -->
-        <div class="card scenario-card-stripe stripe-light-blue" onclick="Billi.runDemo(3)" style="cursor: pointer;">
-          <div class="scenario-tag text-blue">SCENARIO 03</div>
-          <h3 class="scenario-card-title margin-top-xs">Vehicle Crash</h3>
-          <div class="scenario-persona text-blue">David Reyes (Driver)</div>
-          <p class="scenario-desc">Automotive 8.5g impact decelerometer spike, airbag deployment sensor trigger, rapid trajectory stop alert to first responders.</p>
-          <div class="scenario-cta text-blue margin-top">Launch Demo →</div>
-        </div>
-
-        <!-- SCENARIO 4 -->
-        <div class="card scenario-card-stripe stripe-red" onclick="Billi.runDemo(4)" style="cursor: pointer;">
-          <div class="scenario-tag text-red">SCENARIO 04</div>
-          <h3 class="scenario-card-title margin-top-xs">Medical Emergency</h3>
-          <div class="scenario-persona text-red">Lisa Tran (Severe Asthma)</div>
-          <p class="scenario-desc">Acoustic distress noise spike (>80dB), pre-authorized Albuterol inhaler instructions dispatched to campus emergency responders.</p>
-          <div class="scenario-cta text-red margin-top">Launch Demo →</div>
-        </div>
-
-        <!-- SCENARIO 5 -->
-        <div class="card scenario-card-stripe stripe-green" onclick="Billi.runDemo(5)" style="cursor: pointer;">
-          <div class="scenario-tag text-green">SCENARIO 05</div>
-          <h3 class="scenario-card-title margin-top-xs">Campus Emergency</h3>
-          <div class="scenario-persona text-green">Jasmine Cole & Officer Davis</div>
-          <p class="scenario-desc">Silent BLE beacon squeeze, campus safety officer dispatch alert, tactical location pin at East Entrance with ground unit status.</p>
-          <div class="scenario-cta text-green margin-top">Launch Demo →</div>
-        </div>
-
-        <!-- SCENARIO 6 -->
-        <div class="card scenario-card-stripe stripe-amber" onclick="Billi.runDemo(6)" style="cursor: pointer;">
-          <div class="scenario-tag text-amber">SCENARIO 06</div>
-          <h3 class="scenario-card-title margin-top-xs">Duress Defense</h3>
-          <div class="scenario-persona text-amber">Coercion Scenario</div>
-          <p class="scenario-desc">Attacker forces cancellation; user enters Duress PIN 9999. Screen feigns cancellation while silent 911 escalation fires immediately.</p>
+        <!-- SCENARIO 1 — LONE WORKER -->
+        <div class="card scenario-card-stripe stripe-amber" onclick="Billi.runDemo(1)" style="cursor: pointer;">
+          <div class="scenario-tag text-amber">SCENARIO 01 · WORKING ALONE</div>
+          <h3 class="scenario-card-title margin-top-xs">Rideshare Driver, Night Shift</h3>
+          <div class="scenario-persona text-amber">Andre Whitfield · alone in a car with a stranger</div>
+          <p class="scenario-desc">The route stops matching the destination. He says an ordinary-sounding phrase and Billi activates with nothing visible on screen. The passenger makes him cancel it — so the screen says cancelled, and everything keeps running.</p>
+          <div class="scenario-covers">Safe word · duress defense · coerced cancellation</div>
           <div class="scenario-cta text-amber margin-top">Launch Demo →</div>
         </div>
 
-        <!-- SCENARIO 7 -->
-        <div class="card scenario-card-stripe stripe-crimson" onclick="Billi.runDemo(7)" style="cursor: pointer;">
-          <div class="scenario-tag" style="color: #dc2626;">SCENARIO 07</div>
-          <h3 class="scenario-card-title margin-top-xs">Signal Loss Failover</h3>
-          <div class="scenario-persona" style="color: #dc2626;">Tunnel Dead Zone</div>
-          <p class="scenario-desc">Cellular signal drops to 0 bars in tunnel. Automatic encrypted BLE peer-to-peer mesh relay fallback takes over tracking seamless continuity.</p>
-          <div class="scenario-cta margin-top" style="color: #dc2626;">Launch Demo →</div>
+        <!-- SCENARIO 2 — CHILD -->
+        <div class="card scenario-card-stripe stripe-blue" onclick="Billi.runDemo(2)" style="cursor: pointer;">
+          <div class="scenario-tag text-blue">SCENARIO 02 · A CHILD</div>
+          <h3 class="scenario-card-title margin-top-xs">Nobody Answers the First Alert</h3>
+          <div class="scenario-persona text-blue">Maya Johnson, 11 · left her school's safe zone</div>
+          <p class="scenario-desc">A spoken safe word, silently. Then deliberately nobody acknowledges — so you can watch the full 45-second escalation ladder widen the circle at T-30, T-15 and T-0 instead of waiting on one person's phone.</p>
+          <div class="scenario-covers">Safe word · safe-zone exit · full escalation ladder</div>
+          <div class="scenario-cta text-blue margin-top">Launch Demo →</div>
         </div>
 
-        <!-- SCENARIO 8 -->
-        <div class="card scenario-card-stripe stripe-slate" onclick="Billi.runDemo(8)" style="cursor: pointer;">
-          <div class="scenario-tag" style="color: #ea580c;">SCENARIO 08</div>
-          <h3 class="scenario-card-title margin-top-xs">Phone Power-Off</h3>
-          <div class="scenario-persona" style="color: #ea580c;">Power-Off Event</div>
-          <p class="scenario-desc">Primary phone battery dies or powers down. Active tracking seamlessly falls back to Apple Watch Ultra 2 and Smart Tag hardware nodes.</p>
-          <div class="scenario-cta margin-top" style="color: #ea580c;">Launch Demo →</div>
+        <!-- SCENARIO 3 — FALL -->
+        <div class="card scenario-card-stripe stripe-cyan" onclick="Billi.runDemo(3)" style="cursor: pointer;">
+          <div class="scenario-tag text-cyan">SCENARIO 03 · LIVING ALONE</div>
+          <h3 class="scenario-card-title margin-top-xs">A Fall Is a Guess, So Billi Asks</h3>
+          <div class="scenario-persona text-cyan">Robert Ellis, 78 · home, no answer</div>
+          <p class="scenario-desc">Sensors can be wrong — a phone in a bag reads as a fall. So this one runs the real ten-second confirmation window before anyone is told. Robert never answers. Silence escalates; it never cancels.</p>
+          <div class="scenario-covers">Sensor trigger · 10-second safe-fail · medical dossier</div>
+          <div class="scenario-cta text-cyan margin-top">Launch Demo →</div>
         </div>
 
-        <!-- SCENARIO 9 -->
-        <div class="card scenario-card-stripe stripe-bright-red" onclick="Billi.runDemo(9)" style="cursor: pointer;">
-          <div class="scenario-tag" style="color: #b91c1c;">SCENARIO 09</div>
-          <h3 class="scenario-card-title margin-top-xs">45s Progressive Escalation</h3>
-          <div class="scenario-persona" style="color: #b91c1c;">Unacknowledged Event</div>
-          <p class="scenario-desc">Guardian unacknowledged after 45 seconds; system automatically escalates and co-dispatches Campus Security & 911 PSAP.</p>
-          <div class="scenario-cta margin-top" style="color: #b91c1c;">Launch Demo →</div>
+        <!-- SCENARIO 4 — CRASH -->
+        <div class="card scenario-card-stripe stripe-crimson" onclick="Billi.runDemo(4)" style="cursor: pointer;">
+          <div class="scenario-tag" style="color:#dc2626;">SCENARIO 04 · ON THE ROAD</div>
+          <h3 class="scenario-card-title margin-top-xs">Crash, Then the Signal Dies</h3>
+          <div class="scenario-persona" style="color:#dc2626;">David Reyes · independent contract courier</div>
+          <p class="scenario-desc">Nobody taps anything — the vehicle reports the impact and Billi activates on its own. Then the truck is in a dead zone: the comm path fails over and the protection tier drops, on screen, instead of the map quietly freezing.</p>
+          <div class="scenario-covers">Automatic activation · signal-loss failover · protection tier</div>
+          <div class="scenario-cta margin-top" style="color:#dc2626;">Launch Demo →</div>
+        </div>
+
+        <!-- SCENARIO 5 — SILENT -->
+        <div class="card scenario-card-stripe stripe-green" onclick="Billi.runDemo(5)" style="cursor: pointer;">
+          <div class="scenario-tag text-green">SCENARIO 05 · SILENT</div>
+          <h3 class="scenario-card-title margin-top-xs">A Squeeze in a Pocket</h3>
+          <div class="scenario-persona text-green">Jasmine Cole, 20 · campus, after dark</div>
+          <p class="scenario-desc">No screen, no sound, no spoken reassurance — silent mode was decided during setup, not during the emergency. Mid-incident her phone goes dark, and the watch and smart tag carry the incident instead of ending it.</p>
+          <div class="scenario-covers">Silent activation · tactile trigger · phone power-off fallback</div>
+          <div class="scenario-cta text-green margin-top">Launch Demo →</div>
+        </div>
+
+        <!-- WHAT YOU ARE ACTUALLY LOOKING AT -->
+        <div class="card" style="border:1px dashed rgba(148,163,184,0.35); background:rgba(255,255,255,0.02);">
+          <div class="scenario-tag text-muted">HOW TO READ THESE</div>
+          <h3 class="scenario-card-title margin-top-xs" style="font-size:1rem;">Real engine, honest labels</h3>
+          <p class="scenario-desc">Every demo runs the same code a paying account runs. Telemetry and responder movement are marked
+            <span class="sim-chip simulated">SIMULATED</span> because there is no real person in danger — but the incident
+            state machine, the escalation ladder, the Safety Contract rules and the Gemini calls are all genuinely live.
+            When the AI card says <span class="sim-chip connected">LIVE GEMINI</span>, that response was generated seconds ago.</p>
+          <p class="scenario-desc" style="margin-top:0.5rem;">Demos never touch your account and never text a real phone number.</p>
         </div>
       </div>
     </section>

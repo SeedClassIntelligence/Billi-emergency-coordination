@@ -34,6 +34,19 @@
     let photoAnalyzing = false;
     let lastPhotoAnalysis = null;
 
+    /* Who Billi names when the alert lands. The account's own P1 contact —
+       not a hardcoded "your mother", which was wrong for every protected
+       person whose first responder isn't their mother. */
+    function deliveredSpeaker(v) {
+      const notified = (v.contacts || []).filter(x => x.notifyEnabled !== false);
+      const p1 = notified.sort((a, b) => a.priority - b.priority)[0];
+      if (!p1) return 'Your trusted network';
+      const rel = (p1.relationship || '').toLowerCase();
+      if (rel === 'mother') return 'Your mother';
+      if (rel === 'father') return 'Your father';
+      return p1.name;
+    }
+
     function render() {
       const active = Billi.getActiveIncident();
       const v = active ? Billi.incidentView(active) : null;
@@ -69,7 +82,7 @@
              locally; nothing has gone to the Trusted Network yet. Silence here
              fails safe TOWARD escalation, matching how the 45s guardian window
              already behaves — it never fails safe toward cancellation. -->
-        <section class="card margin-top text-center" style="padding:1.3rem; border:2px solid rgba(245,158,11,0.6); background:rgba(245,158,11,0.06);">
+        <section class="card margin-top text-center" style="padding:1.3rem; border:2px solid rgba(245,158,11,0.6); background:rgba(245,158,11,0.06);" data-beat="confirm">
           <div style="font-size:2.2rem;">⏳</div>
           <div style="color:#fbbf24; font-weight:700; font-size:1rem; margin-top:0.3rem;">${v.inc.triggerMethod} detected on ${v.inc.triggerDevice}</div>
           <p class="text-muted" style="font-size:0.8rem; margin-top:0.3rem;">This is a sensor-inferred trigger, not a deliberate one — it can be wrong (dropped in a bag, a hard bump, background noise). Your Trusted Network has <strong style="color:#e2e8f0;">not</strong> been told anything yet. Location and audio are already recording as evidence either way.</p>
@@ -98,7 +111,7 @@
         </section>` : ''}
 
         ${active && !showAsCalm && !v.pendingConfirmation ? `
-        <section class="card margin-top" style="padding:1.1rem; border:1px solid rgba(99,102,241,0.4);">
+        <section class="card margin-top" style="padding:1.1rem; border:1px solid rgba(99,102,241,0.4);" data-beat="core">
           <div class="panel-section-title" style="font-size:0.9rem;">What Billi is doing right now</div>
           ${readyRow('📍 Location', true, v.core.gps)}
           ${readyRow('🎙 Audio evidence', true, v.core.audio)}
@@ -112,7 +125,7 @@
                 ? '"Billi emergency protocol is active. Location and incident information are being transmitted."'
                 : v.contacts.some(x => /Responding/i.test(x.status))
                   ? `"${(v.contacts.find(x => /Responding/i.test(x.status)) || {}).name || 'Your guardian'} is responding."`
-                  : v.core.network === 'DELIVERED' ? '"Your mother received your alert."' : '"Your alert is being sent."'}
+                  : v.core.network === 'DELIVERED' ? `"${deliveredSpeaker(v)} received your alert."` : '"Your alert is being sent."'}
             </div>
           </div>` : `<div class="text-muted margin-top-xs" style="font-size:0.72rem;">Silent mode — no outward audio. Your guardians continue receiving updates.</div>`}
 
@@ -433,6 +446,8 @@
     render();
     if (Billi.getActiveIncident() && Billi.incidentView(Billi.getActiveIncident()).pendingConfirmation) startConfirmTicker();
     setInterval(() => { const a = Billi.getActiveIncident(); if (a && !a.duress) render(); }, 4000);
+    /* Demo-only: the guided tour bar. No-ops entirely outside a demo. */
+    Billi.demoGuide('protected.html');
   </script>
 </body>
 </html>

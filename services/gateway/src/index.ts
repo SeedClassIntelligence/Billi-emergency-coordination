@@ -402,7 +402,12 @@ app.get("/api/v1/timeline/:incidentId", async (req: Request, res: Response) => {
   res.status(502).json({ error: "incident-timeline service unavailable" });
 });
 app.post("/api/v1/context/summarize", async (req: Request, res: Response) => {
-  const out = await fetchService(`http://localhost:8089/context/summarize`, "POST", req.body);
+  // Not on the hot activation path — nothing about a core emergency action
+  // waits on this card, so the default 10s budget bought no safety and did
+  // real harm: under live Gemini latency it returned 502 while the model was
+  // still working, and the client had no result to show. context-engine has
+  // its own deterministic fallback, so a longer wait here still terminates.
+  const out = await fetchService(`http://localhost:8089/context/summarize`, "POST", req.body, 20000);
   if (out) return res.json(out);
   res.status(502).json({ error: "context-engine service unavailable" });
 });

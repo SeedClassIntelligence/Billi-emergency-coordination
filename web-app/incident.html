@@ -77,9 +77,39 @@
        until (if) a real call resolves. Honestly labelled either way. */
     const geminiState = { provider: 'deterministic-fallback', text: null, label: 'Deterministic fallback — checking live Gemini…', fetchedFor: null };
 
+    /* ---- Gemini call budget -------------------------------------------
+       The free tier allows 5 requests per minute per model, shared by every
+       route. Both AI cards used to refetch whenever `inc.actions.length`
+       changed — but an active incident appends actions constantly (evidence
+       lines, telemetry, escalation rungs, lifecycle hops), so a single
+       60-second incident fired roughly twenty calls and spent the whole
+       minute's budget in seconds. The first few came back LIVE GEMINI and
+       everything after them was a 429 falling back to deterministic, which
+       looked like "Gemini is down" and was really "we asked too fast."
+
+       Both routes now refetch only when something a summary would actually
+       read has changed — the lifecycle stage, or the duress flag — and never
+       closer together than MIN_GAP_MS. The summary is cached on the incident
+       so navigating between pages doesn't re-spend the budget either. */
+    const GEMINI_MIN_GAP_MS = 15000;
+    let lastGeminiCallAt = 0;
+    const geminiKey = (inc, v) => `${inc.id}|${v.lifecycle}|${inc.duress ? 'D' : '-'}`;
+    function geminiBudgetOk() { return Date.now() - lastGeminiCallAt >= GEMINI_MIN_GAP_MS; }
+
     function refreshGeminiSummary(inc, v) {
-      if (geminiState.fetchedFor === inc.id + inc.actions.length) return; // avoid duplicate calls for unchanged state
-      geminiState.fetchedFor = inc.id + inc.actions.length;
+      const key = geminiKey(inc, v);
+      /* Rehydrate a cached summary from a previous page in the same incident
+         rather than asking again for the same state. */
+      if (inc.geminiSummary && geminiState.fetchedFor !== key) {
+        geminiState.provider = inc.geminiSummary.aiProvider;
+        geminiState.text = inc.geminiSummary.summary;
+        geminiState.label = geminiState.provider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback — live Gemini not connected';
+        if (inc.geminiSummary.fetchedFor === key) { geminiState.fetchedFor = key; return; }
+      }
+      if (geminiState.fetchedFor === key) return;
+      if (!geminiBudgetOk()) return;
+      geminiState.fetchedFor = key;
+      lastGeminiCallAt = Date.now();
       fetch(`${(location.protocol === 'https:') ? '' : 'http://localhost:8080'}/api/v1/context/summarize`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,10 +117,25 @@
           protectedPerson: p, medical: m
         })
       }).then(r => r.ok ? r.json() : null).then(data => {
-        if (!data) return;
+        /* A failed call must release its key, or the card stays on
+           "checking live Gemini…" for the rest of the incident because the
+           key it already claimed never comes round again. */
+        if (!data) {
+          geminiState.fetchedFor = null;
+          geminiState.label = 'Deterministic fallback — live Gemini did not answer in time';
+          const c = document.getElementById('gemini-chip');
+          if (c) c.textContent = geminiState.label;
+          return;
+        }
         geminiState.provider = data.aiProvider || 'deterministic-fallback';
         geminiState.text = data.summary || null;
         geminiState.label = geminiState.provider === 'gemini-live' ? 'LIVE GEMINI' : 'Deterministic fallback — live Gemini not connected';
+        /* Cache a live result on the incident. A fallback is not cached —
+           it is worth asking again on the next lifecycle change. */
+        if (geminiState.provider === 'gemini-live' && geminiState.text) {
+          inc.geminiSummary = { summary: geminiState.text, aiProvider: geminiState.provider, fetchedFor: geminiState.fetchedFor };
+          Billi.save();
+        }
         const chip = document.getElementById('gemini-chip');
         const textEl = document.getElementById('gemini-text');
         if (chip) { chip.textContent = geminiState.label; chip.className = `sim-chip ${geminiState.provider === 'gemini-live' ? 'connected' : 'local'}`; }
@@ -104,9 +149,20 @@
        incident itself so a later "Export 911-Ready Packet" can use it even
        if the export happens on a different page load. */
     function refreshGeminiAnalysis(inc, v) {
-      const key = inc.id + inc.actions.length;
+      const key = geminiKey(inc, v);
       if (inc.geminiAnalysis && inc.geminiAnalysis.fetchedFor === key) return;
+      /* Once a live analysis exists, only a duress flip is worth re-asking
+         for — a later lifecycle hop doesn't change what the evidence audio
+         sounded like, and this is the most expensive of the four routes. */
+      if (inc.geminiAnalysis && inc.geminiAnalysis.aiProvider === 'gemini-live' &&
+          inc.geminiAnalysis.forDuress === !!inc.duress) return;
       if (inc._analyzeInFlight === key) return;
+      /* Wait for enough evidence to be worth reasoning over. Asking at t=0,
+         with one ambient line captured, spends the call on the thinnest
+         input the incident will ever have. */
+      if ((v.evidence || []).length < 3 && !inc.resolved) return;
+      if (!geminiBudgetOk()) return;
+      lastGeminiCallAt = Date.now();
       inc._analyzeInFlight = key;
       fetch(`${GW}/api/v1/context/analyze`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -121,8 +177,8 @@
         })
       }).then(r => r.ok ? r.json() : null).then(data => {
         inc._analyzeInFlight = null;
-        if (!data || !data.summary) return;
-        inc.geminiAnalysis = { ...data, fetchedFor: key };
+        if (!data || !data.summary) return; // key was never cached, so this retries on its own
+        inc.geminiAnalysis = { ...data, fetchedFor: key, forDuress: !!inc.duress };
         Billi.save();
         render();
       }).catch(() => { inc._analyzeInFlight = null; });
@@ -168,8 +224,12 @@
       }
       const v = Billi.incidentView(inc);
       const resolved = inc.resolved;
-      refreshGeminiSummary(inc, v);
+      /* Analysis first: it fires at most twice per incident (once, and again
+         only if duress flips), while the summary re-asks on each lifecycle
+         hop — calling the summary first would let it hold the shared
+         per-minute budget and starve the card this demo is built around. */
       refreshGeminiAnalysis(inc, v);
+      refreshGeminiSummary(inc, v);
       refreshBackendTimeline(inc);
       const mergedEvents = [...v.events, ...backendTimeline.events].sort((a, b) => a.t - b.t);
 
@@ -181,7 +241,7 @@
         </section>` : ''}
 
         <!-- 1. PROTECTED PERSON & LIVE SITUATION -->
-        <section class="person-main-card margin-top">
+        <section class="person-main-card margin-top" data-beat="situation">
           <div class="flex-between" style="flex-wrap:wrap; gap:0.75rem;">
             <div class="flex-row" style="gap:1rem;">
               <div class="person-avatar-circle" style="${resolved ? '' : 'border-color:#ef4444;'}">${Billi.initials(p.name)}</div>
@@ -209,7 +269,7 @@
         <div class="grid grid-2 margin-top" style="gap:0.75rem; align-items:start;">
           <div>
             <!-- 2. LIVE MAP -->
-            <div class="dash-map-card">
+            <div class="dash-map-card" data-beat="map">
               <div class="dash-map-header flex-between">
                 <span class="map-header-title">Live route & movement trail</span>
                 <span class="sim-chip simulated">Simulated telemetry</span>
@@ -219,7 +279,7 @@
             </div>
 
             <!-- 3. FOUR CORE ACTIONS -->
-            <div class="card margin-top-xs" style="padding:1rem;">
+            <div class="card margin-top-xs" style="padding:1rem;" data-beat="core">
               <div class="panel-section-title" style="font-size:0.92rem;">Four core emergency actions</div>
               ${coreRow('📍', 'Location', v.core.gps + (v.degraded ? ' · DEGRADED' : ''), v.degraded ? 'state-wait' : 'state-ok')}
               ${coreRow('🎙', 'Audio recording', v.core.audio, 'state-ok')}
@@ -228,7 +288,7 @@
             </div>
 
             <!-- 6. ESCALATION -->
-            <div class="escalation-box margin-top-xs ${v.escalation.acknowledged ? 'cleared' : v.escalation.escalated ? 'fired' : ''}">
+            <div data-beat="escalation" class="escalation-box margin-top-xs ${v.escalation.acknowledged ? 'cleared' : v.escalation.escalated ? 'fired' : ''}">
               <div class="flex-between">
                 <strong style="color:#fff; font-size:0.88rem;">⏱ Progressive escalation</strong>
                 <span style="font-weight:800; color:${v.escalation.acknowledged ? '#34d399' : v.escalation.remaining <= 10 ? '#ef4444' : '#fbbf24'};">
@@ -257,7 +317,7 @@
             </div>` : ''}
 
             <!-- 9. GEMINI -->
-            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);">
+            <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,0.3);" data-beat="ai">
               <div class="flex-between">
                 <span class="panel-section-title" style="font-size:0.9rem;">🧠 AI-assisted summary</span>
                 <span class="sim-chip ${geminiState.provider === 'gemini-live' ? 'connected' : 'local'}" id="gemini-chip">${geminiState.label}</span>
@@ -308,7 +368,7 @@
             </div>
 
             <!-- 5. RESPONSE MATRIX -->
-            <div class="card margin-top-xs" style="padding:1rem;">
+            <div class="card margin-top-xs" style="padding:1rem;" data-beat="network">
               <div class="panel-section-title" style="font-size:0.92rem;">Trusted Network response matrix</div>
               ${v.contacts.sort((a,b)=>a.priority-b.priority).map(c => `
                 <div class="flex-between margin-top-xs" style="padding:0.55rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:10px;">
@@ -324,7 +384,7 @@
             </div>
 
             <!-- 7. EVIDENCE -->
-            <div class="card margin-top-xs" style="padding:1rem;">
+            <div class="card margin-top-xs" style="padding:1rem;" data-beat="evidence">
               <div class="flex-between">
                 <span class="panel-section-title" style="font-size:0.92rem;">Evidence</span>
                 <span class="text-muted" style="font-size:0.68rem;">Audio ✓ · Video — · Photos ${(inc.telemetry || []).filter(t => t.event_type === 'PHOTO_SEALED').length ? `✓ (${(inc.telemetry || []).filter(t => t.event_type === 'PHOTO_SEALED').length}, real device capture)` : '—'}</span>
@@ -353,7 +413,7 @@
         </div>
 
         <!-- 8. TIMELINE -->
-        <section class="card margin-top" style="padding:1rem;">
+        <section class="card margin-top" style="padding:1rem;" data-beat="timeline">
           <div class="flex-between">
             <span class="panel-section-title" style="font-size:0.92rem;">Incident timeline — append-only</span>
             <span class="text-muted" style="font-size:0.7rem;">Correlation ${inc.correlationId}${backendTimeline.events.length ? ` · <span class="sim-chip connected" style="vertical-align:middle;">${backendTimeline.events.length} backend event(s)</span>` : ''}</span>
@@ -418,6 +478,8 @@
     /* Shared-state push: re-render the moment another session mutates the incident. */
     document.addEventListener('billi:shared', () => { render(); Billi.renderNav('incident.html'); });
     setInterval(() => { if (Billi.getActiveIncident()) { render(); Billi.renderNav('incident.html'); } }, 2000);
+    /* Demo-only: the guided tour bar. No-ops entirely outside a demo. */
+    Billi.demoGuide('incident.html');
   </script>
 </body>
 </html>

@@ -45,7 +45,7 @@ answer came from the model.
 
 This is the same 13-service platform this repo runs locally, deployed to Cloud Run — judges can
 open it cold with nothing installed. Every page referenced in the walkthrough below works there:
-`landing.html`, `demo-live.html`, `incident.html`, `protected.html`, `admin.html`. The Android APK
+`landing.html`, `protected.html`, `incident.html`, `admin.html`. The Android APK
 is served from the same host at `/billi.apk` and is hardcoded to load this URL, so the app and the
 browser hit identical backends.
 
@@ -66,22 +66,27 @@ Demo locally instead (`npm start`) only if you specifically need real device GPS
 HTTPS LAN URL. For everything else the live URL is the better showing, because it proves the thing
 actually runs somewhere other than your laptop.
 
-## Which "demo" is which (read this before recording — this is the confusing part)
+## Which "demo" is which (read this before recording)
 
-Three different screens in this repo could all reasonably be called "the demo." Only one is the
-real, current, engine-driven one:
+**A scenario card now launches the real product, not a summary of it.** Clicking one seeds a
+sandboxed demo account, triggers the incident, and drops you on `protected.html` — the actual
+protected person's screen — then moves you to `incident.html`, the actual Guardian Command Center,
+on the scenario's own schedule. A guide bar along the bottom names the panel each beat is about and
+rings it. Nothing in a demo is a separate re-implementation of the product; it *is* the product,
+with the persona and the timing scripted.
 
-- **`demo_30s.html`** — a leftover from an earlier build generation. Not linked from the current
-  `landing.html` at all, runs on hardcoded fake data. **Do not use this for the video.**
-- **`demo-live.html`** — where every scenario card on `landing.html` actually lands. A compact,
-  single-viewport, phone-sized summary (stage pills, four key facts, one-line AI summary). Real
-  engine data, but deliberately does **not** show the Gemini sentiment analysis, photo vision, or
-  setup review cards — those don't fit a compact view. Good for ~10 seconds of "here's the mobile
-  experience," not the whole story.
-- **The full app** (`dashboard.html` / `incident.html` / `protected.html` / `admin.html`) — reached
-  from `demo-live.html` via its **"Full Command Center →"** button, or by just using the app
-  directly instead of the canned demo personas. This is where all the Gemini depth actually lives,
-  and it's what the recording below spends most of its time on.
+There are **five** scenarios, not nine. The four old capability-only demos (duress, signal loss,
+phone power-off, escalation ladder) had no person in them — each is now folded into a scenario
+about a real situation, so nothing was lost and every demo carries several capabilities. Each card
+lists what it proves.
+
+Two older screens still exist and are **not** what a card launches:
+
+- **`demo_30s.html`** — a leftover from an earlier build generation, hardcoded fake data, not
+  linked from `landing.html`. **Do not use this for the video.**
+- **`demo-live.html`** — the compact single-viewport summary the scenario cards used to land on.
+  Still runs on real engine data, but it describes the incident from outside rather than showing
+  the product, which is exactly why cards no longer route to it. Nothing links to it now.
 
 ## ⚡ 40-second hands-off auto-play (no clicking, no narration required)
 
@@ -91,8 +96,9 @@ auto-progresses or auto-resolves itself, that always requires an actual human gu
 Good for a quick loop/GIF, the cold-open of a longer video, or anywhere you want to just point a
 camera at the screen and let it play:
 
-1. **0:00** — Open `landing.html`, click any scenario card. Lands on `demo-live.html`.
-   `EMERGENCY TRIGGERED` lights up immediately.
+1. **0:00** — Open `landing.html`, click any scenario card. Lands on `protected.html`, the
+   protected person's own screen. `EMERGENCY TRIGGERED` lights up immediately and the guide bar
+   names the first thing to watch.
 2. **0:03** — `TRUSTED NETWORK NOTIFIED` lights up (this hop is time-based, not scripted — the
    real notification-fanout timing).
 3. **0:08** — `GUARDIAN ACKNOWLEDGED` — the primary contact's name appears as having responded.
@@ -101,9 +107,18 @@ camera at the screen and let it play:
 6. **0:40** — `RESOLVED`, closing on "✓ Protected person confirmed safe."
 
 Every stage pill fills in on screen with no clicks — just start recording, launch the scenario,
-and stop at 0:40. Use this as a companion to the full walkthrough below, not a replacement — it
-shows the *lifecycle* moving end to end but doesn't stop to show any of the 6 Gemini touchpoints
-in depth the way the 3-minute version does.
+and stop at 0:40. The guide bar moves you from `protected.html` to the Guardian Command Center on
+its own partway through and rings whichever panel it is talking about, so the camera doesn't need
+a driver.
+
+Two scenarios deliberately run longer than 0:40 because their point takes longer:
+**Scenario 02** holds the acknowledgement back to 0:48 so the full 45-second escalation ladder
+fires on camera (finishes about 1:20), and **Scenario 03** opens with the real ten-second
+confirmation window before anything is sent (everything after shifts ten seconds later).
+
+Use this as a companion to the full walkthrough below, not a replacement — it shows the
+*lifecycle* moving end to end but doesn't stop on any of the 6 Gemini touchpoints in the depth the
+3-minute version does.
 
 ## 🎥 3-minute video recording script (exact timing)
 
@@ -113,15 +128,18 @@ pause on each card until its content actually appears rather than talking over a
 
 **0:00–0:20 — Landing page, the pitch.** Open `landing.html`. Narrate the 30-second pitch above
 (condense to ~15s: "person-centric," "one trigger, four simultaneous actions," "Gemini recommends,
-rules decide"). Point at the 9 scenario cards — distinct personas, not one demo reused.
+rules decide"). Point at the 5 scenario cards — distinct people in distinct situations, and each
+card lists what it proves.
 
-**0:20–0:35 — Launch and the compact view.** Click **Scenario 04, Lisa Tran / Medical Emergency**
-(chosen deliberately — it has real distress evidence audio for Gemini to reason about). You land
-on `demo-live.html`. Narrate: "this is the phone-sized live view — real engine data." Let the stage
-pills and key facts sit on screen for a few seconds.
+**0:20–0:35 — Launch, and you're inside the product.** Click **Scenario 01, Rideshare Driver**
+(chosen deliberately: it's the lone-worker story the submission is built on, and its evidence audio
+gives Gemini something real to reason about). You land on `protected.html` — the driver's own
+screen. Narrate: "this isn't a video of the product, it's the product; the guide along the bottom
+is telling me what to watch." Let the four core-action rows go green on camera.
 
-**0:35–0:45 — The hop judges need to see.** Click **"Full Command Center →."** Say: "the compact
-view is deliberately light — here's where the AI actually lives."
+**0:35–0:45 — The tour moves itself.** The guide bar moves you to the Guardian Command Center and
+rings the duress banner. Say: "he was made to cancel it — his screen says cancelled, and location
+and audio never stopped."
 
 **0:45–1:30 — Sentiment analysis (the centerpiece).** On `incident.html`, scroll to the **Audio
 sentiment analysis** card and stop talking until it resolves to a `LIVE GEMINI` chip if it hasn't
