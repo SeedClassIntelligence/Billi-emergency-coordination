@@ -49,10 +49,24 @@ to reach the protected person has never met him, which is what the 911-ready pac
 returns a gateway error for 15–60 seconds while all 13 internal services boot. Open the link a
 couple of minutes before presenting, or see [DEPLOY.md](DEPLOY.md) for keeping an instance warm.
 
-**Android app:** the landing page serves `/billi.apk` — a native shell
-([mobile-native/](mobile-native/)) wrapping the same site, adding the one thing no browser can do
-on any platform: sending a real SMS through the phone's own SIM the moment an incident triggers.
-Sideloaded, so Android shows an unknown-developer warning; the install flow walks through it.
+### 📱 Android today. iPhone is not ready yet.
+
+The landing page serves **`/billi.apk`** — a native shell ([mobile-native/](mobile-native/))
+wrapping the same site, adding the one thing no browser can do on any platform: sending a real
+SMS through the phone's own SIM the moment an incident triggers. It's sideloaded, not on the Play
+Store yet, so Android shows an unknown-developer warning; the install flow walks through it.
+
+**On iPhone, alert delivery is limited, and we say so before anyone pays.** Apple permits no
+third-party app to send an SMS without a person tapping send in a system compose sheet — that is a
+platform rule, not something we can engineer around, and any app that appears to text on your
+behalf from iOS is either using its own protocol (the recipient needs the same app installed) or
+sending from a company-owned number through a cloud gateway. Billi's path forward is the second
+one: a carrier gateway is built and wired ([communication-engine](services/communication-engine/)
+via Twilio), pending a paid account to lift trial-mode restrictions on message content.
+
+Until that is verified end to end on a real iPhone, **the buy button says so above the fold**, and
+the honest answer to "should I subscribe?" for an all-iPhone household is *not yet*. We'd rather
+lose the sale than have someone find out during an emergency.
 
 ---
 
@@ -183,7 +197,9 @@ step anywhere.
 │   ├── billi-core.js      # State engine, incident model, scenario packs, guided tour
 │   ├── billi-adapters.js  # Capability Adapter Layer — real GPS/motion/audio/camera
 │   └── billi.apk          # Native Android build, served for download
-├── mobile-native/     # Android shell (WebView + SmsManager bridge)
+├── mobile-native/     # Android shell (WebView + SmsManager bridge) — this is what ships
+├── mobile-app/        # Earlier Flutter design generation — superseded, does not run.
+│                      #   See mobile-app/README.md before citing anything in it
 ├── packages/          # Shared TypeScript contracts + demo fixtures
 ├── product_evidence/  # Real production traces, API records, current-UI capture
 └── tools/             # HTTPS dev server, Cloud Run server
