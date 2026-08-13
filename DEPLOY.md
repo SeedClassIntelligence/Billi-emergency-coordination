@@ -10,7 +10,30 @@ Live service: **billi-platform**, region **us-central1**
 
 ---
 
-## The whole deploy, three pastes
+## One paste, whole deploy
+
+Chained with `&&`, so it stops at the first failure instead of continuing and
+reporting success it didn't earn. Use this unless you need to watch a
+particular step.
+
+```bash
+cd ~/Billi-emergency-coordination && git pull && gcloud builds submit --tag us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform && gcloud run deploy billi-platform --image us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform --region us-central1 --allow-unauthenticated
+```
+
+**Before assuming the site is broken, check what's deployed.** Code on GitHub is
+not code on the live URL. If something you fixed is still visible, confirm which
+one you're looking at:
+
+```bash
+grep -rc "the string you expect gone" web-app/    # your code
+curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "the string you expect gone"
+```
+
+Local `0` and live `1` means the fix is real and simply hasn't been deployed.
+
+---
+
+## The same thing, three pastes
 
 Nothing reaches the live URL until **all three** have run. Pulling the code does
 not deploy it, and the build does not deploy it either — a pull followed by the
