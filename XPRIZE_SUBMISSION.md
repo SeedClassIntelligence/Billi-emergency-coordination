@@ -1,17 +1,27 @@
 # BILLI — Build with Gemini XPRIZE Submission
 
-**Billi is a person-centric emergency protection platform.** The protected person is the
-persistent entity — phones, watches, guardians, responders and AI all exist to serve that one
-individual. One trigger fires four things at once: location, audio evidence, photo evidence, and
-Trusted Network notification, while live Gemini reasoning assesses the situation and a
-deterministic rule engine decides what actually executes.
+**Billi is lone-worker protection for the smallest businesses in the economy.**
+
+A real estate agent showing an empty house to a stranger. A home health aide entering an
+unfamiliar home alone. A contractor on a site with nobody else there. A retail worker closing
+at midnight. These people work alone, they are the business, and none of them has what a
+corporate employee has — a security desk, a duress alarm, a colleague who notices.
+
+Billi gives them one: a protected person, a trusted network, automatic evidence capture, and
+escalation that runs whether or not they can reach a phone. One trigger fires four things at
+once — location, audio evidence, photo evidence, and network notification — while live Gemini
+reasoning assesses the situation and a deterministic rule engine decides what actually executes.
+
+The same platform protects families, which is where the consumer wedge lives. The architecture
+does not change: the protected person is the persistent entity, and everything else exists to
+serve that one individual.
 
 | | |
 |---|---|
 | **Live product** | <https://billi-platform-467802610371.us-central1.run.app/landing.html> |
 | **Source** | <https://github.com/SeedClassIntelligence/Billi-emergency-coordination> (`master`) |
 | **Android app** | `/billi.apk` from the landing page |
-| **Category** | `<FILL IN — chosen competition category>` |
+| **Category** | **Small Business Services** |
 | **Walkthrough** | [DEMO_SCRIPT.md](DEMO_SCRIPT.md) |
 
 No login gate. Anyone can create an account and run a real incident end to end.
@@ -22,46 +32,72 @@ No login gate. Anyone can create an account and run a real incident end to end.
 
 ### The product being sold
 
-**Billi Family — $14.99 / month, per household.**
+**$14.99 / month, per account.** One subscription covers up to 5 protected people, unlimited
+trusted contacts, 9 activation paths, duress protection, live location and safe zones, automatic
+evidence capture, Gemini-assisted incident context, and full incident history.
 
-One subscription covers up to 5 protected people, unlimited trusted contacts, 9 activation paths,
-duress protection, live location and safe zones, automatic evidence capture, Gemini-assisted
-incident context, and full incident history.
+The same SKU serves two buyers:
 
-Priced per household rather than per person, because the family already owns the sensors. They
-are not paying for hardware; they are paying for their existing devices to act as one coordinated
-system.
+- **Sole proprietors and micro-businesses** — the agent, the aide, the contractor, the notary.
+  They *are* the business. They buy on a personal card with no procurement cycle, which is why
+  this segment is reachable in days rather than quarters.
+- **Families** — the consumer wedge, same product, same price.
+
+Priced per account rather than per person, because the buyer already owns the sensors. They are
+not paying for hardware; they are paying for the devices they already carry to act as one
+coordinated system.
+
+Multi-seat business licensing — a brokerage covering 40 agents, an agency covering its aides —
+is priced separately on protected population, responder seats and service level. That is where
+the larger business lives, and it is a sales motion, not a checkout button.
 
 ### Why this price
 
-The nearest mainstream benchmark is Life360, whose ladder runs $7.99 / $14.99 / $24.99 per month,
-with Gold at $14.99 already combining family location, crash detection and emergency dispatch.
-Adjacent categories price considerably higher: AngelSense runs around $39.99/month for an
+$14.99 sits deliberately at an established, understood consumer price point. Life360's ladder runs
+$7.99 / $14.99 / $24.99, with Gold at $14.99 already combining family location, crash detection and
+emergency dispatch. Adjacent categories price higher: AngelSense around $39.99/month for an
 additional device plan, Bay Alarm Medical $27.95–$34.95+, ADT professional monitoring from about
 $29.99 plus equipment.
 
-$14.99 places Billi directly against an established, understood product rather than asking
-families to accept an unfamiliar price from an unknown safety brand. It leaves substantial room to
-move up as professional monitoring, real wearable integration and responder capabilities come
-online, and it makes the first sale a genuine commercial transaction rather than a pledge.
+For a sole proprietor this is the more relevant comparison: it is roughly a tenth of what a
+commercial lone-worker monitoring contract costs, and it clears on a personal card without a
+purchase order. That matters more than the number itself — the reason micro-businesses go without
+worker safety is not that they do not value it, it is that every existing option is sold through a
+procurement process they are too small to enter.
+
+It also leaves room to move up as professional monitoring, real wearable integration and responder
+capabilities come online.
+
+### The employee's family is the same system
+
+An account holder can invite a second real device into their protected group — this is built and
+working (`join-household.html`, `/api/v1/household/*`). The joining device gets its own GPS,
+microphone and camera scoped to whoever it protects, inheriting the trusted contacts and Safety
+Contract at join time.
+
+The consequence is that a driver protected through his work account can extend that protection to
+his daughter without buying a second product. Nothing in the architecture changes — the protected
+person is still the persistent entity, the trusted network is just pointed at different people.
+
+That is unusual in this market. Lone-worker products stop at the employee. Family products stop at
+the family. Billi is one platform where the same seat covers both, which makes a business
+subscription materially more valuable to the person actually carrying the phone.
 
 ### Competitive position
 
-A family assembling this today buys a family-location subscription, possibly a dedicated GPS
-device with its own plan, possibly a medical alert subscription for an older relative — while
-their phones and watches already contain GPS, microphones, cameras, accelerometers, Bluetooth and
-cellular radios. That is fragmented safety.
+The buyer already owns the sensors. A phone in a work vehicle contains GPS, a microphone, a
+camera, an accelerometer, Bluetooth and a cellular radio. What is missing is not hardware — it is
+anything that coordinates them, notices when something is wrong, and tells the right people.
 
 Billi does not replace those technologies. It is the coordination layer between them. The pricing
-question is therefore not "what is another tracker worth" but "what will a family pay to have the
-safety technology they already own operate as one system around the people they love."
+question is therefore not "what is another tracker worth" but "what will someone who works alone
+pay for the devices they already carry to act as one system that knows when to raise the alarm."
 
 ### Growth path
 
-Billi Individual ($7.99) and Billi Family+ ($24.99) follow once delivery matures. Schools,
-campuses and employers are deliberately *not* squeezed into consumer tiers — B2B is priced
-separately on protected population, locations, responder seats and service level, and is where the
-larger business ultimately lives.
+Multi-seat licensing for brokerages, home-care agencies, small fleets and campuses is priced on
+protected population, responder seats and service level. That is a sales motion rather than a
+checkout button, and it is where the larger business lives.
 
 ### Actuals
 
@@ -135,15 +171,58 @@ evidence against the speed change in the location trail.
 
 ---
 
-## 3. Category Impact
+## 3. Category Impact — Small Business Services
 
-Emergency response assumes one thing goes right: someone makes a clear call and describes where
-they are while it is happening. That assumption fails for a child who cannot safely reach a phone,
-someone mid-medical-event who cannot speak, a person being coerced by whoever is standing next to
-them, or anyone facing a language barrier at the worst possible moment.
+### Where this came from
+
+Billi began as a tool for Black long-haul truckers.
+
+Driving unfamiliar routes alone, overnight, through parts of the country where stopping is not
+safe — sundown towns among them — is a working condition, not an abstraction. Drivers went
+missing, and the people who cared about them had no way to know when to start looking, or where.
+The gap was never a lack of concern. It was that nobody held the driver's location, nobody was
+told when the check-in did not come, and by the time anyone realised, the trail was cold.
+
+That is a small-business problem. Most American truckers are owner-operators or run two- and
+three-truck outfits — they *are* the business, and the safety infrastructure a corporate fleet
+buys is out of reach.
+
+Everything else Billi protects — the agent, the aide, the contractor, the family — is the same
+mechanism pointed somewhere new.
+
+### The category problem
+
+**Worker safety is infrastructure that small businesses cannot buy.**
+
+A hospital gives its staff duress badges. A warehouse has a security desk. A corporate office has
+a lobby, a camera system, and someone who notices when you do not come back. The protections that
+make working alone survivable are all enterprise infrastructure — priced, procured and installed
+at a scale a two-person business will never reach.
+
+So the smallest businesses simply go without. A solo agent texts a friend the address and hopes.
+An aide tells dispatch she arrived. A contractor tells nobody. The standard mitigation in these
+industries is a colleague agreeing to check in later, which is not a safety system — it is a
+person remembering.
 
 Billi's contribution is that **the call is not the trigger.** A spoken safe word, a held button, a
-detected fall, or a duress PIN entered under threat all produce the same coordinated response.
+detected fall, or a duress PIN entered under coercion all produce the same coordinated response —
+location, evidence, notification, escalation — without the worker having to reach a phone,
+speak clearly, or be believed.
+
+Two design decisions carry most of the real-world value, and both were built for exactly this
+buyer:
+
+**Duress protection.** A cancellation PIN entered under coercion appears to dismiss the emergency
+on screen while keeping the trusted network silently alerted. Someone forced to "call it off"
+in front of a person threatening them can comply and still be helped.
+
+**Accidental-trigger safe-fail.** Sensor-inferred triggers — fall, crash, geofence, acoustic — open
+a 10-second confirmation window before anyone is notified, because a phone in a work bag can be
+wrong. Deliberate triggers never wait. Silence always escalates; it never cancels. A safety tool
+that cries wolf gets switched off, and a switched-off tool protects nobody.
+
+The same mechanisms serve families — a child leaving a safe zone, an elderly parent falling — which
+is why the consumer wedge and the business market run on one platform rather than two.
 
 Two design decisions carry most of the real-world value:
 
