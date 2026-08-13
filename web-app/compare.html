@@ -107,13 +107,20 @@
     <!-- WHO IT'S ACTUALLY BUILT FOR -->
     <section class="container section-spacing text-center">
       <div class="section-tag-muted">Who It's Built For</div>
-      <h2 class="section-title-white">Real Coverage, Not a Feature Checklist</h2>
-      <p class="text-muted margin-top-xs" style="max-width:680px; margin-left:auto; margin-right:auto;">
-        The same core mechanisms — real GPS safe zones with exit-breach alerts, fall detection, silent duress protection —
-        genuinely extend to situations that get treated as an afterthought elsewhere.
+      <h2 class="section-title-white">People Who Are the Only One There</h2>
+      <p class="text-muted margin-top-xs" style="max-width:700px; margin-left:auto; margin-right:auto;">
+        Most of them are the business — a driver, an aide, a solo agent. None of them has what a corporate
+        employee has: a security desk, a duress alarm, a colleague who notices they didn't come back.
       </p>
 
       <div class="grid grid-3 margin-top-md text-left" id="who-for-grid"></div>
+
+      <h3 class="section-title-white margin-top-lg" style="font-size:1.4rem;">And the same account covers your family.</h3>
+      <p class="text-muted margin-top-xs" style="max-width:640px; margin-left:auto; margin-right:auto; font-size:0.9rem;">
+        Not a second product, not a second subscription. The same protected-person model, pointed at
+        someone else you care about.
+      </p>
+      <div class="grid grid-4 margin-top-md text-left" id="who-for-family-grid"></div>
     </section>
 
 
@@ -240,19 +247,29 @@
         <td style="padding:0.85rem 1rem; color:#cbd5e1;">${us}</td>
       </tr>`).join('');
 
+    /* Work first. This is the page a judge opens to check category fit, and it
+       used to list six consumer personas and no lone workers at all. */
     const WHO_FOR = [
-      ['🧒', 'Children', 'A spoken safe word, hold-to-activate SOS, and safe zones for school and home boundaries — with an exit-breach alert if a zone is left unexpectedly.'],
-      ['🧩', 'Children with autism', 'The same safe-zone exit-breach alert is exactly the mechanism used for elopement risk — a real, serious concern, not an edge case Billi treats as secondary. It runs while Billi is open on the device; always-on background monitoring is not built yet.'],
-      ['👵', 'Elderly family members', 'Real fall detection covers the moment something happens. Safe-zone wandering alerts cover the moment someone leaves and can\'t explain why — dementia-related wandering, not just falls.'],
-      ['✈️', 'Travelers & tourists', 'Safe zones for unfamiliar areas, duress protection that works even without local language fluency, and real GPS that doesn\'t depend on the destination\'s own emergency infrastructure.'],
-      ['🏫', 'Students & campuses', 'Silent activation, real-time responder coordination, and a Living Emergency Packet that hands responders real context instead of a bare address.'],
-      ['👪', 'Whole families', 'One shared setup, multiple real devices — a parent can add a family member\'s own phone to the same household without needing it physically in hand.']
+      ['🚗', 'Rideshare & delivery drivers', 'Alone in a car with someone you have never met, on a route nobody is watching. A safe word activates without the passenger noticing, and a duress PIN fakes a cancellation if you are made to end it.'],
+      ['🩺', 'Home health aides', 'Entering an unfamiliar home alone, several times a day, often with no one tracking whether you came back out. Location and evidence start the moment you trigger, without a call.'],
+      ['🔨', 'Contractors & tradespeople', 'A site with nobody else on it. Fall detection covers the moment you cannot trigger anything yourself — and a ten-second window means a dropped phone does not call your family for nothing.'],
+      ['🏡', 'Real estate agents', 'Showing an empty property to a stranger who booked online. Your trusted network knows the address, the appointment and the person before anything goes wrong.'],
+      ['🔐', 'Closing alone at night', 'Retail, hospitality, cleaning — the last hour of a shift in an empty building. Silent activation means nothing on your screen announces it.'],
+      ['🚛', 'Long-haul drivers', 'Parked overnight hundreds of miles from anyone who knows you. The 911-ready packet carries your medical protocol to a stranger who has never met you.']
     ];
-    document.getElementById('who-for-grid').innerHTML = WHO_FOR.map(([icon, title, desc]) => `
+    const WHO_FOR_FAMILY = [
+      ['🧒', 'Children', 'A spoken safe word, hold-to-activate SOS, and safe zones for school and home boundaries — with an exit-breach alert if a zone is left unexpectedly.'],
+      ['🧩', 'Children with autism', 'The same safe-zone exit-breach alert is exactly the mechanism used for elopement risk — a real concern, not an edge case treated as secondary. It runs while Billi is open on the device.'],
+      ['👵', 'Elderly parents', 'Fall detection covers the moment something happens. Safe-zone alerts cover the moment someone leaves and cannot explain why — wandering, not just falls.'],
+      ['🎓', 'Students', 'Silent activation, real-time responder coordination, and a packet that hands responders real context instead of a bare address.']
+    ];
+    const card = ([icon, title, desc]) => `
       <div class="card process-step-card">
         <h3 class="step-title-text" style="font-size:0.95rem;">${icon} ${title}</h3>
         <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.5;">${desc}</p>
-      </div>`).join('');
+      </div>`;
+    document.getElementById('who-for-grid').innerHTML = WHO_FOR.map(card).join('');
+    document.getElementById('who-for-family-grid').innerHTML = WHO_FOR_FAMILY.map(card).join('');
   </script>
 </body>
 </html>

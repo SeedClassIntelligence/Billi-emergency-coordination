@@ -183,13 +183,14 @@ that frames it as coverage, not a second market: *"And the same account covers y
 
 ## 6. One claim to verify before it ships
 
-The video script says Billi is "roughly a tenth of what a commercial lone-worker monitoring
-contract costs." That number is persuasive and it is currently **uncited**. The submission cites
+**RESOLVED 2026-08-13.** The video script and the submission both claimed Billi was "roughly a
+tenth of what a commercial lone-worker monitoring contract costs." That number was persuasive and
+**uncited**. The submission cites
 real figures for Life360, AngelSense, Bay Alarm and ADT — consumer products. It cites nothing for
 commercial lone-worker monitoring.
 
-Either find a citable price for a real lone-worker service and name it, or drop the multiplier and
-say the thing that needs no source:
+Both were reworded to the version that needs no source, because the procurement point was always
+the stronger argument anyway:
 
 > Commercial lone-worker monitoring is sold through procurement. You can't buy it on a personal
 > card. That's the reason people who work alone go without it.

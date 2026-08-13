@@ -59,11 +59,11 @@ emergency dispatch. Adjacent categories price higher: AngelSense around $39.99/m
 additional device plan, Bay Alarm Medical $27.95–$34.95+, ADT professional monitoring from about
 $29.99 plus equipment.
 
-For a sole proprietor this is the more relevant comparison: it is roughly a tenth of what a
-commercial lone-worker monitoring contract costs, and it clears on a personal card without a
-purchase order. That matters more than the number itself — the reason micro-businesses go without
-worker safety is not that they do not value it, it is that every existing option is sold through a
-procurement process they are too small to enter.
+For a sole proprietor the more relevant comparison is not the price at all — it is how the
+product is bought. Commercial lone-worker monitoring is sold through procurement: a contract, a
+purchase order, a seat count, an account manager. Billi clears on a personal card. The reason
+micro-businesses go without worker safety is not that they do not value it, it is that every
+existing option is sold through a process they are too small to enter.
 
 It also leaves room to move up as professional monitoring, real wearable integration and responder
 capabilities come online.

@@ -161,12 +161,12 @@ Let the countdown ring drain.
 
 **Screen:** `landing.html` → **Pricing**.
 
-> "Fourteen ninety-nine a month, per account — up to five people. That's roughly a
-> tenth of what a commercial lone-worker monitoring contract costs, and it clears
-> on a personal card with no purchase order. That matters, because the reason
-> people who work alone go without this isn't that they don't want it — it's that
-> every existing option is sold through a procurement process they're too small
-> to enter.
+> "Fourteen ninety-nine a month, per account — up to five people, and it clears on
+> a personal card with no purchase order. That matters, because commercial
+> lone-worker monitoring is sold through procurement. You can't buy it on a
+> personal card. That's the reason people who work alone go without it — not that
+> they don't want it, but that every existing option is sold through a process
+> they're too small to enter.
 >
 > And one account covers work and family. A driver protected on the road can
 > extend it to their kid without buying a second product."
