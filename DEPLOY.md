@@ -102,12 +102,20 @@ steps above were skipped — check those ran before looking for anything else.
 Straight after a deploy the first request can also take ~40 seconds while the 13
 internal services boot, so if you just deployed, wait a minute and re-run once.
 
-Change the grep string to something only the newest build contains. For the
-current copy rewrite:
+**Pick a grep string that ONLY the newest build can contain.** This is easy to get
+wrong: "the only one there" was used to verify one deploy and returned 1 against the
+*previous* build too, because both versions of the hero happened to contain that
+phrase. A passing check that cannot fail is worse than no check.
+
+Safest habit — grep for a CSS class or function name introduced by the change,
+never a sentence, since copy tends to be edited rather than replaced:
 
 ```bash
-curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "When you work alone"
+curl -s https://billi-platform-467802610371.us-central1.run.app/landing.html | grep -c "hero-pick"
 ```
+
+Expect 3 (one per self-identification card). To confirm a specific commit landed,
+pick an identifier that appears in its diff and nowhere earlier.
 
 ## 5. Confirm Gemini is live *on the deployed host*
 
