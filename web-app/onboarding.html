@@ -612,10 +612,15 @@
       setTimeout(() => { S.voice.state = 'Enrolled'; Billi.save(); render(); Billi.toast('✓ Voiceprint enrolled.', 'ok'); }, 3200);
     }
 
+    /* The whole point of quick-fill is to skip typing — so it jumps to the
+       final step rather than leaving you on step 1 looking at a page that
+       hasn't visibly changed. It used to fill state and call render(), which
+       on step 1 (a chooser with no text fields) looked exactly like nothing
+       had happened: same "Step 1 of 9", same "0% Complete". */
     function prefillDemo() {
       Billi.applyFixturePrefill();
-      Billi.toast('⚡ Maya Johnson fixture loaded into every step. Review and activate.', 'ok');
-      render();
+      goStep(9);
+      Billi.toast('⚡ Maya Johnson fixture loaded into all 9 steps — review and activate, or step back to see any of it.', 'ok');
     }
 
     render();
