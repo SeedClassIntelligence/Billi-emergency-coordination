@@ -1,0 +1,43 @@
+# Auto-deploy: build the container and publish it to Cloud Run.
+#
+# A Cloud Build trigger runs this on every push to master, which is the whole
+# point — finishing work and publishing work used to be two separate acts, and
+# only one of them could be done from a laptop. Now a push is a deploy.
+#
+# Deliberately mirrors the manual commands in DEPLOY.md step by step, so if
+# this ever fails you can run those three by hand and get an identical result.
+
+steps:
+  # 1. Build the image from the repo-root Dockerfile.
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build
+    args: ['build', '-t', '$_IMAGE', '.']
+
+  # 2. Push it to Artifact Registry.
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push
+    args: ['push', '$_IMAGE']
+
+  # 3. Roll it out. --image carries the existing environment variables forward
+  #    unchanged, so GEMINI_API_KEY, ADMIN_KEY and the TWILIO_* values set on
+  #    the service are preserved. A deploy never needs to know the secrets.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: deploy
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - billi-platform
+      - --image=$_IMAGE
+      - --region=us-central1
+      - --allow-unauthenticated
+
+substitutions:
+  _IMAGE: us-central1-docker.pkg.dev/billi-503602/cloud-run-source-deploy/billi-platform
+
+images:
+  - '$_IMAGE'
+
+# The 13 services are compiled during the image build, so allow more than the
+# 10-minute default before Cloud Build gives up on a cold cache.
+timeout: 1800s

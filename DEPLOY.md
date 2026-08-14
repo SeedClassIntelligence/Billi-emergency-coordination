@@ -10,7 +10,68 @@ Live service: **billi-platform**, region **us-central1**
 
 ---
 
-## One paste, whole deploy
+## Auto-deploy — set this up once, then never deploy by hand again
+
+**What this does:** after this is set up, pushing code to GitHub publishes it to the
+live site on its own, in about five minutes, with nobody pasting anything. The
+manual commands below still work and are still the fallback — this just means you
+stop needing them.
+
+**You only do this once.** Roughly ten minutes.
+
+### Step A — let Google Cloud see the GitHub repo
+
+This part is clicking, not typing, because it needs you to sign in to GitHub.
+
+1. Open <https://console.cloud.google.com/cloud-build/triggers?project=billi-503602>
+2. Click **Connect Repository** (or **Manage Repositories** → **Connect Repository**)
+3. Choose **GitHub (Cloud Build GitHub App)** and click **Continue**
+4. Sign in to GitHub if asked, and authorise Google Cloud Build
+5. Pick **SeedClassIntelligence/Billi-emergency-coordination**, tick the consent box,
+   and click **Connect**
+
+If it offers to "Create a trigger" straight after, you can skip it — the next step
+does that properly.
+
+### Step B — create the trigger
+
+Back in Cloud Shell, one paste:
+
+```bash
+gcloud builds triggers create github --name=deploy-on-push --region=global --repo-owner=SeedClassIntelligence --repo-name=Billi-emergency-coordination --branch-pattern="^master$" --build-config=cloudbuild.yaml
+```
+
+### Step C — let the builder deploy
+
+The build robot can build images but is not allowed to publish them until you say
+so. Two grants, one paste:
+
+```bash
+gcloud projects add-iam-policy-binding billi-503602 --member=serviceAccount:467802610371-compute@developer.gserviceaccount.com --role=roles/run.admin && gcloud projects add-iam-policy-binding billi-503602 --member=serviceAccount:467802610371-compute@developer.gserviceaccount.com --role=roles/iam.serviceAccountUser
+```
+
+### Step D — prove it works
+
+Ask me to make any small change and push it. Then watch it happen:
+
+```bash
+gcloud builds list --limit=3 --region=global
+```
+
+A row reading `SUCCESS` that you did not start by hand means it is working. From
+then on, "I pushed it" and "it is live" are the same sentence.
+
+**If a build fails**, the reason is in its log:
+
+```bash
+gcloud builds log $(gcloud builds list --limit=1 --format='value(id)' --region=global) --region=global
+```
+
+Paste that to me and I will read it.
+
+---
+
+## One paste, whole deploy (the manual way — still works)
 
 Chained with `&&`, so it stops at the first failure instead of continuing and
 reporting success it didn't earn. Use this unless you need to watch a
