@@ -32,7 +32,7 @@
 
       <section class="text-center margin-top">
         <h1 class="onboarding-hero-title">Welcome to Billi</h1>
-        <p class="onboarding-hero-sub">Let's build your safety ecosystem. Every decision you make here becomes part of the Safety Contract — so nothing has to be decided during an emergency.</p>
+        <p class="onboarding-hero-sub">Set this up once, now, while nothing is wrong. Who comes for you, in what order, and what Billi is allowed to do — all decided here, so none of it has to be decided during an emergency.</p>
         <button class="btn btn-outline-nav margin-top-xs" style="font-size:0.72rem;" onclick="prefillDemo()">⚡ Evaluator quick-fill (Maya Johnson fixture)</button>
       </section>
 
@@ -96,17 +96,24 @@
     }
 
     const TOTAL_STEPS = 10;
-    const STEP_TITLES = ['Choose the Entity', 'Account Owner', 'Protected Person', 'Medical & Emergency Dossier',
-      'Trusted Network', 'Safety Contract', 'Voice & Coercion Protection', 'Safe Zones', 'Protection Hardware',
-      'Test, Review & Activate'];
+    /* Written as what the step does for you, not what the data model calls
+       it. "Choose the Entity" and "Protected Person" are our words, not the
+       words of someone setting this up before a night shift. */
+    const STEP_TITLES = ['Who Billi Protects', 'Your Details', 'Who Is Out There', 'Medical Information',
+      'Who Comes For You', 'What Billi May Do', 'Safe Word & Duress PIN', 'Your Places', 'Your Devices',
+      'Review & Start Protecting'];
 
+    /* Lone worker first. A sole proprietor protecting themselves had no
+       option here at all: "Business" read as an employer protecting staff,
+       and "Family" led the list, so the person Billi is actually built for
+       saw six choices and fit none of them. */
     const ENTITIES = [
-      ['Family', 'Protect children, elders, and loved ones'],
-      ['School / District', 'Campus-wide student protection'],
-      ['Business', 'Employee lone-worker safety'],
-      ['University / Campus', 'Student & staff coordination'],
-      ['Healthcare Organization', 'Patient & caregiver protection'],
-      ['Community', 'Neighborhood safety mesh']
+      ['Just me', 'I work alone — protect me while I am out there'],
+      ['Me and my family', 'One account covers my work and the people at home'],
+      ['My team', 'A small crew or a few drivers I am responsible for'],
+      ['My family', 'Protect a child, a parent, or someone at home'],
+      ['School / Campus', 'Students and staff'],
+      ['Healthcare / Community', 'Patients, caregivers, or a neighbourhood']
     ];
 
     const DEVICE_CATALOG = [
@@ -143,8 +150,8 @@
     const STEPS = [
       /* 1 — Entity */
       () => `
-        <h2 class="panel-section-title">Who is this safety ecosystem for?</h2>
-        <p class="text-muted" style="font-size:0.85rem;">The entity type shapes what your command center displays — My Family, My Students, My Employees.</p>
+        <h2 class="panel-section-title">Who is Billi protecting?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Most people here are protecting themselves while they work alone. Pick the closest — you can change it later, and it only shapes how your command centre is labelled.</p>
         <div class="grid grid-2 margin-top" style="gap:0.6rem;">
           ${ENTITIES.map(([name, desc]) => `
             <div class="card" style="cursor:pointer; padding:1rem; border:1px solid ${S.entityType === name ? 'rgba(99,102,241,0.7)' : 'rgba(255,255,255,0.08)'}; background:${S.entityType === name ? 'rgba(99,102,241,0.12)' : ''};"
@@ -158,8 +165,8 @@
       () => {
         const o = S.owner || {};
         return `
-        <h2 class="panel-section-title">Create the account owner</h2>
-        <p class="text-muted" style="font-size:0.85rem;">The account owner is the primary administrator and usually the Priority-1 guardian.</p>
+        <h2 class="panel-section-title">Who runs this account?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Usually you. If you are protecting yourself, this is also the person your alerts are sent <em>about</em> — and the first person your Trusted Network will hear from.</p>
         ${field('own-name', 'Full name', o.name, 'Evelyn Johnson')}
         <div class="grid grid-2" style="gap:0.75rem;">
           ${field('own-role', 'Role', o.role, 'Primary Guardian')}
@@ -172,8 +179,8 @@
       () => {
         const p = S.protectedPerson || {};
         return `
-        <h2 class="panel-section-title">Add the protected person</h2>
-        <p class="text-muted" style="font-size:0.85rem;">The protected person is the persistent center of Billi — everything else exists to protect them.</p>
+        <h2 class="panel-section-title">Who is out there alone?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">If that is you, put your own name here. Billi is built around one person — every device, contact and rule exists to serve them. You can add a second person to this account later.</p>
         ${field('pp-name', 'Full name', p.name, 'Maya Johnson')}
         <div class="grid grid-2" style="gap:0.75rem;">
           ${field('pp-age', 'Age', p.age, '11', 'number')}
@@ -186,7 +193,7 @@
         const m = S.medical || {};
         return `
         <h2 class="panel-section-title">Medical & emergency dossier</h2>
-        <p class="text-muted" style="font-size:0.85rem;">Shared only with contacts you authorize, and only during an emergency.</p>
+        <p class="text-muted" style="font-size:0.85rem;">What someone who has never met you would need to know. Shared only with the contacts you authorise, and only during an emergency.</p>
         <div class="grid grid-2" style="gap:0.75rem;">
           ${field('md-cond', 'Medical conditions', m.conditions, 'Mild asthma')}
           ${field('md-alrg', 'Allergies', m.allergies, 'Peanuts')}
@@ -196,13 +203,13 @@
           ${field('md-phys', 'Physician / care contact', m.physician, 'Dr. Patel — Bayview Pediatrics')}
         </div>
         <div class="form-group margin-top-xs"><label class="form-label-muted">Emergency instructions for responders</label>
-          <textarea id="md-instr" class="form-control-dark" rows="3" placeholder="Keep calm. Locate rescue inhaler...">${esc(m.instructions)}</textarea></div>`;
+          <textarea id="md-instr" class="form-control-dark" rows="3" placeholder="e.g. Nitro spray in the centre console. Cab is locked — spare key in the rear wheel well.">${esc(m.instructions)}</textarea></div>`;
       },
 
       /* 5 — Trusted network */
       () => `
-        <h2 class="panel-section-title">Build the Trusted Network</h2>
-        <p class="text-muted" style="font-size:0.85rem;">Who responds, in what order, with what authority. Priority 1 is alerted first.</p>
+        <h2 class="panel-section-title">Who actually comes for you?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">A dispatcher, a partner, a neighbour with a key — whoever would genuinely drop what they are doing. Everyone is alerted at once; the order only decides who leads if nobody answers.</p>
         <div id="tn-list" class="margin-top-xs">
           ${S.contacts.sort((a,b)=>a.priority-b.priority).map(c => `
             <div class="card flex-between margin-top-xs" style="padding:0.75rem 1rem;">
@@ -218,7 +225,7 @@
                 <span class="badge badge-indigo">Priority ${c.priority}</span>
                 <button class="btn-dash-logout" onclick="S.contacts=S.contacts.filter(x=>x.id!=='${c.id}');Billi.save();render();">✕</button>
               </div>
-            </div>`).join('') || '<p class="text-muted" style="font-size:0.82rem;">No contacts yet — add at least two.</p>'}
+            </div>`).join('') || '<p class="text-muted" style="font-size:0.82rem;">No one added yet — add at least one. Two is better, in case the first is driving.</p>'}
         </div>
         <div class="card margin-top" style="padding:1rem; border:1px dashed rgba(99,102,241,0.4);">
           <strong style="color:#fff; font-size:0.9rem;">Add contact</strong>
@@ -450,7 +457,7 @@
         const row = (i) => `<div class="ready-item">${i.ok ? '<span class="mark-ok">✓</span>' : '<span class="mark-no">○</span>'} <span style="color:${i.ok ? '#e2e8f0' : '#64748b'};">${i.label}</span></div>`;
         return `
         <h2 class="panel-section-title">Test readiness & activate</h2>
-        <p class="text-muted" style="font-size:0.85rem;">Billi checks the essentials before arming. Everything else is optional now and always available later.</p>
+        <p class="text-muted" style="font-size:0.85rem;">Billi checks the essentials before it starts protecting you. Everything else is optional now and can be added any time from Settings.</p>
 
         <div class="text-muted margin-top" style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;">Required to arm Billi</div>
         <div class="grid grid-fit margin-top-xs" style="gap:0.5rem;">${required.map(row).join('')}</div>

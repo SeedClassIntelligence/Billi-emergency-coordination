@@ -15,7 +15,7 @@
      account starts empty and builds this data through the setup journey.
      --------------------------------------------------------------------- */
   const FIXTURE = {
-    entityType: 'Family',
+    entityType: 'My family',   // must match an option in onboarding's ENTITIES list
     owner: { name: 'Evelyn Johnson', role: 'Primary Guardian', relationship: 'Mother', phone: '+1 (555) 987-6543' },
     protectedPerson: { name: 'Maya Johnson', age: 11, facility: 'Pine Middle School' },
     medical: {
