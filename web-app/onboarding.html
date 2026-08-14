@@ -305,11 +305,29 @@
 
         <div class="card margin-top-xs" style="padding:1rem;">
           <div class="flex-between">
-            <strong style="color:#fff;">Voice calibration</strong>
-            <span class="voice-state-chip ${v.state === 'Enrolled' ? 'badge-green badge' : 'badge badge-amber'}">${v.state}</span>
+            <strong style="color:#fff;">Record your safe word</strong>
+            <span class="voice-state-chip ${v.state === 'Enrolled' ? 'badge-green badge' : v.state === 'Recording…' ? 'badge badge-red' : 'badge badge-amber'}">${v.state}</span>
           </div>
-          <p class="text-muted" style="font-size:0.75rem;">Not enrolled → Recording (3s) → Processing → Enrolled → Re-record</p>
-          <button class="btn btn-secondary margin-top-xs" id="voice-btn" onclick="calibrateVoice()">${v.state === 'Enrolled' ? '↻ Re-record voiceprint' : '🎙 Record voiceprint (3s)'}</button>
+          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
+            Say your safe word out loud so your guardians know how it sounds when you say it. Your
+            browser will ask for microphone permission — that is a real recording, and you can play it
+            back below.
+          </p>
+          <div class="flex-row margin-top-xs" style="gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn ${v.state === 'Recording…' ? 'btn-danger' : 'btn-secondary'}" id="voice-btn" onclick="calibrateVoice()">
+              ${v.state === 'Recording…' ? '⏹ Stop recording' : v.state === 'Enrolled' ? '↻ Record again' : '🎙 Start recording'}
+            </button>
+            ${v.state === 'Enrolled' ? '<button class="btn btn-outline-nav" onclick="playVoiceback()">▶ Play it back</button>' : ''}
+          </div>
+          ${v.state === 'Enrolled' && v.bytes ? `
+          <p class="text-muted margin-top-xs" style="font-size:0.72rem;">
+            ${(v.bytes / 1024).toFixed(1)} KB captured${v.recordedAt ? ' · ' + new Date(v.recordedAt).toLocaleString() : ''}.
+            Playback works in this session; the audio is not uploaded anywhere.
+          </p>` : ''}
+          <p class="text-muted margin-top-xs" style="font-size:0.7rem;">
+            Billi saves what you said so a guardian can hear it. It does not build a biometric
+            voiceprint — recognising a speaker automatically is not something Billi does yet.
+          </p>
         </div>
 
         <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(245,158,11,0.3);">
@@ -606,10 +624,64 @@
       Billi.toast('📶 BLE scan: 9 compatible devices found — register them from the catalog below.', 'ok');
     }
 
-    function calibrateVoice() {
-      S.voice.state = 'Recording (3s)...'; Billi.save(); render();
-      setTimeout(() => { S.voice.state = 'Processing calibration...'; Billi.save(); render(); }, 1600);
-      setTimeout(() => { S.voice.state = 'Enrolled'; Billi.save(); render(); Billi.toast('✓ Voiceprint enrolled.', 'ok'); }, 3200);
+    /* REAL voice enrollment. This used to be three setTimeouts that walked a
+       label from "Recording" to "Enrolled" without touching a microphone —
+       a feature that existed only as text. It now opens the actual mic,
+       records with MediaRecorder, keeps the audio so you can play back
+       exactly what Billi captured, and refuses to mark itself enrolled if
+       nothing was recorded.
+
+       What it is honestly NOT: speaker-recognition training. Billi stores
+       your recording so a guardian can hear the phrase in your own voice;
+       it does not build a biometric voiceprint model. The UI says that. */
+    let voiceRec = { recorder: null, stream: null, chunks: [], url: null, timer: null };
+
+    async function calibrateVoice() {
+      if (voiceRec.recorder && voiceRec.recorder.state === 'recording') return stopVoiceRecording();
+      if (!navigator.mediaDevices || !window.MediaRecorder) {
+        Billi.toast('This browser cannot record audio. Try Chrome, and make sure the page is on HTTPS.', 'warn');
+        return;
+      }
+      try {
+        voiceRec.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (e) {
+        S.voice.state = 'Microphone blocked'; Billi.save(); render();
+        Billi.toast('Microphone permission was refused, so nothing was recorded.', 'warn');
+        return;
+      }
+      voiceRec.chunks = [];
+      voiceRec.recorder = new MediaRecorder(voiceRec.stream);
+      voiceRec.recorder.ondataavailable = (e) => { if (e.data && e.data.size) voiceRec.chunks.push(e.data); };
+      voiceRec.recorder.onstop = () => {
+        (voiceRec.stream.getTracks() || []).forEach(t => t.stop());
+        const blob = new Blob(voiceRec.chunks, { type: voiceRec.recorder.mimeType || 'audio/webm' });
+        if (!blob.size) {
+          S.voice.state = 'Not enrolled'; Billi.save(); render();
+          Billi.toast('Nothing was captured — no audio reached the microphone.', 'warn');
+          return;
+        }
+        if (voiceRec.url) URL.revokeObjectURL(voiceRec.url);
+        voiceRec.url = URL.createObjectURL(blob);
+        S.voice.state = 'Enrolled';
+        S.voice.recordedAt = Date.now();
+        S.voice.bytes = blob.size;
+        Billi.save(); render();
+        Billi.toast(`✓ Recorded ${(blob.size / 1024).toFixed(1)} KB — play it back to hear what Billi captured.`, 'ok');
+      };
+      voiceRec.recorder.start();
+      S.voice.state = 'Recording…'; Billi.save(); render();
+      /* Hard stop so a forgotten tab cannot hold the mic open indefinitely. */
+      voiceRec.timer = setTimeout(stopVoiceRecording, 6000);
+    }
+
+    function stopVoiceRecording() {
+      clearTimeout(voiceRec.timer);
+      if (voiceRec.recorder && voiceRec.recorder.state === 'recording') voiceRec.recorder.stop();
+    }
+
+    function playVoiceback() {
+      if (!voiceRec.url) { Billi.toast('Nothing recorded in this session yet — record first.', 'warn'); return; }
+      new Audio(voiceRec.url).play();
     }
 
     /* The whole point of quick-fill is to skip typing — so it jumps to the
