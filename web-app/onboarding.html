@@ -39,7 +39,7 @@
       <!-- PROGRESS -->
       <section class="setup-progress-box margin-top-md">
         <div class="flex-between">
-          <span class="progress-title-text" id="prog-text">Step 1 of 9</span>
+          <span class="progress-title-text" id="prog-text">Step 1 of 10</span>
           <span class="pill-badge-blue" id="prog-badge">0% Complete</span>
         </div>
         <div class="progress-track-bg margin-top-xs">
@@ -91,12 +91,14 @@
         setupReviewLoading = false;
         if (!data) return;
         setupReview = data;
-        if (cur === 9) render();
+        if (cur === TOTAL_STEPS) render();
       }).catch(() => { setupReviewLoading = false; });
     }
 
+    const TOTAL_STEPS = 10;
     const STEP_TITLES = ['Choose the Entity', 'Account Owner', 'Protected Person', 'Medical & Emergency Dossier',
-      'Trusted Network', 'Safety Contract', 'Voice & Coercion Protection', 'Safe Zones & Devices', 'Test, Review & Activate'];
+      'Trusted Network', 'Safety Contract', 'Voice & Coercion Protection', 'Safe Zones', 'Protection Hardware',
+      'Test, Review & Activate'];
 
     const ENTITIES = [
       ['Family', 'Protect children, elders, and loved ones'],
@@ -127,14 +129,14 @@
 
     /* ---------- STEP RENDERERS ---------- */
     function render() {
-      document.getElementById('prog-text').innerText = `Step ${cur} of 9 — ${STEP_TITLES[cur - 1]}`;
-      document.getElementById('prog-badge').innerText = `${Math.round(((cur - 1) / 9) * 100)}% Complete`;
-      document.getElementById('prog-bar').style.width = `${Math.round((cur / 9) * 100)}%`;
+      document.getElementById('prog-text').innerText = `Step ${cur} of ${TOTAL_STEPS} — ${STEP_TITLES[cur - 1]}`;
+      document.getElementById('prog-badge').innerText = `${Math.round(((cur - 1) / TOTAL_STEPS) * 100)}% Complete`;
+      document.getElementById('prog-bar').style.width = `${Math.round((cur / TOTAL_STEPS) * 100)}%`;
       document.getElementById('btn-back').style.visibility = cur === 1 ? 'hidden' : 'visible';
-      document.getElementById('btn-next').innerText = cur === 9 ? '✓ ACTIVATE BILLI' : `Next: ${STEP_TITLES[cur] || ''} →`;
+      document.getElementById('btn-next').innerText = cur === TOTAL_STEPS ? '✓ ACTIVATE BILLI' : `Next: ${STEP_TITLES[cur] || ''} →`;
       document.getElementById('step-host').innerHTML = STEPS[cur - 1]();
       if (cur === 8) initZoneMap();
-      if (cur === 9) refreshSetupReview();
+      if (cur === TOTAL_STEPS) refreshSetupReview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -341,59 +343,97 @@
         </div>`;
       },
 
-      /* 8 — Zones & devices */
+      /* 8 — Safe zones. Locations only. Hardware used to be stapled to the
+         bottom of this step, which buried the one place you register a
+         device underneath a map you were using for something else. */
       () => `
-        <h2 class="panel-section-title">Safe zones & protection hardware</h2>
+        <h2 class="panel-section-title">Where should Billi know you are?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Type an address or a building name — a job site, a depot, home, a client's address. Add as many as you need. If you leave one unexpectedly, your Trusted Network can be told.</p>
+
         <div class="card margin-top-xs" style="padding:1rem;">
-          <strong style="color:#fff;">Geofenced safe zones</strong>
-          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">Search an address or building, click the map, drag to fine-tune, or use your current location. Every zone below is a real, saved geofence.</p>
           <div id="zone-map" style="height:320px; border-radius:12px; overflow:hidden; margin-top:0.5rem; background:rgba(255,255,255,0.03);"></div>
           <div class="flex-row margin-top-xs" style="gap:0.5rem;">
-            <button class="btn btn-outline-nav" style="font-size:0.75rem;" onclick="useCurrentLocationForZone()">📍 Use my current location</button>
+            <button class="btn btn-outline-nav" style="font-size:0.75rem;" onclick="useCurrentLocationForZone()">📍 Use where I am now</button>
             <span id="zn-pending-label" class="text-muted" style="font-size:0.78rem; align-self:center;"></span>
           </div>
           <div class="grid grid-2 margin-top-xs" style="gap:0.6rem;">
-            ${field('zn-name', 'Zone name', '', 'Pine Middle School')}
-            ${field('zn-addr', 'Description (optional)', '', 'e.g. main entrance')}
+            ${field('zn-name', 'What is this place called?', '', 'e.g. Riverside depot')}
+            ${field('zn-addr', 'Note (optional)', '', 'e.g. gate code 4412')}
           </div>
           <div class="form-group margin-top-xs">
-            <label class="form-label-muted">Radius: <strong id="zn-radius-val" style="color:#a5b4fc;">100 m</strong> (50–1000 m)</label>
+            <label class="form-label-muted">How large an area? <strong id="zn-radius-val" style="color:#a5b4fc;">100 m</strong></label>
             <input id="zn-radius" type="range" min="50" max="1000" step="10" value="100" style="width:100%;" oninput="onZoneRadiusInput(this.value)">
           </div>
-          <button id="zn-add-btn" class="btn btn-secondary" onclick="addZone()">+ Save this location as a safe zone</button>
+          <button id="zn-add-btn" class="btn btn-secondary" onclick="addZone()">+ Save this place</button>
+        </div>
 
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <strong style="color:#fff;">Your places ${S.zones.length ? `<span class="badge badge-blue" style="margin-left:0.3rem;">${S.zones.length}</span>` : ''}</strong>
           <div class="margin-top-xs">
             ${S.zones.map(z => `
-              <div class="flex-between margin-top-xs" style="font-size:0.82rem; padding:0.5rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:8px;">
-                <span style="color:#e2e8f0;">📍 ${esc(z.name)} <span class="text-muted" style="font-size:0.72rem;">${esc(z.address)} · ${z.lat.toFixed(4)}, ${z.lng.toFixed(4)}</span></span>
+              <div class="flex-between margin-top-xs" style="font-size:0.85rem; padding:0.6rem 0.8rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+                <span style="color:#e2e8f0;">📍 ${esc(z.name)}${z.address ? `<span class="text-muted" style="font-size:0.75rem;"> · ${esc(z.address)}</span>` : ''}</span>
                 <span class="flex-row" style="gap:0.5rem; align-items:center;">
                   <span class="badge badge-blue">${z.radius} m</span>
                   <a style="cursor:pointer; color:#64748b;" onclick="S.zones=S.zones.filter(x=>x.id!=='${z.id}');Billi.save();render();">✕</a>
                 </span>
-              </div>`).join('') || '<p class="text-muted" style="font-size:0.8rem;">No zones yet.</p>'}
+              </div>`).join('') || '<p class="text-muted margin-top-xs" style="font-size:0.85rem;">No places saved yet. Search for one above — this step is optional and you can add places any time.</p>'}
           </div>
+        </div>`,
+
+      /* 9 — Protection hardware, its own step. The catalog here only ever
+         added fixture devices, so there was no way to register the phone you
+         are actually holding. detectThisDevice() reads the real browser and
+         reports what it can genuinely do, rather than assuming. */
+      () => {
+        const dev = detectThisDevice();
+        const already = S.devices.some(x => x.thisDevice);
+        return `
+        <h2 class="panel-section-title">What is Billi running on?</h2>
+        <p class="text-muted" style="font-size:0.85rem;">Start with the device you carry. Billi uses its real sensors — everything below was detected from this browser just now, not assumed.</p>
+
+        <div class="card margin-top-xs" style="padding:1rem; border:1px solid rgba(99,102,241,${already ? '0.25' : '0.55'});">
+          <div class="flex-between" style="flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <strong style="color:#fff;">${dev.icon} ${esc(dev.name)}</strong>
+              <div class="text-muted" style="font-size:0.76rem;">${esc(dev.type)} · this device</div>
+            </div>
+            ${already
+              ? '<span class="badge badge-green">✓ Registered</span>'
+              : '<button class="btn btn-primary" onclick="registerThisDevice()">+ Register this device</button>'}
+          </div>
+          <div class="text-muted margin-top-xs" style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em;">Detected on this device</div>
+          <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
+            ${dev.capabilities.map(c => `<span class="badge ${c.ok ? 'badge-green' : 'badge-slate'}" style="font-size:0.72rem;">${c.ok ? '✓' : '✕'} ${c.label}</span>`).join('')}
+          </div>
+          ${!dev.secure ? '<p style="font-size:0.72rem; color:#fbbf24; margin-top:0.5rem;">⚠ This page is not on HTTPS, so the browser blocks location, microphone and camera. They work on the live site and in the phone app.</p>' : ''}
         </div>
 
         <div class="card margin-top-xs" style="padding:1rem;">
           <div class="flex-between">
-            <strong style="color:#fff;">Protection hardware</strong>
-            <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="bleScan()">📶 Scan for BLE devices</button>
+            <strong style="color:#fff;">Anything else you carry</strong>
+            <span class="text-muted" style="font-size:0.72rem;">Optional</span>
           </div>
-          <div id="dev-list">
-          ${S.devices.map(d => `
-            <div class="flex-between margin-top-xs" style="font-size:0.82rem; padding:0.5rem 0.7rem; background:rgba(255,255,255,0.03); border-radius:8px;">
-              <span style="color:#e2e8f0;">${esc(d.name)} <span class="text-muted" style="font-size:0.72rem;">${esc(d.type)}</span></span>
-              <span class="flex-row" style="gap:0.5rem; align-items:center;">${stateChip(d.state)}
-                <a style="cursor:pointer; color:#64748b;" onclick="S.devices=S.devices.filter(x=>x.id!=='${d.id}');Billi.save();render();">✕</a></span>
-            </div>`).join('') || '<p class="text-muted margin-top-xs" style="font-size:0.8rem;">No devices registered — scan or pick from the catalog.</p>'}
-          </div>
-          <div class="text-muted margin-top-xs" style="font-size:0.72rem;">Catalog (click to register — honest state labels):</div>
+          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">Watches, tags and glasses appear in Billi so a guardian can see which one triggered an alert. They are not connected as live hardware yet — your phone is the real sensor today.</p>
           <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
             ${DEVICE_CATALOG.map(([n, t, st]) => `<button class="btn btn-outline-nav" style="font-size:0.7rem;" onclick="registerDevice('${n.replace(/'/g, "\\'")}','${t.replace(/'/g, "\\'")}','${st}')">+ ${n}</button>`).join('')}
           </div>
-        </div>`,
+        </div>
 
-      /* 9 — Readiness & activate.
+        <div class="card margin-top-xs" style="padding:1rem;">
+          <strong style="color:#fff;">Registered ${S.devices.length ? `<span class="badge badge-blue" style="margin-left:0.3rem;">${S.devices.length}</span>` : ''}</strong>
+          <div id="dev-list" class="margin-top-xs">
+          ${S.devices.map(x => `
+            <div class="flex-between margin-top-xs" style="font-size:0.85rem; padding:0.6rem 0.8rem; background:rgba(255,255,255,0.03); border-radius:8px;">
+              <span style="color:#e2e8f0;">${esc(x.name)} <span class="text-muted" style="font-size:0.75rem;">${esc(x.type)}${x.thisDevice ? ' · this device' : ''}</span></span>
+              <span class="flex-row" style="gap:0.5rem; align-items:center;">${stateChip(x.state)}
+                <a style="cursor:pointer; color:#64748b;" onclick="S.devices=S.devices.filter(y=>y.id!=='${x.id}');Billi.save();render();">✕</a></span>
+            </div>`).join('') || '<p class="text-muted" style="font-size:0.85rem;">Nothing registered yet — register the device you are holding above.</p>'}
+          </div>
+        </div>`;
+      },
+
+      /* 10 — Readiness & activate.
          Only the four REQUIRED items block activation — enough for Billi to
          function at all (a protected person, someone to notify, an
          authorized contract, GPS+network permission). Voice enrollment,
@@ -467,14 +507,14 @@
     }
 
     function goStep(n) {
-      if (n < 1 || n > 9) return;
+      if (n < 1 || n > TOTAL_STEPS) return;
       saveStep();
       cur = n; S.setup.step = n; Billi.save(); render();
     }
 
     function nextStep() {
       if (!validateStep() || !saveStep()) return;
-      if (cur === 9) {
+      if (cur === TOTAL_STEPS) {
         const readyItems = Billi.readiness();
         if (!readyItems.filter(i => i.required).every(i => i.ok)) { Billi.toast('A few essentials are still needed — resolve the required items first.', 'warn'); return; }
         const openOptional = readyItems.filter(i => !i.required && !i.ok);
@@ -612,6 +652,53 @@
       Billi.toast(`✓ Safe zone "${name}" saved.`, 'ok');
     }
 
+    /* Reads the device actually in the user's hand. Every capability below is
+       a genuine feature-detect against this browser — not a lookup table and
+       not an assumption. It is what makes "register this device" mean
+       something, where the catalog only ever added fixture hardware. */
+    function detectThisDevice() {
+      const ua = navigator.userAgent || '';
+      const android = /Android/i.test(ua);
+      const ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+      const mobile = android || ios || /Mobi/i.test(ua);
+      const secure = window.isSecureContext;
+      const media = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+      let name = 'This computer', type = 'Computer', icon = '💻';
+      if (android) { name = 'This Android phone'; type = 'Phone (Primary Hub)'; icon = '📱'; }
+      else if (ios) { name = 'This iPhone'; type = 'Phone (Primary Hub)'; icon = '📱'; }
+      else if (mobile) { name = 'This phone'; type = 'Phone (Primary Hub)'; icon = '📱'; }
+      return {
+        name, type, icon, secure, android, ios, mobile,
+        capabilities: [
+          { label: 'Location', ok: !!navigator.geolocation && secure },
+          { label: 'Microphone', ok: media && secure },
+          { label: 'Camera', ok: media && secure },
+          { label: 'Motion sensors', ok: typeof DeviceMotionEvent !== 'undefined' },
+          { label: 'Vibration', ok: !!navigator.vibrate },
+          { label: 'Text alerts from this phone', ok: !!window.BilliNative }
+        ]
+      };
+    }
+
+    function registerThisDevice() {
+      if (S.devices.some(d => d.thisDevice)) { Billi.toast('This device is already registered.', 'warn'); return; }
+      const d = detectThisDevice();
+      S.devices.unshift({
+        id: Billi.uid('d'),
+        name: d.name.replace(/^This /, 'My '),
+        type: d.type,
+        thisDevice: true,
+        state: 'CONNECTED',
+        battery: null,
+        capabilities: d.capabilities.filter(c => c.ok).map(c => c.label),
+        triggers: ['Hold-to-SOS', 'Safe word', 'Accessibility shortcut'],
+        lastSeen: 'now'
+      });
+      Billi.save(); render();
+      const live = d.capabilities.filter(c => c.ok).length;
+      Billi.toast(`✓ Registered — ${live} of ${d.capabilities.length} capabilities available on this device.`, 'ok');
+    }
+
     function registerDevice(name, type, st) {
       if (S.devices.find(d => d.name === name)) { Billi.toast(`${name} is already registered.`, 'warn'); return; }
       const cat = Billi.FIXTURE.devices.find(d => d.name === name);
@@ -688,10 +775,10 @@
        final step rather than leaving you on step 1 looking at a page that
        hasn't visibly changed. It used to fill state and call render(), which
        on step 1 (a chooser with no text fields) looked exactly like nothing
-       had happened: same "Step 1 of 9", same "0% Complete". */
+       had happened: same "Step 1 of 10", same "0% Complete". */
     function prefillDemo() {
       Billi.applyFixturePrefill();
-      goStep(9);
+      goStep(TOTAL_STEPS);
       Billi.toast('⚡ Maya Johnson fixture loaded into all 9 steps — review and activate, or step back to see any of it.', 'ok');
     }
 
