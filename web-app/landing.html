@@ -37,12 +37,31 @@
       <h1 class="hero-title-main">When you work alone,<br>someone should know.</h1>
       <p class="hero-subheadline-1">One trigger sends your location, records what's happening, and tells the people who'd
         actually come for you — whether or not you can reach your phone.</p>
-      <p class="hero-subheadline-2">For drivers, home health aides, contractors, solo agents — anyone who's the only one there.
-        One account covers your family too.</p>
+      <p class="hero-subheadline-2">Driving. On a site. In someone else's home. Closing up at midnight.
+        <strong style="color:#cbd5e1;">If you're the only one there, this is for you.</strong></p>
+
+      <!-- Self-identification, the same question onboarding step 1 asks. The
+           page used to list categories of people in the third person, which
+           asks the reader to work out whether they are one of them. This asks
+           them directly, and carries them into setup with the answer already
+           given. -->
+      <div class="hero-pick-row">
+        <a class="hero-pick" href="auth.html?who=just-me">
+          <strong>Just me</strong>
+          <span>I'm the one out there</span>
+        </a>
+        <a class="hero-pick" href="auth.html?who=me-and-family">
+          <strong>Me and my family</strong>
+          <span>One account covers both</span>
+        </a>
+        <a class="hero-pick" href="auth.html?who=my-team">
+          <strong>My team</strong>
+          <span>A crew I'm responsible for</span>
+        </a>
+      </div>
 
       <div class="hero-cta-group flex-row justify-center">
-        <button class="btn btn-hero-primary" onclick="scrollToDemos()">Explore Live Demos →</button>
-        <button class="btn btn-hero-secondary" onclick="window.location.href='auth.html'">Create Account</button>
+        <button class="btn btn-hero-primary" onclick="scrollToDemos()">Watch it work →</button>
         <button class="btn btn-hero-secondary" onclick="openInstallModal()">📱 Get the Android App</button>
       </div>
 

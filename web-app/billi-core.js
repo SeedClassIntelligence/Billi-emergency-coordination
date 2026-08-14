@@ -1539,10 +1539,17 @@
     save, audit, toast, uid, initials, fmtClock, fmtAgo,
 
     /* auth simulation (LOCAL INTERACTIVE) */
-    createAccount() {
+    /* `who` carries the answer the landing page already asked for ("Just me",
+       "Me and my family", "My team") straight into onboarding step 1, so the
+       question is asked once rather than twice. Anything unrecognised is
+       ignored and step 1 simply starts unanswered. */
+    createAccount(who) {
       localStorage.removeItem(BACKUP_KEY); // explicit fresh start discards any prior account too
       state = blankState();
       state.session.authed = true;
+      const PICKS = { 'just-me': 'Just me', 'me-and-family': 'Me and my family', 'my-team': 'My team' };
+      const picked = PICKS[who] || PICKS[new URLSearchParams(location.search).get('who')];
+      if (picked) { state.entityType = picked; state.setup.step = 2; }
       save();
       location.href = 'onboarding.html';
     },

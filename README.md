@@ -2,21 +2,23 @@
 
 **Lone-worker protection for the smallest businesses in the economy.**
 
-A rideshare driver alone in a car with a stranger. A home health aide entering an unfamiliar
-home. A contractor on a site with nobody else there. A trucker parked overnight three hundred
-miles from anyone who knows him. These people work alone, they *are* the business, and none of
-them has what a corporate employee has — a security desk, a duress alarm, a colleague who
-notices they didn't come back.
+Driving. On a site. In someone else's home. Closing up at midnight. **If you're the only one
+there, this is for you** — and you almost certainly *are* the business, which means you have
+none of what a corporate employee has: no security desk, no duress alarm, no colleague who
+notices you didn't come back.
 
-Billi gives them one. **One trigger fires four things at once** — location, audio evidence,
+Billi gives you one. **One trigger fires four things at once** — location, audio evidence,
 photo evidence, and the trusted network — while live Gemini reasoning assesses the situation and
 a separate deterministic rule engine decides what actually executes.
 
 **AI recommends. The rules decide.**
 
-The same platform protects families, on the same account. The architecture doesn't change: the
-protected person is the persistent entity, and everything else exists to serve that one
-individual.
+The same account covers your family. The architecture doesn't change: the protected person is the
+persistent entity, and everything else exists to serve that one individual.
+
+Setup opens by asking the only question that matters — **Just me · Me and my family · My team** —
+because a sole proprietor protecting themselves is not a "family circle" and not an "employer
+covering staff", and every other product in this category makes them pick one of those two.
 
 ![Billi running: armed, then hold-to-activate SOS, all four core actions live, the Guardian Command Center, and live Gemini analysis of the incident](web-app/media/billi-hero-sequence.gif)
 

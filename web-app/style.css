@@ -1434,3 +1434,49 @@ body.has-demo-guide #billi-fb-panel { bottom: 230px !important; }
   line-height: 1.75;
 }
 .quiet-details p { color: #94a3b8; font-size: 0.8rem; line-height: 1.7; margin: 0 0 0.5rem; }
+
+/* ==========================================================================
+   HERO SELF-IDENTIFICATION
+   Mirrors onboarding step 1. Listing categories of people in the third
+   person makes a reader work out whether they qualify; asking them directly
+   lets them answer, and carries the answer into setup.
+   ========================================================================== */
+.hero-pick-row {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+.hero-pick {
+  flex: 1 1 200px;
+  max-width: 260px;
+  text-align: left;
+  text-decoration: none;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: #111118;
+  border: 1px solid var(--border-glass);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+.hero-pick:hover {
+  border-color: rgba(99, 102, 241, 0.7);
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+.hero-pick strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.hero-pick span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+  line-height: 1.4;
+}
+@media (max-width: 640px) {
+  .hero-pick { flex: 1 1 100%; max-width: none; }
+}
