@@ -72,25 +72,38 @@ is what makes the rest of the video count against the right criterion.
 
 **Screen:** click **Create Account** → onboarding → hit **⚡ Evaluator quick-fill**.
 
-Move through steps **1 → 5 → 6 → 9** only. Do not walk all nine.
+Quick-fill drops you straight on **step 10 of 10** with everything filled and every
+readiness item green. From there step **back** to show three screens, then return to 10.
+Do not walk all ten.
 
-> "Setup is where every decision gets made — who responds, in what order, and
-> what Billi is permitted to do."
+**Step 1 — Who Billi Protects.** This is the positioning, on screen, in one shot:
 
-**Pause on step 6, the Safety Contract.** Read the line on screen:
+> "The first question isn't 'who's your family.' It's 'are you the one out there.'
+> Just me. Me and my family. My team. That's who this is for."
+
+**Step 5 — Who Comes For You.**
+
+> "Not an emergency call centre. A dispatcher, a partner, a neighbour with a key.
+> Everyone gets told at once — the order only decides who leads if nobody answers."
+
+**Step 6 — What Billi May Do**, the Safety Contract. Read the line on screen:
 
 > "No permission dialogs at emergency time. Every decision is made here, now."
 
-**On step 9**, point at the readiness split:
+**Back to step 10**, point at the readiness split:
 
-> "Four items are required. Five are optional and never block activation — real
-> testers quit when safe-word enrollment felt mandatory, so nothing optional
-> locks a parent out of arming basic protection."
+> "Four items are required. The rest are optional and never block activation — real
+> testers quit when safe-word enrollment felt mandatory, so nothing optional locks
+> someone out of arming basic protection."
 
 If the Gemini setup review has rendered, read one recommendation aloud:
 
 > "And this is Gemini reviewing the setup itself — explaining why a gap matters,
 > before anything has gone wrong."
+
+**Optional, if you have 8 spare seconds** — step 9, Your Devices:
+
+> "It reads the phone you're actually holding and tells you what it can really do."
 
 ---
 
@@ -194,11 +207,29 @@ That honesty beat is worth more to judges than one more feature.
 Don't hide it, don't re-shoot. Say:
 
 > "That's the deterministic fallback — every AI route has one, and the platform
-> labels which path served the response. The four core actions never depend on a
-> model call succeeding."
+> labels which path served the response. It even names which model answered. The
+> four core actions never depend on a model call succeeding."
 
-Then point at the `Deterministic fallback` chip. A system that degrades honestly
+Then point at the chip. Note the AI cards now print the model name next to
+`LIVE GEMINI`, because the routes fail over between two models when one's quota is
+spent — so seeing `gemini-3.5-flash-lite` there is the fail-over working, not a
+downgrade to pretend output. A system that degrades honestly
 under a real constraint is a stronger showing than one that would fake it.
+
+---
+
+## If you are asked "how is this different from Life360?"
+
+Not a video beat — but it will come up live, and `compare.html` now answers it with
+real prices and named products. The one line to have ready:
+
+> "Life360 is good at what it's for — knowing where your family is. It's a family
+> circle product. Billi is built around one person alone at work: a safe word
+> nobody nearby notices, a duress PIN for when someone's making you cancel it, and
+> a dispatcher and a spouse in the same incident. And off shift, the same account
+> covers your kid. Different shapes, not different quality."
+
+Full landscape, with sources: [COMPETITIVE_LANDSCAPE.md](COMPETITIVE_LANDSCAPE.md).
 
 ---
 
