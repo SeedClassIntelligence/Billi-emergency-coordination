@@ -358,14 +358,20 @@
         <p class="text-muted" style="font-size:0.85rem;">Type an address or a building name — a job site, a depot, home, a client's address. Add as many as you need. If you leave one unexpectedly, your Trusted Network can be told.</p>
 
         <div class="card margin-top-xs" style="padding:1rem;">
+          <label class="form-label-muted">Type an address, a business, or a city</label>
+          <div class="flex-row margin-top-xs" style="gap:0.5rem;">
+            <input id="zn-search" class="form-control-dark" style="flex:1;" placeholder="e.g. 3200 Las Vegas Blvd S, Las Vegas"
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();findAddress();}">
+            <button id="zn-find-btn" class="btn btn-secondary" onclick="findAddress()">Find it</button>
+          </div>
           <div id="zone-map" style="height:320px; border-radius:12px; overflow:hidden; margin-top:0.5rem; background:rgba(255,255,255,0.03);"></div>
           <div class="flex-row margin-top-xs" style="gap:0.5rem;">
             <button class="btn btn-outline-nav" style="font-size:0.75rem;" onclick="useCurrentLocationForZone()">📍 Use where I am now</button>
             <span id="zn-pending-label" class="text-muted" style="font-size:0.78rem; align-self:center;"></span>
           </div>
           <div class="grid grid-2 margin-top-xs" style="gap:0.6rem;">
-            ${field('zn-name', 'What is this place called?', '', 'e.g. Riverside depot')}
-            ${field('zn-addr', 'Note (optional)', '', 'e.g. gate code 4412')}
+            ${field('zn-addr', 'Address', '', 'Filled in when you search')}
+            ${field('zn-name', 'Call it something (optional)', '', 'e.g. Depot')}
           </div>
           <div class="form-group margin-top-xs">
             <label class="form-label-muted">How large an area? <strong id="zn-radius-val" style="color:#a5b4fc;">100 m</strong></label>
@@ -417,14 +423,31 @@
         </div>
 
         <div class="card margin-top-xs" style="padding:1rem;">
-          <div class="flex-between">
-            <strong style="color:#fff;">Anything else you carry</strong>
-            <span class="text-muted" style="font-size:0.72rem;">Optional</span>
+          <strong style="color:#fff;">Add a phone you are not holding</strong>
+          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
+            Setting this up on a computer? Your phone is the device that matters, and Billi can only use its
+            real GPS, microphone and camera if Billi is <em>open on that phone</em>. Nothing you type here can
+            change that — a serial or IMEI number would list the phone without connecting it to anything.
+          </p>
+          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
+            <strong style="color:#e2e8f0;">The way that actually works:</strong> open this page on the phone
+            and tap "Register this device". Or add it below so it is on your list now, and connect it later.
+          </p>
+          <div class="grid grid-2 margin-top-xs" style="gap:0.6rem;">
+            <div class="form-group"><label class="form-label-muted">What is it?</label>
+              <input id="dv-name" class="form-control-dark" placeholder="e.g. My Galaxy S24"></div>
+            <div class="form-group"><label class="form-label-muted">Kind</label>
+              <select id="dv-type" class="form-control-dark">
+                <option>Phone (Primary Hub)</option>
+                <option>Watch</option>
+                <option>Smart Tag</option>
+                <option>Glasses</option>
+                <option>Headphones</option>
+                <option>Vehicle</option>
+                <option>Other</option>
+              </select></div>
           </div>
-          <p class="text-muted margin-top-xs" style="font-size:0.78rem;">Watches, tags and glasses appear in Billi so a guardian can see which one triggered an alert. They are not connected as live hardware yet — your phone is the real sensor today.</p>
-          <div class="flex-row margin-top-xs" style="gap:0.4rem; flex-wrap:wrap;">
-            ${DEVICE_CATALOG.map(([n, t, st]) => `<button class="btn btn-outline-nav" style="font-size:0.7rem;" onclick="registerDevice('${n.replace(/'/g, "\\'")}','${t.replace(/'/g, "\\'")}','${st}')">+ ${n}</button>`).join('')}
-          </div>
+          <button class="btn btn-secondary" onclick="addNamedDevice()">+ Add it to my list</button>
         </div>
 
         <div class="card margin-top-xs" style="padding:1rem;">
@@ -611,6 +634,45 @@
       }
 
       zoneMap.on('click', (e) => placePendingZone(e.latlng));
+
+      /* The map is built in the same tick the step's innerHTML is replaced, so
+         the container has not been laid out yet and Leaflet measures it as
+         near-zero. It then only requests tiles for that phantom viewport and
+         the map renders as flat grey — while circles still draw, because SVG
+         overlays do not depend on tiles. Re-measuring on the next frame is the
+         fix, and it has to run after paint, not just after innerHTML. */
+      requestAnimationFrame(() => { if (zoneMap) zoneMap.invalidateSize(); });
+      setTimeout(() => { if (zoneMap) zoneMap.invalidateSize(); }, 250);
+    }
+
+    /* Typing an address is how a person adds a place. The geocoder plugin put
+       its search behind a small icon on the map, which nobody found — so this
+       is a plain field and a button, using the same free Nominatim service. */
+    function findAddress() {
+      const input = document.getElementById('zn-search');
+      const q = (input?.value || '').trim();
+      if (!q) { Billi.toast('Type an address or a place name first.', 'warn'); return; }
+      if (typeof L === 'undefined' || !L.Control || !L.Control.Geocoder) {
+        Billi.toast('Address lookup is unavailable — no connection to the map service.', 'warn');
+        return;
+      }
+      const btn = document.getElementById('zn-find-btn');
+      if (btn) { btn.disabled = true; btn.innerText = 'Searching…'; }
+      L.Control.Geocoder.nominatim().geocode(q, (results) => {
+        if (btn) { btn.disabled = false; btn.innerText = 'Find it'; }
+        if (!results || !results.length) {
+          Billi.toast(`No match for "${q}". Try adding the city, or drop a pin on the map instead.`, 'warn');
+          return;
+        }
+        const r = results[0];
+        zoneMap.setView(r.center, 16);
+        placePendingZone(r.center);
+        const addr = document.getElementById('zn-addr');
+        const name = document.getElementById('zn-name');
+        if (addr) addr.value = r.name;
+        if (name && !name.value) name.value = r.name.split(',')[0];
+        Billi.toast('Found it. Adjust the size if you need to, then save.', 'ok');
+      });
     }
 
     function placePendingZone(latlng) {
@@ -685,6 +747,26 @@
           { label: 'Text alerts from this phone', ok: !!window.BilliNative }
         ]
       };
+    }
+
+    /* Add a device you are not currently using. Registered honestly as
+       NOT CONNECTED, because Billi is not running on it and cannot reach its
+       sensors until it is — listing a phone is not the same as protecting
+       with it, and the old catalog blurred that by adding fixture hardware
+       (an iPhone, an Apple Watch) that the owner did not even own. */
+    function addNamedDevice() {
+      const name = (document.getElementById('dv-name')?.value || '').trim();
+      const type = document.getElementById('dv-type')?.value || 'Other';
+      if (!name) { Billi.toast('Give it a name so you can tell it apart later.', 'warn'); return; }
+      if (S.devices.some(d => d.name.toLowerCase() === name.toLowerCase())) {
+        Billi.toast(`${name} is already on your list.`, 'warn'); return;
+      }
+      S.devices.push({
+        id: Billi.uid('d'), name, type, state: 'OFFLINE',
+        battery: null, capabilities: [], triggers: [], lastSeen: 'not connected yet'
+      });
+      Billi.save(); render();
+      Billi.toast(`Added ${name}. Open Billi on it and tap "Register this device" to connect its sensors.`, 'ok');
     }
 
     function registerThisDevice() {
