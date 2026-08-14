@@ -29,8 +29,10 @@
 
   <main>
     <section class="hero-wrapper text-center">
-      <h1 class="hero-title-main" style="font-size:2.4rem;">Is Billi Just Another<br>Safety App?</h1>
-      <p class="hero-subheadline-1">Short answer: no. Here's what's actually different — not just claimed, but built.</p>
+      <h1 class="hero-title-main" style="font-size:2.4rem;">Where Billi Sits in the<br>Safety Industry</h1>
+      <p class="hero-subheadline-1">Life360 protects a family circle. Blackline and Peoplesafe protect an employer's workforce.
+        Noonlight and Hollie Guard protect one person with a panic button. <strong style="color:#e2e8f0;">Billi protects the
+        person who is both — someone who works alone and has a family — on one account they can buy themselves.</strong></p>
     </section>
 
 
@@ -86,16 +88,31 @@
       </p>
     </section>
 
+
+    <!-- THE INDUSTRY MAP — named segments, real companies. Everyone here is
+         solving "someone needs help and can't easily ask"; they differ in who
+         buys it and who it wraps around. That is where Billi's position comes
+         from, so it is stated before any comparison is drawn. -->
+    <section class="container section-spacing">
+      <div class="section-tag-muted text-center">The Industry</div>
+      <h2 class="section-title-white text-center">Everyone Here Solves Part of It</h2>
+      <p class="text-muted text-center margin-top-xs" style="max-width:700px; margin:0.6rem auto 0;">
+        These are real companies doing real work. What separates them isn't quality — it's who buys the
+        product and who it wraps around.
+      </p>
+      <div class="grid grid-3 margin-top-md text-left" id="segment-grid"></div>
+    </section>
+
     <!-- COMPARISON TABLE -->
     <section class="container section-spacing">
-      <div class="section-tag-muted text-center">Where It Actually Differs</div>
-      <h2 class="section-title-white text-center">Typical Safety App vs. Billi</h2>
+      <div class="section-tag-muted text-center">The Distinctions</div>
+      <h2 class="section-title-white text-center">Four Things Shaped Differently</h2>
       <div style="max-width:920px; margin:2rem auto 0; overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
           <thead>
             <tr style="border-bottom:2px solid rgba(255,255,255,0.12);">
               <th style="text-align:left; padding:0.75rem 1rem; color:#94a3b8; font-weight:600; width:26%;"></th>
-              <th style="text-align:left; padding:0.75rem 1rem; color:#94a3b8; font-weight:600;">Typical Safety App</th>
+              <th style="text-align:left; padding:0.75rem 1rem; color:#94a3b8; font-weight:600;">How the industry does it</th>
               <th style="text-align:left; padding:0.75rem 1rem; color:#a5b4fc; font-weight:700;">Billi</th>
             </tr>
           </thead>
@@ -231,15 +248,45 @@
   <script>
     Billi.mountFeedback();
 
-    const COMPARE_ROWS = [
-      ['Trigger', 'One button, one alert', 'Nine real trigger paths — safe word, hold-to-activate, fall or crash detection, duress PIN — all reach the same real response'],
-      ['Under coercion', 'No way to fake a cancel', 'A duress PIN feigns cancellation on screen while real escalation keeps going silently'],
-      ['AI reasoning', 'None, or an unexplained black box', 'Live Gemini reasoning — and it tells you honestly when live AI isn\'t available instead of pretending'],
-      ['Reaching people without the app', 'Push notification only — hopes the other person has it installed', 'Real SMS through the phone\'s own SIM (Android), or a real carrier gateway fallback for everyone else'],
-      ['Coordination', 'A one-way alert', 'One live incident every guardian device sees and updates in real time, together'],
-      ['Wandering & geofencing', 'Sometimes offered as a paid add-on', 'Real GPS safe zones with exit-breach alerts, built in from the start (active while Billi is open)'],
-      ['Transparency', 'Marketing describes what the product should do', 'Every capability is labeled CONNECTED, SIMULATED, or LOCAL directly in the product — you always know what\'s actually real']
+    /* Named segments, real companies. Sourced in ../COMPETITIVE_LANDSCAPE.md,
+       researched 2026-08-13 — re-verify before changing anything here, these
+       products ship constantly. */
+    const SEGMENTS = [
+      ['👪', 'Family location', 'Life360', 'Built around a circle of family members sharing location. Crash detection, and emergency dispatch on paid tiers. Strong product at real scale.'],
+      ['🚨', 'Personal panic button', 'Noonlight, Hollie Guard, bSafe', 'One person, one button, one alert. Hollie Guard has a duress PIN; Noonlight escalates if you release without entering yours. Good ideas, and not ours first.'],
+      ['🩺', 'Medical alert', 'Bay Alarm, Life Alert, MobileHelp', 'A wearable and a monitoring centre. Someone is genuinely watching — a real advantage Billi does not have.'],
+      ['🧩', 'Elopement & wandering', 'AngelSense', 'A tracked device and a caregiver, priced with hardware. Purpose-built for a serious problem.'],
+      ['👷', 'Enterprise lone worker', 'Blackline, Peoplesafe, SoloProtect, StaySafe', 'An employer protecting a workforce. Certified monitoring, rugged hardware — and sold through procurement. None of them publishes a per-user price.'],
+      ['🛡', 'Billi', 'One person who works alone — and their family', 'The only one shaped around a protected person who is both. Bought on a personal card, for $14.99 a month, covering up to five people.']
     ];
+
+    const COMPARE_ROWS = [
+      ['Who the account wraps around',
+       "A family circle, or an employer's workforce. Every product picks one side, because the business model does.",
+       'One protected person — and a second device invite extends the same account to their kid. A driver protected on the road covers their family off shift, on one seat.'],
+      ['How you buy it',
+       'Lone-worker platforms are sold through procurement: a contract, a seat count, an account manager. You request a quote.',
+       'A personal card, no purchase order. Built for how a sole proprietor works, sold the way they can actually buy.'],
+      ['Under coercion',
+       'A duress code exists in this industry — Hollie Guard has one — and it usually sends a signal to a monitoring operator.',
+       'Duress flips a state on a live incident every guardian is already watching. Her screen shows a calm cancellation; theirs shows a red banner. Location and audio never stop.'],
+      ['What the AI is allowed to do',
+       "Either no AI, or a model whose reasoning and limits aren't published.",
+       'Gemini returns recommendations. A separate rule engine checks each against the Safety Contract you configured before approving it. Withhold audio consent and the microphone stays shut, whatever the model says.'],
+      ['Who responds',
+       "A monitoring centre, or the app's own dispatch operation.",
+       'The people you chose — your dispatcher, your spouse, the neighbour with the spare key — in one shared incident. No one watches a screen for you, and we say so.'],
+      ['What you can verify',
+       'Marketing describes what the product should do.',
+       'The UI names which Gemini model answered and when it fell back. The source is public. You can run a real incident end to end without an account gate.']
+    ];
+    document.getElementById('segment-grid').innerHTML = SEGMENTS.map(([icon, seg, who, desc], i) => `
+      <div class="card process-step-card" ${i === SEGMENTS.length - 1 ? 'style="border:1px solid rgba(99,102,241,0.45);"' : ''}>
+        <div class="scenario-tag ${i === SEGMENTS.length - 1 ? 'text-blue' : 'text-muted'}">${icon} ${seg.toUpperCase()}</div>
+        <h3 class="step-title-text margin-top-xs" style="font-size:0.92rem;">${who}</h3>
+        <p class="text-muted" style="font-size:0.8rem; margin-top:0.4rem; line-height:1.55;">${desc}</p>
+      </div>`).join('');
+
     document.getElementById('compare-rows').innerHTML = COMPARE_ROWS.map(([label, them, us], i) => `
       <tr style="border-bottom:1px solid rgba(255,255,255,0.06); ${i % 2 === 0 ? 'background:rgba(255,255,255,0.015);' : ''}">
         <td style="padding:0.85rem 1rem; color:#e2e8f0; font-weight:600;">${label}</td>
