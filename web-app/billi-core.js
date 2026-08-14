@@ -1254,7 +1254,7 @@
   /* --------------------------- NAV / CHROME --------------------------- */
   const NAV_LINKS = [
     { href: 'dashboard.html', label: 'Command Center' },
-    { href: 'protected.html', label: 'Protected Person' },
+    { href: 'protected.html', label: 'SOS' },   // this is where YOU trigger; "Protected Person" is our word, not a user's
     { href: 'network.html',   label: 'Network' },
     { href: 'incident.html',  label: 'Incident' },
     { href: 'responder.html', label: 'Responder' },

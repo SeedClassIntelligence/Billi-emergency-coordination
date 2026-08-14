@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BILLI — Safety Contract Administration</title>
+  <title>BILLI — Settings & Safety Contract</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-root">
@@ -51,7 +51,7 @@
       const phone = document.getElementById('hh-invite-phone').value.trim();
       if (!phone) { Billi.toast('Enter a phone number to invite.', 'warn'); return; }
       await Billi.syncHousehold(); // push current contacts/contract before inviting
-      const msg = `You're invited to join ${(S.owner || {}).name || 'a family'}'s Billi safety setup: ${householdJoinUrl()}`;
+      const msg = `${(S.owner || {}).name || 'Someone'} added you to their Billi safety setup. Join here: ${householdJoinUrl()}`;
       if (window.BilliNative && window.BilliNative.sendSms) {
         const sent = window.BilliNative.sendSms(phone, msg);
         Billi.toast(sent ? `✓ Invite texted to ${phone}.` : 'SMS permission not granted — copy the link below instead.', sent ? 'ok' : 'warn');
@@ -215,15 +215,16 @@
               <div class="text-muted margin-top-xs" style="font-size:0.68rem;">Radius sliders 50–1000 m · geofence evaluation is Haversine-based in the connected backend.</div>
             </div>
 
-            <!-- FAMILY DEVICES / HOUSEHOLD -->
+            <!-- SECOND DEVICE ON THIS ACCOUNT -->
             <div class="card margin-top-xs" style="padding:1.1rem;">
-              <div class="panel-section-title" style="font-size:0.92rem;">Family devices</div>
+              <div class="panel-section-title" style="font-size:0.92rem;">Add a second device</div>
               <p class="text-muted margin-top-xs" style="font-size:0.78rem;">
-                Add another family member's own phone to this setup — without needing it in hand. They join with their
-                own real GPS/camera/mic and share your trusted network and Safety Contract.
+                Put someone else's phone on this account without needing it in hand — a partner, a driver on your
+                crew, your kid. It gets its own real GPS, microphone and camera, and inherits the trusted network and
+                Safety Contract you already set up. This is the one account covering work and family.
               </p>
               ${!S.householdCode ? `
-                <button class="btn btn-secondary margin-top-xs" onclick="generateHousehold()">Generate household invite code</button>
+                <button class="btn btn-secondary margin-top-xs" onclick="generateHousehold()">Generate invite code</button>
               ` : `
                 <div class="flex-between margin-top-xs" style="padding:0.6rem 0.8rem; background:rgba(99,102,241,0.1); border-radius:8px;">
                   <span style="font-family:monospace; font-size:1.1rem; letter-spacing:0.15em; color:#a5b4fc;">${esc(S.householdCode)}</span>

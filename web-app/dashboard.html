@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BILLI — Entity Command Center</title>
+  <title>BILLI — Command Center</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-root">
@@ -20,7 +20,12 @@
 
     const S = Billi.state;
     const p = S.protectedPerson || {};
-    const entityLabel = { 'Family': 'My Family', 'School / District': 'My Students', 'Business': 'My Employees', 'University / Campus': 'My Campus', 'Healthcare Organization': 'My Patients', 'Community': 'My Community' }[S.entityType] || 'My People';
+    /* Must stay in step with ENTITIES in onboarding.html — renaming those
+       silently dropped every account through to the fallback. */
+    const entityLabel = {
+      'Just me': 'My Protection', 'Me and my family': 'Me & My Family', 'My team': 'My Team',
+      'My family': 'My Family', 'School / Campus': 'My Campus', 'Healthcare / Community': 'My Community'
+    }[S.entityType] || 'My Protection';
 
     function stateChip(st) {
       const cls = { SIMULATED: 'simulated', CONNECTED: 'connected', 'FUTURE ADAPTER': 'future', OFFLINE: 'unavail', UNAVAILABLE: 'unavail' }[st] || 'local';

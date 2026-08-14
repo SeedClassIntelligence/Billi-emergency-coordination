@@ -31,7 +31,7 @@
     function renderError(msg) {
       host.innerHTML = `
         <div class="text-center">
-          <h1 style="color:#fff; font-size:1.4rem;">Can't join a household</h1>
+          <h1 style="color:#fff; font-size:1.4rem;">Can't join this account</h1>
           <p class="text-muted margin-top-xs" style="font-size:0.88rem;">${esc(msg)}</p>
           <button class="btn btn-secondary margin-top" onclick="location.href='landing.html'">Back to Billi</button>
         </div>`;
@@ -40,7 +40,7 @@
     function renderForm(h) {
       host.innerHTML = `
         <div class="text-center">
-          <h1 style="color:#fff; font-size:1.5rem; letter-spacing:-0.02em;">Join ${esc(h.ownerName)}'s Billi household</h1>
+          <h1 style="color:#fff; font-size:1.5rem; letter-spacing:-0.02em;">Join ${esc(h.ownerName)}'s Billi setup</h1>
           <p class="text-muted margin-top-xs" style="font-size:0.88rem;">
             This device will get its own real GPS, camera, and microphone protection, and share
             ${esc(h.ownerName)}'s trusted network and Safety Contract (${h.contactCount} contact${h.contactCount === 1 ? '' : 's'} configured).
