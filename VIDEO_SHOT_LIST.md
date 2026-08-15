@@ -72,9 +72,18 @@ is what makes the rest of the video count against the right criterion.
 
 **Screen:** click **Create Account** → onboarding → hit **⚡ Evaluator quick-fill**.
 
-Quick-fill drops you straight on **step 10 of 10** with everything filled and every
-readiness item green. From there step **back** to show three screens, then return to 10.
-Do not walk all ten.
+Two buttons at the top of onboarding, both built for this:
+
+- **⚡ Fill everything** — loads all ten steps and leaves you on step 1, so you can
+  narrate from the top with nothing to type.
+- **⏭ Skip to activation** — one click from an empty account to the activate button,
+  if the dashboard is the point and setup isn't.
+
+Under the progress bar is a **numbered strip — click any step to jump straight to it.**
+No paging through. The route below is three clicks, and the whole thing including the
+fill takes under a second of clicking, so every second on the clock is narration.
+
+Do not walk all ten steps.
 
 **Step 1 — Who Billi Protects.** This is the positioning, on screen, in one shot:
 

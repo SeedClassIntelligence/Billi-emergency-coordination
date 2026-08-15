@@ -1480,3 +1480,59 @@ body.has-demo-guide #billi-fb-panel { bottom: 230px !important; }
 @media (max-width: 640px) {
   .hero-pick { flex: 1 1 100%; max-width: none; }
 }
+
+/* ==========================================================================
+   ONBOARDING STEP JUMP STRIP
+   Click any step directly. Built for narrating a walkthrough against a clock:
+   with the fixture loaded every step already has content, so 1 -> 5 -> 6 -> 10
+   is three clicks instead of nine Backs.
+   ========================================================================== */
+.step-jump {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.step-jump-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.step-jump-chip:hover {
+  color: #fff;
+  border-color: rgba(99, 102, 241, 0.6);
+  background: rgba(99, 102, 241, 0.1);
+}
+.step-jump-chip.current {
+  color: #fff;
+  border-color: rgba(99, 102, 241, 0.8);
+  background: rgba(99, 102, 241, 0.22);
+}
+.step-jump-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+.step-jump-chip.current .step-jump-num { background: var(--accent-indigo); }
+
+/* On a phone the labels do not fit ten across — show numbers only. */
+@media (max-width: 760px) {
+  .step-jump-label { display: none; }
+  .step-jump-chip { padding: 0.3rem 0.4rem; }
+}

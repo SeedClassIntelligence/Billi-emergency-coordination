@@ -33,7 +33,10 @@
       <section class="text-center margin-top">
         <h1 class="onboarding-hero-title">Welcome to Billi</h1>
         <p class="onboarding-hero-sub">Set this up once, now, while nothing is wrong. Who comes for you, in what order, and what Billi is allowed to do — all decided here, so none of it has to be decided during an emergency.</p>
-        <button class="btn btn-outline-nav margin-top-xs" style="font-size:0.72rem;" onclick="prefillDemo()">⚡ Evaluator quick-fill (Maya Johnson fixture)</button>
+        <div class="flex-row justify-center margin-top-xs" style="gap:0.5rem; flex-wrap:wrap;">
+          <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="prefillDemo()">⚡ Fill everything (Maya Johnson fixture)</button>
+          <button class="btn btn-outline-nav" style="font-size:0.72rem;" onclick="skipToActivation()">⏭ Skip to activation</button>
+        </div>
       </section>
 
       <!-- PROGRESS -->
@@ -45,6 +48,10 @@
         <div class="progress-track-bg margin-top-xs">
           <div class="progress-fill-indigo" id="prog-bar" style="width:11%;"></div>
         </div>
+        <!-- Jump straight to any step. Built for narrating a walkthrough on a
+             clock: with the fixture loaded every step already has content, so
+             1 -> 5 -> 6 -> 10 is three clicks instead of nine. -->
+        <div class="step-jump" id="step-jump"></div>
       </section>
 
       <!-- STEP PANES -->
@@ -141,6 +148,10 @@
       document.getElementById('prog-bar').style.width = `${Math.round((cur / TOTAL_STEPS) * 100)}%`;
       document.getElementById('btn-back').style.visibility = cur === 1 ? 'hidden' : 'visible';
       document.getElementById('btn-next').innerText = cur === TOTAL_STEPS ? '✓ ACTIVATE BILLI' : `Next: ${STEP_TITLES[cur] || ''} →`;
+      document.getElementById('step-jump').innerHTML = STEP_TITLES.map((t, i) => `
+        <button class="step-jump-chip ${i + 1 === cur ? 'current' : ''}" onclick="goStep(${i + 1})" title="${t}">
+          <span class="step-jump-num">${i + 1}</span><span class="step-jump-label">${t}</span>
+        </button>`).join('');
       document.getElementById('step-host').innerHTML = STEPS[cur - 1]();
       if (cur === 8) initZoneMap();
       if (cur === TOTAL_STEPS) refreshSetupReview();
@@ -867,8 +878,17 @@
        had happened: same "Step 1 of 10", same "0% Complete". */
     function prefillDemo() {
       Billi.applyFixturePrefill();
+      goStep(1);
+      Billi.toast('⚡ All 10 steps filled. Use the numbered strip above to jump to any of them — nothing left to type.', 'ok');
+    }
+
+    /* Straight to activation, for when the point is the dashboard rather than
+       the setup. Fills first if the account is still empty, so it works from
+       a cold start in one click. */
+    function skipToActivation() {
+      if (!S.protectedPerson || !S.contacts.length) Billi.applyFixturePrefill();
       goStep(TOTAL_STEPS);
-      Billi.toast('⚡ Maya Johnson fixture loaded into all 9 steps — review and activate, or step back to see any of it.', 'ok');
+      Billi.toast('Ready to activate — everything required is already green.', 'ok');
     }
 
     render();
