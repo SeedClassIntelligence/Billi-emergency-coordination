@@ -70,7 +70,7 @@ is what makes the rest of the video count against the right criterion.
 
 ## 0:15 – 0:40 · Setup is the product
 
-**Screen:** click **Create Account** → onboarding → hit **⚡ Evaluator quick-fill**.
+**Screen:** click **Create Account** → onboarding.
 
 Two buttons at the top of onboarding, both built for this:
 
@@ -99,7 +99,7 @@ Do not walk all ten steps.
 
 > "No permission dialogs at emergency time. Every decision is made here, now."
 
-**Back to step 10**, point at the readiness split:
+**Step 10 — Review & Start Protecting**, point at the readiness split:
 
 > "Four items are required. The rest are optional and never block activation — real
 > testers quit when safe-word enrollment felt mandatory, so nothing optional locks
