@@ -308,6 +308,17 @@
             <li>Full incident history and audit trail</li>
           </ul>
 
+          <!-- Stated AT the buy button, not only in a disclosure below it:
+               people subscribe before they read boxes, and an all-iPhone
+               household that pays today gets alerts that never leave the app.
+               This was removed by accident during a front-page cleanup and
+               restored — it stays until real SMS to a non-Android household
+               has actually been verified. -->
+          <p style="margin-top:1rem; font-size:0.8rem; text-align:left; color:#cbd5e1;">
+            <strong style="color:#34d399;">Requires an Android phone</strong> for the protected person — that is where
+            real text alerts are sent today. On iPhone, delivery is limited.
+            <a href="#" onclick="const d=document.getElementById('delivery-details'); d.open=true; d.scrollIntoView({behavior:'smooth',block:'center'}); return false;" style="color:#a5b4fc;">What that means →</a>
+          </p>
 
           <a id="subscribe-btn" class="btn btn-hero-primary margin-top-md" href="#pricing"
              style="display:inline-block; padding:14px 32px; font-size:1.05rem;">Start protecting →</a>
@@ -316,6 +327,21 @@
       </div>
 
       </div>
+
+      <details id="delivery-details" class="quiet-details">
+        <summary>What Billi does and doesn't do today — before you subscribe</summary>
+        <ul>
+          <li><strong>Text alerts work on Android</strong> with the Billi app installed, sent from your own
+              phone's SIM. This is the configuration we recommend and have verified on real hardware.</li>
+          <li><strong>On iPhone and in the browser, alert delivery is limited.</strong> Apple permits no app to
+              send a text without a person tapping send. If everyone you'd protect is on iPhone, wait for us —
+              we would rather you didn't pay yet.</li>
+          <li><strong>Watches, BLE tags and smart glasses appear in the interface but aren't connected as live
+              hardware yet.</strong> Your phone is the real sensor today.</li>
+          <li><strong>Billi is not a replacement for 911</strong> and is not a professionally monitored alarm
+              service. Billi coordinates the people you choose.</li>
+        </ul>
+      </details>
 
       <div style="max-width:660px; margin:1.5rem auto 0; padding:1rem 1.2rem; border-radius:10px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.25); text-align:left;">
         <strong style="color:#a5b4fc; font-size:0.88rem;">One account covers your work and your family</strong>
