@@ -1539,6 +1539,20 @@
     save, audit, toast, uid, initials, fmtClock, fmtAgo,
 
     /* auth simulation (LOCAL INTERACTIVE) */
+    /* One click from the sign-in screen to a fully populated setup, for
+       walking someone through the product on a clock. Same as createAccount()
+       plus the fixture, so the recording never shows anyone typing a name
+       into a form. */
+    createAccountPrefilled() {
+      localStorage.removeItem(BACKUP_KEY);
+      state = blankState();
+      state.session.authed = true;
+      applyFixturePrefill();
+      state.setup.step = 1;
+      save();
+      location.href = 'onboarding.html';
+    },
+
     /* `who` carries the answer the landing page already asked for ("Just me",
        "Me and my family", "My team") straight into onboarding step 1, so the
        question is asked once rather than twice. Anything unrecognised is

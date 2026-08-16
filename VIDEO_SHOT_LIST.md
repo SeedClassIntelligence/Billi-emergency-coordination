@@ -70,7 +70,17 @@ is what makes the rest of the video count against the right criterion.
 
 ## 0:15 – 0:40 · Setup is the product
 
-**Screen:** click **Create Account** → onboarding.
+**Screen:** click **Create Account**, then the button under it:
+**⚡ Create account, already filled in — for a walkthrough**.
+
+That lands you on onboarding step 1 with all ten steps populated. Nothing is typed
+on camera at any point. Landing page to armed dashboard is **five clicks**:
+
+1. **Just me** on the hero
+2. **⚡ Create account, already filled in**
+3. step **5** on the jump strip
+4. step **10** on the jump strip
+5. **✓ ACTIVATE BILLI** — lands on the Command Center
 
 Two buttons at the top of onboarding, both built for this:
 
