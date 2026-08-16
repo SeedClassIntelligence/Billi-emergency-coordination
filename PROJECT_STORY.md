@@ -103,26 +103,34 @@ Gemini-branded competition entry that quietly routes around Gemini is not an hon
 
 ## Which AI tools did you leverage while building this?
 
-**Google Antigravity — roughly 90% of the build.** Antigravity was the primary development
-environment: the 13-service backend, the front-end surfaces, the capability recovery and the
-architecture work were built there. The repository still carries its audit checkpoint
-([ANTIGRAVITY_REPOSITORY_AUDIT.md](ANTIGRAVITY_REPOSITORY_AUDIT.md), dated 1 August 2026)
-and its workspace state, so this is verifiable in the repo rather than merely claimed.
+No budget. Every one of these was chosen because it was free or close to it, which is the
+same constraint the customer has and is worth saying out loud.
 
-**Gemini** — in the product across six live routes, and in Google AI Studio while choosing
-which model to pin and diagnosing free-tier quota behaviour.
+| Tool | Share of the build | What it did |
+|---|---|---|
+| **Google Antigravity** | ~50% | Primary development environment. The 13-service backend, the front-end surfaces, the capability recovery and the architecture work. Its audit checkpoint ([ANTIGRAVITY_REPOSITORY_AUDIT.md](ANTIGRAVITY_REPOSITORY_AUDIT.md), 1 August 2026) and workspace state are still committed to the repo, so this is verifiable rather than claimed. |
+| **Codex** | ~30% | Implementation across the services and front end. |
+| **Claude Code** | ~20% | The final stretch: repositioning the product around the lone worker, the onboarding rebuild, the guided demo scenarios, deployment tooling and documentation. |
+| **Gemini** | In the product | Six live routes in production, plus Google AI Studio for model selection and diagnosing free-tier quota behaviour. |
 
-**Claude Code (Anthropic)** — the remaining stretch: repositioning the product around the
-lone worker, the onboarding rebuild, the guided demo scenarios, deployment tooling and
-documentation.
+**In the product, the only LLM is Gemini.** Development tooling is a separate question from
+what ships, and when Gemini is unavailable at runtime the fallback is deterministic code
+rather than another provider.
 
-The honest summary is that **this business was built with Google's own agentic development
-tools, runs on Gemini in production, and is hosted on Google Cloud.** One person shipped a
-13-service platform, a native Android build and a public deployment in about 30 days, and
-that was only possible because the implementation loop was AI-paced from end to end.
+### Why this matters for this category
 
-That is what makes it AI-native in both senses — the product reasons with AI, and the
-company was built by it.
+This entry is about people who cannot buy the infrastructure a corporate employer provides.
+It was built by someone in the same position. There was no engineering budget, so the build
+ran on whichever agentic tools were free or nearly free, moving between them as limits were
+hit — which is exactly how the small businesses Billi is for actually operate.
+
+One person, no budget, about 30 days: a 13-service backend, 18 front-end surfaces, six live
+Gemini routes, a native Android build, a public deployment, and a paying checkout. That is
+not a story about one vendor's tool. It is the story of what a sole proprietor can now build
+alone, which is the same argument as the product itself.
+
+That is AI-native in both directions — the product reasons with Gemini, and the company only
+exists because the build loop was AI-paced end to end.
 
 ---
 
