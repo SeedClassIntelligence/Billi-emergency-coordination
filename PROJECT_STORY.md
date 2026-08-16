@@ -103,17 +103,26 @@ Gemini-branded competition entry that quietly routes around Gemini is not an hon
 
 ## Which AI tools did you leverage while building this?
 
-**Gemini** — in the product, as above, and in Google AI Studio while evaluating which model
-to pin and diagnosing quota behaviour.
+**Google Antigravity — roughly 90% of the build.** Antigravity was the primary development
+environment: the 13-service backend, the front-end surfaces, the capability recovery and the
+architecture work were built there. The repository still carries its audit checkpoint
+([ANTIGRAVITY_REPOSITORY_AUDIT.md](ANTIGRAVITY_REPOSITORY_AUDIT.md), dated 1 August 2026)
+and its workspace state, so this is verifiable in the repo rather than merely claimed.
 
-**Claude Code (Anthropic)** — as the development environment for the majority of the build:
-writing and refactoring the 13 services and the front end, running the browser to verify
-behaviour end to end rather than assuming it, diagnosing production issues, and drafting
-documentation. A one-person team shipped a 13-service platform, a native Android build and a
-public deployment in about 30 days because the implementation loop was AI-paced.
+**Gemini** — in the product across six live routes, and in Google AI Studio while choosing
+which model to pin and diagnosing free-tier quota behaviour.
 
-Worth stating plainly, because it *is* the category: this is an AI-native business in both
-senses — the product runs on AI, and the company was built with it.
+**Claude Code (Anthropic)** — the remaining stretch: repositioning the product around the
+lone worker, the onboarding rebuild, the guided demo scenarios, deployment tooling and
+documentation.
+
+The honest summary is that **this business was built with Google's own agentic development
+tools, runs on Gemini in production, and is hosted on Google Cloud.** One person shipped a
+13-service platform, a native Android build and a public deployment in about 30 days, and
+that was only possible because the implementation loop was AI-paced from end to end.
+
+That is what makes it AI-native in both senses — the product reasons with AI, and the
+company was built by it.
 
 ---
 
