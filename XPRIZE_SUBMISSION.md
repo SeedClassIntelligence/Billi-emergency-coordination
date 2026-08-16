@@ -18,6 +18,7 @@ serve that one individual.
 
 | | |
 |---|---|
+| **Video** | <https://youtu.be/CIdecRU1-T4> |
 | **Live product** | <https://billi-platform-467802610371.us-central1.run.app/landing.html> |
 | **Source** | <https://github.com/SeedClassIntelligence/Billi-emergency-coordination> (`master`) |
 | **Android app** | `/billi.apk` from the landing page |

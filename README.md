@@ -27,7 +27,13 @@ states and Gemini analysis in those frames are genuine output, not a mockup.*
 
 ---
 
-## Try it — no install, no login gate
+## Watch the 3-minute walkthrough
+
+**<https://youtu.be/CIdecRU1-T4>** — the product demonstrated end to end: the problem,
+setup, one trigger firing four actions, live Gemini reading the incident, and the
+safe-fail window.
+
+## Or try it yourself — no install, no login gate
 
 **<https://billi-platform-467802610371.us-central1.run.app/landing.html>**
 
