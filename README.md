@@ -29,7 +29,7 @@ states and Gemini analysis in those frames are genuine output, not a mockup.*
 
 ## Watch the 3-minute walkthrough
 
-**<https://youtu.be/CIdecRU1-T4>** — the product demonstrated end to end: the problem,
+**<[https://youtu.be/wufqOERyeMs]>** — the product demonstrated end to end: the problem,
 setup, one trigger firing four actions, live Gemini reading the incident, and the
 safe-fail window.
 
