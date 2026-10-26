@@ -182,16 +182,37 @@ module by module as each becomes real (not pre-merged).
 - **Web (guardian / responder):** renderer of server projections over SSE.
 - **iOS:** unchanged position (no native SMS path). State it plainly in the product.
 
-### 4.6 Gemini
+### 4.6 Model layer — provider-agnostic
 
-Stays the intelligence layer, with no change to the six routes' purpose. Additions:
+The six routes (`synthesize`, `analyze`, `summarize`, `analyze-photo`, `review-setup`,
+`translate`) become **tasks** that no longer name a vendor. Gemini was chosen for a
+competition; it remains one adapter and a reasonable default, not the identity of the system.
 
-1. Input is a **structured block of cited facts** (observation IDs), not a free sensor bag.
-2. Output cites the IDs it relied on; the server **validates** that cited IDs exist and
-   that quoted values match, and flags uncited claims.
-3. Every output is stored as AI_INFERRED with `derivedFrom`.
+```
+Task        prompt template + JSON output schema + validator + golden fixtures
+Provider    generate({ task, input, schema, images?, locale }) -> { output, provider, model, usage }
+            declares capabilities: structuredOutput | vision | audio | longContext
+Router      picks providers in configured order by required capability; on error or
+            schema-invalid output tries the next; ends at the deterministic fallback
+```
 
-A thin provider seam can be added later; it is not a goal now.
+- **Adapters:** Gemini (`@google/genai`), OpenAI, Anthropic, and any OpenAI-compatible
+  endpoint (covers local models such as Ollama or vLLM).
+- **Every response** keeps `aiProvider` and `aiModel`, as today, and is stored as
+  AI_INFERRED with `derivedFrom` (§4.2).
+- **Input** is a structured block of cited facts (observation IDs), not a free sensor bag.
+  **Output** cites the IDs it relied on; the server validates that they exist and that
+  quoted values match, and flags uncited claims.
+- **Swapping a provider is a tested event:** the same golden fixtures must pass for a
+  provider before it is enabled for a task. Vision tasks only route to providers that
+  declare `vision`.
+- **Privacy control:** the Safety Contract already has `aiProcessing`; extend it with an
+  allowed-provider list so, for example, medical data can be restricted to a local model.
+- **Note on GEV:** GEV is agnostic on the *client* side. Its tools are defined once and
+  exposed through MCP and function calling, so Claude or Codex can drive it
+  (`docs/TOOLS.md`, `docs/MCP_SETUP.md`). Its own voice session uses OpenAI. Billi needs
+  the stronger form above: interchangeable providers behind its own tasks. Exposing
+  Billi's incident queries through MCP is a separate, optional addition.
 
 ### 4.7 Spatial understanding
 
@@ -207,6 +228,31 @@ A thin provider seam can be added later; it is not a goal now.
 | Multi-party picture with consent | **Not in GEV** | Build |
 | Replay from the incident log | Pattern only (`RECONSTRUCTED ESTIMATE`) | Build |
 
+### 4.8 Pursuit scenario — a person moving fast, then the signal stops
+
+The case that motivates the platform: a child is taken and travels by road, possibly
+across state lines.
+
+| Question the trusted network and police ask | How Billi answers | Class |
+|---|---|---|
+| Where was the child last seen by the system? | Last confirmed fix, with age and accuracy | OBSERVED |
+| Which road, which direction, how fast? | Fixes matched to the road network ("I-95 southbound near exit N, ~62 mph"). Needs a map-matching service (OSRM also offers one; GEV uses routing only, as far as read) | DERIVED, with match confidence |
+| Did the signal just stop while moving? | Deterministic rule: speed above a threshold at the last fix, then silence beyond budget, raises the highest escalation immediately | OBSERVED silence + DERIVED rule |
+| Where could the vehicle be now? | Projection along the road at the last speed, drawn as a widening cone, never a point | ESTIMATED |
+| Which jurisdiction is it in or entering? | State and county from bundled public-domain boundaries (GEV's `adminBoundaries.js`: Natural Earth + US Census counties, pure, offline) | DERIVED |
+| What should a responder who has never met the child know? | Medical and identity dossier released only to roles the contract authorizes | OBSERVED (profile) |
+
+Limits to state in the product, not hide:
+- Billi can only locate a device that is on, powered and reporting. A taker may discard or
+  power off a phone. The moving-loss rule and a second device with its own cellular
+  connection (watch or tag) exist because of this.
+- Billi does not issue an AMBER Alert. Those are activated by law enforcement. Billi's
+  role is to give the network and police an accurate, sourced packet fast. Any direct
+  agency integration is a partnership and legal question, not a code task.
+- The 3D streets and buildings in GEV are a static backdrop (Google photorealistic tiles).
+  Live elements are the sources. "People" appear only where a public camera feed exists.
+  For Billi the live element is the person's own device.
+
 ---
 
 ## 5. Build order and acceptance tests
@@ -216,7 +262,7 @@ that always alerts.
 
 | Phase | Work | Done when |
 |---|---|---|
-| 0 | Decisions in §6. Simulator that replays scenario packs as synthetic incident logs. Contract tests for the observation record. | A scenario replays deterministically from a log |
+| 0 | Decisions in §6. Simulator that replays scenario packs as synthetic incident logs. Contract tests for the observation record. Provider interface and golden fixtures for the six tasks. | A scenario replays deterministically from a log. Each task passes its fixtures on two providers. |
 | 1 | Auth and storage. Incident authority and clock on the server. Escalation worker. Real Safety Contract in the policy gate. Provider receipts. | Kill the client mid-incident: alerts still go out in order. "DELIVERED" appears only with a receipt. A denied data source is refused regardless of AI confidence. Unauthenticated callers cannot read an incident. |
 | 2 | Android device agent: foreground service, background location, heartbeat with device state, offline queue. | Screen off and app swiped away on a real device: fixes continue at cadence. Network cut: queued and flushed on reconnect. |
 | 3 | Observation ledger. Telemetry-processor persists. Observability watchdog. Real fix flows to packet, CAD export and Gemini. | CAD export shows the real last fix, with age and class. Silence produces the correct labelled state within budget. |
@@ -235,7 +281,7 @@ that always alerts.
 | 3 | Android shape | Keep WebView UI + native service module |
 | 4 | Deployment units | Keep logical modules; decide process boundaries per module as each becomes real |
 | 5 | Basemap | MapLibre GL with a tile provider whose terms permit a commercial app |
-| 6 | Model | Gemini remains primary; no abstraction work until needed |
+| 6 | Model layer | Provider-agnostic from Phase 0 (§4.6); Gemini stays as the first adapter and default, with at least one second adapter proven by the golden fixtures |
 
 ---
 
